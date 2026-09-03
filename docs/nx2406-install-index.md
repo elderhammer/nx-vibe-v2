@@ -94,6 +94,25 @@
   clearance 类型（Automatic）而非 null；GetLowerLimitMode=None、LowerLimitPlane=null。显式 Plane 型件的
   平面几何经 `NcmClearanceBuilder.PlaneXform`（NXOpen.Plane.Origin/Normal）可读（成员实证，见 §3.10）。
 
+**2026-09-04 Executor 预检增补（源：samples/camprobe-executor-20260904-012518.txt，ok=6/fail=0）**：
+
+- **CutterSubtype 读回可用（U-7 无技术障碍）**：库刀具经 `CreateMillToolBuilder`（运行时类型 MillToolBuilder）
+  读 `CutterSubtype` —— test.prt 铣刀 ×3（直径 17/13.94/9.96）= **Mill5**、中心钻（D6.0X90，家族=Chamfer Mill）=
+  **ChamferTool**；新建 (mill_planar, MILL) 组默认 Mill5。钻具运行时类型 = DrillStdToolBuilder（非 MillToolBuilder）。
+  枚举与语言无关 → U-7（导出侧补 schema type 枚举）建议走 CutterSubtype。
+- **GetNameOfType 语言敏感**：同批 test.prt 刀具组家族名本次会话为**英文**（"Milling Tool-5 Parameters"/
+  "Chamfer Mill"/"Drilling Tool"），与此前 dump/adapter 会话的中文模板名（"铣刀-5 参数"等）不同——该串随
+  会话语言变化；op 级白名单匹配（Cavity Milling/Point to Point…英文模板描述）不受影响，刀具 TypeFamily
+  直写 plan 会随语言漂移（U-7 枚举化一并解决）。
+- **重建侧写链实证**：新建铣组 (mill_planar, MILL) TlDiameter=10/刃数=4、钻组 (hole_making, STD_DRILL)
+  TlDiameter=8.5 写 → 重开均持久 ✓；`CreateGeometry(mill_contour, **MCS**)` 建组成功（§2.1 配对表补此对）。
+- **MCS/csys 写入链路**：`BasePart.CoordinateSystems.CreateCoordinateSystem(Point3d, Matrix3x3, false)` →
+  CartesianCoordinateSystem；赋 `MillOrientGeomBuilder.Mcs = cs` → Commit → 重开回读完全一致
+  （o=(75,0,100) + 单位阵 → X=(1,0,0)/Z=(0,0,1)）。Matrix3x3 Element 行语义 = row0=X、row2=Z（与导出读回同口径）。
+- **FixtureOffset 写链**：新建 MCS 组 FixtureOffsetBuilder.Value=2 → 重开 2、status False（显式）✓。
+- **方法父两形态**：op 直接挂方法根 METHOD 与挂模板默认 MILL_ROUGH 组均创建成功。
+- **CreateCamSetup("hole_making") 字面量可用**：默认方法组 DRILL_METHOD/MILL_METHOD、MachineTool 树仅 NONE。
+
 ### 2.2 属性取值形态（四类混合——Mapper 必须按类型分支）
 
 | 形态 | 特征 | 实例（NX2406 .NET 实测） |

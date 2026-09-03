@@ -1,0 +1,81 @@
+== CamProbeExecutor ==
+time: 2026-09-04 01:25:18
+
+== 阶段: S0 空 Part 写环境（顺序：建件→CAM 会话→CreateCamSetup） ==
+  CreateCamSession OK
+  CAMSetup=True  GetRoot(ProgramOrder)=NC_PROGRAM
+
+== 阶段: S1 新建刀具写链（P2） ==
+  -- 铣刀组写链（TlDiameter=10, TlNumFlutes=4）
+  OK   写 TlDiameterBuilder.Value=10
+  OK   写 TlNumFlutesBuilder.Value=4
+  Commit = ok
+  重开 TlDiameter.Value = 10
+  重开 TlNumFlutes.Value = 4
+  重开 运行时类型 = NXOpen.CAM.MillToolBuilder
+  as MillToolBuilder CutterSubtype = Mill5
+  -- 钻头组写链（TlDiameter=8.5）
+  OK   写 TlDiameterBuilder.Value=8.5
+  Commit = ok
+  重开 TlDiameter.Value = 8.5
+  重开 运行时类型 = NXOpen.CAM.DrillStdToolBuilder
+
+== 阶段: S2 MCS/csys + FixtureOffset（P3/P4） ==
+  源 MCS csys 读回(仅参考) = o=(0,0,0)
+  目标 csys：origin=(75,0,100) + 单位阵
+  OK   Part.CoordinateSystems.CreateCoordinateSystem(o, matrix, false)
+  新 csys 类型 = NXOpen.CartesianCoordinateSystem
+  OK   赋 Mcs = 新 csys
+  Commit = ok
+  重开 Mcs(原点+Z/X 行) = o=(75,0,100) X=(1,0,0) Z=(0,0,1)
+  -- FixtureOffset 写链（目标组 PLAN_MCS）
+  OK   写 FixtureOffsetBuilder.Value=2
+  Commit = ok
+  重开 FixtureOffset.Value = 2
+  重开 FixtureOffset.InheritanceStatus = False
+
+== 阶段: S3 test.prt 库刀具 CutterSubtype 读回（P1） ==
+  -- 六把库刀具：运行时类型 + CutterSubtype（可行则 U-7 立即可做）
+  -- 刀具组: 17.0  家族=Milling Tool-5 Parameters
+     运行时类型 = NXOpen.CAM.MillToolBuilder
+     TlDiameter = 17
+     as MillToolBuilder = 有
+     CutterSubtype = Mill5
+  -- 刀具组: 13.94  家族=Milling Tool-5 Parameters
+     运行时类型 = NXOpen.CAM.MillToolBuilder
+     TlDiameter = 13.94
+     as MillToolBuilder = 有
+     CutterSubtype = Mill5
+  -- 刀具组: 9.96  家族=Milling Tool-5 Parameters
+     运行时类型 = NXOpen.CAM.MillToolBuilder
+     TlDiameter = 9.96
+     as MillToolBuilder = 有
+     CutterSubtype = Mill5
+  -- 刀具组: D6.0X90中心钻  家族=Chamfer Mill
+     运行时类型 = NXOpen.CAM.MillToolBuilder
+     TlDiameter = 6
+     as MillToolBuilder = 有
+     CutterSubtype = ChamferTool
+  -- 刀具组: 8.5  家族=Drilling Tool
+     运行时类型 = NXOpen.CAM.DrillStdToolBuilder
+     TlDiameter = 8.5
+     as MillToolBuilder = (null)
+  -- 刀具组: 17.5  家族=Drilling Tool
+     运行时类型 = NXOpen.CAM.DrillStdToolBuilder
+     TlDiameter = 17.5
+     as MillToolBuilder = (null)
+
+== 阶段: S4 方法父变体 op 创建（P5） ==
+  -- op A：方法父=方法根（test.prt ground truth 形态）
+    -> PLAN_OP_ROOT
+  OK   Create(方法父=methodRoot)
+  -- op B：方法父=模板默认 MILL_ROUGH 组
+    -> PLAN_OP_ROUGH
+  OK   Create(方法父=MILL_ROUGH)
+
+== 阶段: S5 CreateCamSetup("hole_making") 字面量（P6） ==
+  根组成员 MachineMethod: NONE(Generic PARAM object), DRILL_METHOD(Generic PARAM object), MILL_METHOD(Generic PARAM object)
+  根组成员 MachineTool: NONE(Generic PARAM object)
+  OK   CreateCamSetup("hole_making")
+== 汇总 ok=6 fail=0 ==
+== 结束 ==
