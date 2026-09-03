@@ -101,8 +101,8 @@
 ## 4. 测试路径（先于插件落地）
 
 - 云端 `/api/v1/tests/nx-project/render`（渲染 NX Journal）继续保留，
-  作为步骤②「plan → 自动建工序」的**零部署替代**，配合
-  [nx-journal-manual-verification.md](./nx-journal-manual-verification.md) 手动核对。
+  作为步骤②「plan → 自动建工序」的**零部署替代**（配套人工验收清单待该
+  测试路径落地时再补充，不占位）。
 - 步骤①③（导出/对比）必须先由插件在 NX 内完成：先跑通「手编工程 → 导出 →
   同一工程内重建 → 对比」的最小闭环，再扩展 STEP 打开与跨工程对比。
 
