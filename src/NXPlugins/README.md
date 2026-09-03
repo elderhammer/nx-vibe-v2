@@ -11,24 +11,25 @@
 - `NXPlugins.csproj`：类库工程，已引用 NXOpen / NXOpen.UF / NXOpen.Utilities
   （HintPath 指向 `$(NX_DIR)\NXBIN\managed\`，默认
   `C:\Program Files\Siemens\NX2406`；`Private=False`，**NXOpen 程序集不随仓库分发**）。
-  ⚠️ **csproj/sln 尚未纳入 PlanExporter/Journal 源码**——代码以 csc 临时编译 + NX 运行方式使用；
-  并入 sln 发布（设计 §7 步骤 4）为待办。
+  ✅ **生产代码已全部纳入 csproj**（Journal\*、PlanExporter\*、PlanExecutor\*；测试目录不入库，
+  走 scripts/run-unittests.ps1 红线回归）——sln 构建 = 设计 §7 步骤 4 完成。
 - `Properties/AssemblyInfo.cs`：装配元数据（初始骨架，v0.1.0）。
-- `Journal/`：探针 ×12（步骤 0 实证收官 + 2026-09-04 收官批 `CamProbeFinalize` 全通，结论回填
-  docs/nx2406-install-index.md §2.1/§3）；`ExporterAdapter.cs` = [I] 层导出适配器
-  （test.prt → samples/test.plan.json，schema 复验 PASS）。
-- `PlanExporter/` + `PlanExporterTests/`：纯逻辑核心 + 性质表单测全绿（spec 落档，无 NX 依赖）。
+- `Journal/`：探针 ×14（步骤 0 实证收官 + 收官批 `CamProbeFinalize` + `CamProbeExecutor` 全通，
+  结论回填 docs/nx2406-install-index.md §2.1/§3）；`ExporterAdapter.cs` / `ExecutorAdapter.cs` =
+  导出/重建 [I] 层适配器（test.prt → test.plan.json → test.rebuilt-*.prt 闭环跑通）。
+- `PlanExporter/` + `PlanExecutor/`：纯逻辑核心（spec 各落档；导出 17 回归 + Executor 16 条
+  [U] 测试 = 33/33 全绿）；`PlanExporterTests/`/`PlanExecutorTests/` 测试目录不入库编译。
 
 ## 规划目录（按 nx-plugin-design.md §7 步骤 0-4 进度）
 
 ```
-Journal/            ✅ 探针×12 入库（步骤 0 实证收官）；ExporterAdapter=[I] 适配器
-PlanExporter/       ✅ 纯逻辑核心 + [U] 单测（spec 落档）；⚠️ 未并入 csproj
-PlanParser/         未开工（导入侧）
-PlanExecutor/       未开工（步骤 2；参考官方样例
+Journal/            ✅ 探针×14 + ExporterAdapter/ExecutorAdapter [I] 适配器
+PlanExporter/       ✅ [U]+[I] 闭环（spec 落档）
+PlanExecutor/       ✅ [U] 33/33 + [I] 集成闭环（spec 落档；参考官方样例
                     %NX_DIR%\UGOPEN\SampleNXOpenApplications\DotNet\CAMSetupImport）
+PlanParser/         未开工（导入侧）
 FaceResolver/       未开工（U-5/U-5c 结案：面级锚点无生产源，待区域级增强）
-PlanComparer/       未开工（步骤 3；容差按决策④先默认后校准）
+PlanComparer/       未开工（步骤 3；两端素材已齐：test.prt ↔ test.rebuilt-014933.prt）
 ```
 
 ## 实证收官注记（2026-09-04）
@@ -43,6 +44,9 @@ PlanComparer/       未开工（步骤 3；容差按决策④先默认后校准�
 - 打开仓库根 `Autocam.Plugins.sln`（Visual Studio，.NET Framework 4.8 工作负载）。
 - 换机/换 NX 目录：设环境变量 `NX_DIR` 或在 csproj 覆盖 `<NX_DIR>`。
 - 勿把 `NXOpen*.dll` 等西门子程序集提交进 git（`Private=False` 已保证引用不复制）。
+- ⚠️ 本机（2026-09-04）缺 .NET Framework 4.8 Developer Pack → MSBuild 构建报 MSB3644；
+  编译有效性由 csc 合编路径背书（scripts/compile-executor-adapter.ps1 全量同集源码通过）。
+  装 Developer Pack 后即可 sln 内一键构建。
 
 ## 运行（验证入口，2026-09-04 实证）
 

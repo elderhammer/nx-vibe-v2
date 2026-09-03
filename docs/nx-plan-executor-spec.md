@@ -111,7 +111,8 @@ A8 [I] 回读对照报告（I-1..I-4）
 落盘资产：samples/test.rebuilt.prt + samples/executor-run-<ts>.txt。
 
 > 执行记录（2026-09-04）：核心四文件 + 16 条 [U] 测试入库，33/33 全绿（含导出侧 17 条回归）；
-> 红线回归脚本 scripts/run-unittests.ps1（csc 响应文件编译，绕开 shell 参数路径剥除）。[I] 层适配器待做。
+> 红线回归脚本 scripts/run-unittests.ps1（csc 响应文件编译，绕开 shell 参数路径剥除）。
+> [I] 层适配器完成（ExecutorAdapter 三连跑收官，da7e028；状态见文档头与 §3 集成清单）。
 
 ## 7. 范围决策（已确认 2026-09-04：D-1=A，D-2=A）
 

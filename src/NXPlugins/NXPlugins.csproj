@@ -53,8 +53,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <!-- 生产代码：探针/适配器 Journal（NX 会话执行入口，含 Main，类库编译无碍）、
+         PlanExporter 与 PlanExecutor 纯逻辑核心（零 NX 依赖仅对 csc 合并场景成立；
+         本工程引用 NXOpen 全家，入库编译无碍）。测试目录 PlanExporterTests/PlanExecutorTests
+         （自定义 Runner + Assert）不入产品库，走 scripts/run-unittests.ps1 独立红线回归。 -->
+    <Compile Include="Journal\*.cs" />
+    <Compile Include="PlanExporter\*.cs" />
+    <Compile Include="PlanExecutor\*.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- 后续按 nx-plugin-design.md §7 步骤 0-4 补充：
-       PlanExporter / PlanParser / PlanExecutor / FaceResolver / PlanComparer / Journal 入口 -->
 </Project>
