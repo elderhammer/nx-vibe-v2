@@ -12,6 +12,13 @@
 > NX2406 核对摘要（2026-09-03）：无 `CAMSetupBuilder` 类；组/操作创建签名与 Builder 工厂宿主
 > 已变（见 §3 与 nxopen-research §3.1-3.3）；builder 属性取值是四形态混合（§2.1 ⚠️ 与 §6）；
 > 模板部件 `cam_general_mill.prt` 在 2406 不存在（用 `mill_contour.prt` 等，见 nx2406-install-index.md §1 与 nxopen-research 附 B）。
+>
+> 已确认决策（2026-09-03）：① 插件代码落地本仓库 `src/NXPlugins/`（.NET Framework 4.8 类库 +
+> Journal 入口；sln 见仓库根 Autocam.Plugins.sln）；② **仅支持 NX2406**，不做旧版本兼容（无版本分支）；
+> ③ 测试资产：NX2406 安装目录无手编 ground truth 与 STEP 样例（只有 CAM 模板部件与几何样件，
+> 见 samples/README.md），首件由 NX2406 会话手编后入库；④ PlanComparer 先按 §2.2 默认口径实现，
+> 用首批样例校准后再固化评分规格；⑤ 特征条目粒度默认「一工序 → 一条 feature(geometry_group)」，
+> 识别/CAPP 侧接入后再按真实特征合并。
 
 ---
 
@@ -92,9 +99,13 @@
 输出：**逐工序偏差表 + 汇总评分**（结构一致率 / 参数偏差均值 / 几何匹配率），
 并写回 `diagnostics[]` 供报告页展示。
 
+> 实现口径（决策④）：首版容差/阈值先取直觉默认（几何 0.01mm；参数相对偏差阈值等先定 5% 待校准），
+> 用首批手编样例跑通后再把数值固化为评分规格文档。
+
 ## 3. 宿主要求与入口
 
 - **SDK**：NXOpen for .NET（C# .NET Framework 4.8；2406 样例工程目标 v4.5，兼容）
+- **版本策略**：仅支持 NX 2406（决策②），不做旧版本兼容
 - **入口**：NXOpen `INXAddIn` 或 Journal（`run_journal.exe -nogui` 支持 CI 批处理三步；`run_journal.exe` 存在于 NXBIN，`-nogui` 参数需实测）
 - **建模对象**：`CAM.CAMSetup`（含 `CAMGroupCollection` → `NCGroupCollection`、`CAMOperationCollection` → `OperationCollection`；**无 `CAMSetupBuilder` 类**——NX2406 实证）。初始化：空 Part 先 `Part.CreateCamSetup(templateName)`（2406 模板如 `mill_contour`，见 nxopen-research 附 B）。
 
@@ -140,9 +151,12 @@ diagnostics[]   (info/warning/error)
   以 `nx_template` 真实类型落地；对比时按 nx_template 对齐。
 - **2.5D 边界**：曲面/回转类超出当前口径，不作为初始版本目标。
 - **版本差异**：Builder 参数面随 NX 版本微调（如 `BottomClearance` NX2312 新增，已被
-  XML "Created in NX2312.0.0" 实证），按 NX 版本做能力探测。
+  XML "Created in NX2312.0.0" 实证）。插件**锁定 NX2406**（决策②），不维护旧版本分支与
+  能力探测逻辑；"Created in" 注记仅用于文档溯源。
 
 ## 7. 实施顺序
+
+代码统一放在 `src/NXPlugins/`（仓库根 sln：`Autocam.Plugins.sln`，决策①）。
 
 0. **API 形态基表**（先行）：按 nxopen-research 附 A 与附 B 验证项，先跑通最小 journal
    （组创建 → 操作创建 → 参数读写 → 刀路生成），沉淀「属性形态 + 枚举宿主 + 组/操作创建

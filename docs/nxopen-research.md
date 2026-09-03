@@ -2,7 +2,7 @@
 
 更新时间：2026-09-03（按本机 NX2406 安装资料核对修正；资源索引/事实速查见 [nx2406-install-index.md](./nx2406-install-index.md)，属性取值形态速查见附 A）\
 适用范围：Siemens NX 2406+ / NX X（API 以 NXOpen .NET 为准，C++/Python/Java 同名；§3-4 的代码与表格已按 NX2406 实际 API 面修订）\
-关联文档：[autocam-prd.md](../core/autocam-prd.md)、[capp-operation-mapping-table.md](../core/capp-operation-mapping-table.md)、[autocam-plan.schema.json](../schema/autocam-plan.schema.json)
+关联文档：[autocam-plan.schema.json](../schema/autocam-plan.schema.json)（本仓库 schema/；PRD 与特征→工序映射表属外部模块，未挂载，2026-09 起以本仓库为合同唯一持有方）
 
 ---
 
@@ -12,7 +12,7 @@
 - **了解 NX CAM 编程 API（创建工序/刀具/几何/MCS/非切削/刀路生成）**：读第 3 章
 - **指导 CAPP Plan 输出字段设计（按 NX Builder 参数面反推）**：读第 4 章
 - 评估对接落地风险：读第 5 章
-- 特征识别与交叉验证（已抽离至 [feature-ml/nx-feature-recognition-validation.md](../feature-ml/nx-feature-recognition-validation.md)）
+- 特征识别与交叉验证（外部模块文档，未挂载；当前 NX 闭环以 face_anchors 属性快照替代，见 schema geometry_ref 注记）
 
 > 本文档第 3-4 章是核心新增内容：回答"NX Open 能否让 CAPP 输出 Plan 后直接创建工序、包含完整参数"以及"Plan 应该输出什么才能无歧义映射到 NX"。
 
@@ -508,7 +508,7 @@ CAPP Plan (JSON, autocam-plan.schema.json)
        ├─ 1:1 直填：tool 直径/刃长/螺距/刃数、深度、rpm/进给、余量
        ├─ 枚举映射：cut_pattern / cut_order / cut_direction / cycle → NX 枚举
        ├─ 派生计算：stepover% → StepoverBuilder（StepoverType=PercentToolFlat + PercentToolFlatBuilder.Value，链路待实测）；安全平面 → ClearanceType=Plane + SafeDistance
-       └─ 几何解析：geometry_ref（面/边/孔心）→ NX Face/Edge/Point（面映射见 [nx-feature-recognition-validation.md](../feature-ml/nx-feature-recognition-validation.md) §5）
+       └─ 几何解析：geometry_ref（face_anchors 属性快照 / 面/边/孔心）→ NX Face/Edge/Point（面映射算法见本文件附 A 注记与 nx2406-install-index.md §2）
 ```
 
 映射分层：
@@ -549,7 +549,7 @@ CAPP Plan (JSON, autocam-plan.schema.json)
 | 多轴 | `multi_axis_rough` / `multi_axis_wall_finish` / `multi_axis_deburr` | `MULTI_AXIS_ROUGHING` / `MULTI_AXIS_WALL_FINISHING` / `MULTI_AXIS_DEBURRING` |
 | 其他 | `wedm` / `additive_planar` / `additive_rotary` / `probe` / `machine_control` / `user_defined` | `WEDM_OPERATION` / `PLANAR_ADDITIVE_DEPOSIT` / `ROTARY_ADDITIVE_DEPOSIT` / `ON_MACHINE_PROBING` / `MILL_MACHINE_CONTROL` / `MILL_USER_DEFINED` |
 
-> 保留 `feature_type`（AP224 15 类）作为**特征层分类**不变；`operation_type` 升格为**工序层分类**，两者通过 workingstep 关联。特征→工序的映射规则继续沿用 [capp-operation-mapping-table.md](../core/capp-operation-mapping-table.md)。
+> 保留 `feature_type`（AP224 15 类 + `geometry_group`）作为**特征层分类**不变；`operation_type` 升格为**工序层分类**，两者通过 workingstep 关联。特征→工序映射规则见 [autocam-plan.schema.json](../schema/autocam-plan.schema.json) workingstep/feature 注记（原映射表属外部模块，未挂载）。
 
 ### 4.3 strategy 结构化字段（按 NX Builder 参数面反推）
 
@@ -695,7 +695,7 @@ geometry_ref: {
 - `anchor_point` 为兜底锚点：测试 Journal 等无 face 映射能力的消费端据此近似定位
 - 特征参数（直径/深度/螺距…）走 `feature.params`，不重复进 `geometry_ref`
 
-**几何解析链路**：Plan 里的 `face_id / edge_id` 是 OCCT 侧的遍历 ID，NX 侧需要通过**几何属性面映射**（质心+面积+类型+法向，见 [nx-feature-recognition-validation.md](../feature-ml/nx-feature-recognition-validation.md) §5）解析成 NX Tag 后传入 Builder；`anchor_point` 为无映射能力时的近似兜底。这是整个对接中唯一需要算法的环节。
+**几何解析链路**：当前 NX 闭环（面属性快照路径）中，Plan 的 `face_anchors`（质心+面积+类型+法向）由 NX 侧 **FaceResolver** 按属性匹配解析成 NX Tag（容差 0.01mm，命中不唯一写 `GEOM_AMBIGUOUS_MATCH` diagnostic）；云端 OCCT 路径的 `face_id / edge_id` 为预留表示，接入时走同一属性匹配；`anchor_point` 为无映射能力时的近似兜底。这是整个对接中唯一需要算法的环节（算法规格随 PlanComparer 首版校准后固化）。
 
 ### 4.7 setup 补 MCS 与机床
 
@@ -757,7 +757,7 @@ diagnostics[]   (info/warning/error)
 
 | # | 风险 | 说明 | 缓解 |
 | :--- | :--- | :--- | :--- |
-| 1 | **几何映射鸿沟** | Plan 的 OCCT 面/边 ID 与 NX Parasolid Tag 无共享标识，需几何属性匹配 | 质心+面积+类型+法向面映射（[nx-feature-recognition-validation.md](../feature-ml/nx-feature-recognition-validation.md) §5），容差 0.01mm |
+| 1 | **几何映射鸿沟** | 跨文件的面无共享标识（NX Tag / OCCT ID / 重建后新 Tag 均不同），需几何属性匹配 | 质心+面积+类型+法向属性匹配（face_anchors，容差 0.01mm），命中不唯一写 diagnostic；当前 NX 闭环先跑通 NX↔NX，OCCT 接入时复用同算法 |
 | 2 | **STEP 哑体** | 导入 STEP 无参数化特征树，AFR 的 Parametric 模式失效 | 用 Workpiece 识别模式；CAPP 侧以 B-Rep 特征输出为准 |
 | 3 | **CAM 会话前置** | 每个 .prt 需要 CAMSetup；空 Part 要先 `CreateCamSetup()` + 建模板组 | 插件封装"模板化初始化"（预置 MACHINE/METHOD 模板） |
 | 4 | **Inheritable 继承语义** | Builder 参数不设置时继承父组/方法组默认值，Plan 缺字段可能导致"结果和预期不同" | Mapper 显式填充关键参数；校验报告回读实际值。另注意**属性取值四形态混合**（附 A.1）——导出回读与导入写入必须按形态分支，不能统一 `.Value` |
