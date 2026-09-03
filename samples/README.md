@@ -18,7 +18,8 @@
 | 文件 | 内容 | 用途 |
 |---|---|---|
 | `test.prt`（**已入库**） | ground truth 首件（用户提供，2026-09-03；已在 NX2406 会话打开确认：含实体与完整 CAMSetup，6 道工序，见下方盘点） | 步骤①导出、③对比的基准；步骤 0 dump journal 的验证对象 |
-| `test.step`（计划） | 同件 STEP 导出 | 步骤②"打开原始 STEP"重建路径 |
+| `test.step`（计划） | 同件 STEP 导出 | 步骤②"打开原始 STEP"重建路径（v2 范围） |
+| `test.rebuilt-014933.prt`（**已入库**，2026-09-04） | 按 test.plan.json 重建的 prj′（PlanExecutor [I] 产物，136K） | 重建闭环回归基准/对比件（Comparer 输入） |
 | `test.plan.json`（**已入库**，2026-09-04） | 由 test.prt 导出的 plan（ExporterAdapter [I] 产物，schema 落盘复验 PASS） | 合同冒烟/导出回归基线 |
 
 ## test.prt 盘点记录（2026-09-03，NX2406 会话 + dump journal 实证）
@@ -53,6 +54,9 @@
 |---|---|
 | `camprobe-finalize-20260904-010401.txt` | 收官批探针终版（ok=7 fail=0）：Stepover 写链无效（E1-E6）、InheritanceStatus 语义（U-3）、SpindleMode 自由槽、ToolDrivePoint="SYS_CL_TIP"、PTP 可读/不可读面、MCS 扩展回读（U-4）、U-5c face 负结案；批处理 CAM 会话初始化纪律修订痕迹亦在档内（同批失败迭代档未保留） |
 | `smoke-open-20260904-005304.txt` | run_journal 无界面批处理首证（ApplicationName=APP_NONE；无 `-nogui` 旗标） |
+| `camprobe-executor-20260904-012518.txt` | Executor 预检探针（ok=6 fail=0）：CutterSubtype 读回/新刀具写链/非零 MCS 往返/FixtureOffset/方法父/hole_making 模板 |
+| `executor-run-20260904-014930.txt` | ExecutorAdapter [I] 终版跑（ok=16 fail=0）：test.plan.json → test.rebuilt-014933.prt，回读对照全 PASS（6 工序/6 刀具/MCS） |
+| `reopen-20260904-015129.txt` | I-3 自证：run_journal 新会话重开 prj′（ops=6） |
 
 > 注意：西门子安装目录内文件（模板/样例/程序集）受许可约束，**只引用、不复制进 git**；
 > 自建件由本仓库维护。

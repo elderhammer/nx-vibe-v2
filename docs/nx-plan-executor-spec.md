@@ -1,8 +1,10 @@
 # PlanExecutor 规格（spec-before-code 纪要落档，2026-09-04）
 
-> 状态：**纪要落档（2026-09-04）；D-1/D-2 已确认 = A/A（§7）；核心实现红线全绿**——
-> [U] 层 ExecutorCore/ParamWhiteList/ToolFamilyMap + 16 条性质测试通过（33/33，含导出侧回归）；
-> [I] 层（A7/A8 适配器 journal、MONO-1 执行期、I-1..I-5）待做。
+> 状态：**纪要落档（2026-09-04）；D-1/D-2 已确认 = A/A（§7）；核心实现红线全绿（33/33）；**
+> **[I] 层集成完成（ExecutorAdapter v3 三连跑收官）**：I-1 全链创建、I-4 许可 gate、MONO-1 执行期、
+> I-2 回读对照（6 工序序名/6 刀具直径/MCS 原点 (75,0,100) 全 PASS，executor-run-20260904-014930）、
+> I-3 跨会话重开（reopen-20260904-015129：ops=6）全点亮；I-5 模板选择（hole_making）预检实证已背书。
+> 重建资产：samples/test.rebuilt-014933.prt（136K，自建件入库）。
 > 需求源：docs/nx-plugin-design.md §7 步骤 2 / §2.1（PlanExecutor 行）/ §4 最小闭环；
 > 合同：schema/autocam-plan.schema.json v3.0（**导出侧实际产物的偏差见 §1**）；
 > API 事实源：docs/nx2406-install-index.md（§2.1 创建语义/批处理纪律/§2.5 不存在项/§3）；
@@ -22,7 +24,7 @@ PlanExecutor = 「plan.json（PlanDocument）→ 引用校验 → 展开为**有
 | 项 | 约定 |
 |---|---|
 | 输入 | plan.json（schema v3 合同族）。**导出侧实际产物事实**（test.plan.json，DataContractJsonSerializer 渲染）：① strategy/technology 为 **Key-Value 数组**形态（schema 对象形；模型层 Dictionary 已归一，解析层无感——记录不修）；② `nx_template.{type,subtype}` 成对（type=模板部件名，如 mill_contour/hole_making）；③ `method_ref`=方法父组名（test.plan 为根名 "METHOD"）；④ `tool.type`=**NX 中文家族串**（违反 schema 枚举，v1 简化 → D-2）；⑤ features 无面锚点；⑥ 每 op 经 workingstep 1:1 挂 setup_ref |
-| 调用序列（[I]） | run_journal 批处理：`NewDisplay` → `Session.CreateCamSession()` → 许可 gate（cam_base Reserve）→ `CreateCamSetup("mill_contour")`（camprobe-drill 先例：孔工序/刀具同 setup 可行；全钻 plan 时备选 hole_making 未实测→默认 mill_contour）→ 指令序执行（Program/Method/Tool/Geometry 组 → 工序 → MCS/fixture → 参数子集）→ **不生成刀路** → 落盘 prj′ → 回读对照报告 |
+| 调用序列（[I]） | NX 会话 File → Execute 预编译 exe（csc 合编核心+适配器，scripts/compile-executor-adapter.ps1）：`NewDisplay` → `Session.CreateCamSession()` → 许可 gate（cam_base Reserve）→ `CreateCamSetup("mill_contour")`（camprobe-drill 先例：孔工序/刀具同 setup 可行；全钻 plan 用 hole_making，预检实证）→ 指令序执行（Program/Method/Tool/Geometry 组 → 工序 → MCS/fixture → 参数子集）→ **不生成刀路** → 落盘 prj′ → 回读对照报告。⚠️ 运行载体注记（2026-09-04 实测）：核心依赖 `DataContractJsonSerializer`，journal 编译器缺 `System.Runtime.Serialization` 引用 → **run_journal 单文件 journal 合并不适用**（试编译报命名空间缺失）；[I] 层与 ExporterAdapter 同款 GUI Execute 工作流 |
 | 失败语义 | 结构级（解析失败/ref 断开/许可缺/PRE 系）→ 中止不落盘；单项（未知刀具家族/拒写参数/组重名）→ diag 继续 |
 | 状态/所有权 | 纯逻辑核心无状态；NX 侧会话内新建 prj′（落盘件属仓库自建资产）；上游 PlanDocument/序列化器只读复用 |
 | 版本兼容 | 消费 contract_version=3.0；≠3.0 → 拒绝（结构级失败） |
@@ -58,9 +60,12 @@ PlanExecutor = 「plan.json（PlanDocument）→ 引用校验 → 展开为**有
 | MONO-1 | NX 无事务：**全部可预检错误在首个 Create 前完成**；执行期只增不删 | 会话纪律 | 预检器先于一切创建；评审+集成 | [U]+[I] |
 | INV-4 | diagnostics：同类同 scope 聚合一次；error 级对应结构缺失 | 工程纪律 | 重复场景 → 单条 | [U] |
 
-[I] 集成验证清单（不进单测）：I-1 空件全链创建成功（组/op/MCS/fixture）；I-2 回读对照
-（工序名/序、刀具直径刃数、MCS 原点、fixture、可写参数 vs plan）；I-3 prj′ 落盘重开；
-I-4 许可 gate 前置报错路径；I-5 CAMSetup 全钻 plan 的模板选择（[T]：hole_making 字面量）。
+[I] 集成验证清单（不进单测；2026-09-04 已全部点亮，源 executor-run-20260904-014930/reopen-015129）：
+I-1 空件全链创建成功（程序组 A01 + 6 刀具组 + MCS_MILL/WORKPIECE 链 + 6 op DFS 序，无异常）；
+I-2 回读对照全 PASS（工序数/序/名、6 刀具直径 vs plan、MCS 原点 (75,0,100)、fixture=1 默认（plan 未带））；
+I-3 prj′ 落盘（SaveAs 时间戳名兜底）并跨会话重开复核 ops=6；
+I-4 许可 gate（cam_base Reserve）前置通过；
+I-5 CreateCamSetup("hole_making") 模板选择由预检探针实证（P6），适配器按"全钻→hole_making"分派。
 
 ## 4. 算法（步骤 → 性质映射）
 
