@@ -62,7 +62,7 @@
         {
             "operation_id": "OP-001",
             "operation_type": "mill_cavity",
-            "nx_template": { "type": "CAVITY_MILL", "subtype": "" },
+            "nx_template": { "type": "mill_contour", "subtype": "CAVITY_MILL" },
             "tool_ref": "T-001",
             "method_ref": "MILL_ROUGH",
             "strategy": {

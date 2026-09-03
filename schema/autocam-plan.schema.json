@@ -3,7 +3,7 @@
     "$id": "https://autocam.local/schema/autocam-plan.schema.json",
     "title": "Autocam Plan (v3) — NX 双向验证闭环合同",
     "description": "NX 插件三步闭环（导出 plan.json → 按 plan 重建 → 对比偏差）共用合同。ground truth 采集（PlanExporter）、重建（PlanExecutor）、偏差计算（PlanComparer）三方读写同一实例；plan 是意图层（工艺决策），NX Builder 是参数层（CAM 执行）。",
-    "$comment": "本地口径：docs/nx-plugin-design.md §5 与 nxopen-research.md §4.9（字段清单）+ docs/nxopen-research.md §4.3-4.7 与附 A（NX2406 实证的枚举/形态）。约定：1) 枚举值为 plan 层规范形式（大写 + 下划线），NX 侧 Mapper 负责映射到 NXOpen 枚举（如 FOLLOW_PART→CutPatternBuilder.Types.FollowPart）；2) nx_template 保留 NX 原串（typeName 字面量未实测，不做枚举约束）；3) 结构对象（mcs/nx_template/geometry_ref/workplan 节点等）禁多余字段，策略/技术/参数对象允许扩展字段（后续增强字段逐步入档）；4) 特征层双路径：当前闭环（NX 插件 导出→重建→对比）以 face_anchors（面属性快照）为准——导出侧从 NX 工序关联几何生成，重建侧经 FaceResolver 属性匹配回 Tag；云端/STEP 路径（geometry.json 的 OCCT 遍历 ID）尚未挂载，face_ids/edge_ids 语义预留；5) feature_type 为本地口径（本仓库当前为合同唯一持有方），出现外部共享方时再对齐并递增 contract_version；6) $id 域名为占位（autocam.local），正式发布前替换或去域。",
+    "$comment": "本地口径：docs/nx-plugin-design.md §5 与 nxopen-research.md §4.9（字段清单）+ docs/nxopen-research.md §4.3-4.7 与附 A（NX2406 实证的枚举/形态）。约定：1) 枚举值为 plan 层规范形式（大写 + 下划线），NX 侧 Mapper 负责映射到 NXOpen 枚举（如 FOLLOW_PART→CutPatternBuilder.Types.FollowPart）；2) nx_template 保留 NX 原串对：type/subtype = **模板部件名 / 对象模板类型**（NX2406 实测，2026-09-03，见 nx2406-install-index.md §2.1；如 mill_contour/CAVITY_MILL，成对供 OperationCollection.Create 直用，空 subtype 非法）；3) 结构对象（mcs/nx_template/geometry_ref/workplan 节点等）禁多余字段，策略/技术/参数对象允许扩展字段（后续增强字段逐步入档）；4) 特征层双路径：当前闭环以 face_anchors（面属性快照）为准——重建侧经 FaceResolver 属性匹配回 Tag。**导出侧面级锚点受 U-5 实证限制**（NXOpen.Face / UFModl 无面质心/面积 API，2026-09-03 探针 camprobe-geom 结案）：首版导出为组级存在性 + anchor 兜底、face_anchors 留空并写 diagnostic；U-5b/U-5c 查证通过后回补。云端/STEP 路径（OCCT 遍历 ID）尚未挂载，face_ids/edge_ids 语义预留；5) feature_type 为本地口径（本仓库当前为合同唯一持有方），出现外部共享方时再对齐并递增 contract_version；6) $id 域名为占位（autocam.local），正式发布前替换或去域。",
     "type": "object",
     "additionalProperties": false,
     "required": [
@@ -297,9 +297,9 @@
                     "properties": {
                         "type": {
                             "type": "string",
-                            "description": "NX 模板类型名（如 CAVITY_MILL / DRILL）。NX2406 中 typeName 是模板类型串、字面量尚未实测 → 不做枚举；落地前按 nx2406-install-index.md §3 实测并回填 enum 候选"
+                            "description": "NX 模板部件名（2026-09-03 实证：OperationCollection.Create 的 typeName = 模板部件名，如 mill_contour；与 subtype 成对使用）"
                         },
-                        "subtype": { "type": "string", "description": "NX 模板子类型名" }
+                        "subtype": { "type": "string", "description": "NX 对象模板类型（Create 的 subtypeName，如 CAVITY_MILL / DRILLING；空串在 NX 侧非法，成对以 nx2406-install-index.md §2.1 为准）" }
                     }
                 },
                 "tool_ref": { "$ref": "#/definitions/id", "description": "指向 resources.tools[].tool_id" },

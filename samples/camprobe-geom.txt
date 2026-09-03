@@ -1,0 +1,18 @@
+== CamProbeGeom (U-5) ==
+time: 2026-09-03 23:43:38
+opened: test  CAMSetup=True
+
+== 工序: CAVITY_MILL ==
+  CreateBuilder 类型 = NXOpen.CAM.CavityMillingBuilder
+  Geometry(HoleBossGeom 存在?) = CiBuilder ok; HoleBossGeom=(null)
+  -- PartGeometry (腔铣部件几何) geo=有
+    GeometryList = sets=1 faces=0 others=1
+  -- CutAreaGeometry (切削区域几何) geo=有
+    GeometryList = sets=1 faces=13 others=0 | 取样: face type=22 pt=(75,-135.625,100) dir=(0,0,1) ; face type=22 pt=(75,-90.25,90) dir=(0,1,0) ; face type=22 pt=(75,-45.125,80) dir=(0,0,1)
+  CutRegionsData = regions=80  r0: area=36585.88 centroid=(75,-45.094,100.1)  r1: area=12076.68 centroid=(75,-10.577,99.801)  r2: area=12076.68 centroid=(75,-10.577,99.503)
+
+== 工序: 打点_COPY_COPY_COPY ==
+  CreateBuilder 类型 = NXOpen.CAM.PointToPointBuilder
+  Geometry(HoleBossGeom 存在?) = CiBuilder ok; HoleBossGeom=(null)
+  CreateCavityMillingBuilder 失败(可能非腔铣): 无法将类型为“NXOpen.CAM.PointToPointBuilder”的对象强制转换为类型“NXOpen.CAM.CavityMillingBuilder”。
+  CutRegionsData = regions=0
