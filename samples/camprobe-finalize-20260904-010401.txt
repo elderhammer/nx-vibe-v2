@@ -1,0 +1,208 @@
+== CamProbeFinalize v2 ==
+time: 2026-09-04 01:04:01
+Session: ApplicationName=APP_NONE  IsCamSessionInitialized=False
+
+== 阶段: S0 会话基线（批处理 CAM 会话可用性观测） ==
+  IsCamSessionInitialized=False  （无部件时 CreateCamSession 曾原生崩溃；有部件后再试，见 S1）
+
+== 阶段: S1 空 Part 写环境（顺序：建件→CAM 会话→CreateCamSetup） ==
+  Session.CreateCamSession() OK（建件后调用不崩；无件调用曾原生崩溃）
+  NewDisplay+CreateCamSetup OK, camReady=True
+  GetRoot(ProgramOrder)=NC_PROGRAM
+
+== 阶段: S2 Stepover 链路 + InheritanceStatus 语义 ==
+  -- E1 基线：type=PercentToolFlat + value=50
+  写前 StepoverType = PercentToolFlat
+  写前 PercentToolFlat.Value = 70
+  写前 PercentToolFlat.InheritanceStatus = False
+  OK   写 StepoverType=PercentToolFlat
+  OK   写 PercentToolFlat.Value=50
+  写后(未Commit) StepoverType = PercentToolFlat
+  写后(未Commit) PercentToolFlat.Value = 50
+  写后(未Commit) InheritanceStatus = False
+  Commit = ok
+  重开 StepoverType = PercentToolFlat
+  重开 PercentToolFlat.Value = 70
+  重开 PercentToolFlat.InheritanceStatus = False
+  重开 PartStock.InheritanceStatus(未写过=继承?) = True
+  重开 PartStock.Value(继承生效值?) = 0
+  -- E2 只写 PercentToolFlat.Value=50（不动 StepoverType）
+  写前 StepoverType = PercentToolFlat
+  OK   写 PercentToolFlat.Value=50
+  写后 StepoverType = PercentToolFlat
+  写后 InheritanceStatus = False
+  Commit = ok
+  重开 StepoverType = PercentToolFlat
+  重开 PercentToolFlat.Value = 70
+  重开 InheritanceStatus = False
+  -- E3 分数假设 value=0.5
+  OK   写 StepoverType=PercentToolFlat + Value=0.5
+  Commit = ok
+  重开 PercentToolFlat.Value = 70
+  -- E4 对照：PartStock=0.3 显式写（op1 上）
+  写前 PartStock.InheritanceStatus = True
+  OK   写 PartStock.Value=0.3
+  写后 InheritanceStatus = False
+  Commit = ok
+  重开 PartStock.Value = 0.3
+  重开 PartStock.InheritanceStatus = False
+  重开 FloorStock.InheritanceStatus(未写) = False
+  重开 FloorStock.Value(未写=继承生效值) = 1
+  -- E5 诊断：op1.BuilderProperties Stepover 键扫描
+    E1-op BuilderProperties 键扫描 = [Stepover#0] … , NumberAtFirstDirection : 0 , NumberAtSecondDirection : 0 , NumberOfStepovers : 0 , PercentOfDegression : 0 , ScallopBuilder :{ ExpressionString :  , Value : 0.01 , ValueIntent : PartUnits , InheritanceStatus : False , Tag : 161765 }, StepoverType : Constant , Tag : 161763 }, R… || [Stepover#1] …ValueIntent : PartUnits , InheritanceStatus : False , Tag : 161765 }, StepoverType : Constant , Tag : 161763 }, RangeType : Automatic , TopOffCriticalDepths : False , TopZc : 0 , Tag : 161762 }, TrimBoundary :{ BoundaryList :{ Length : 1 , Tag : 184437 }, Tag : 184436 }, Addition… || [Stepover#2] …Top , AvoidanceMethods :{ AvoidanceMethod : None , Tag : 161761 }, BndStepover :{ AdditionalPasses : 0 , Angular : 0 , ApplyOn : OnPlane , BlankContourNoLevels : 0 , DistanceBuilder :{ Intent : PartUnits , ExpressionString :  , Value : 15 , ValueIntent : PartUnits , InheritanceSt… || [PercentToolFlat#0] …condDirection : 0 , NumberOfStepovers : 0 , PercentOfDegression : 0 , PercentToolFlatBuilder :{ ExpressionString :  , Value : 70 , ValueIntent : PartUnits , InheritanceStatus : False , Tag : 161755 }, ScallopBuilder :{ ExpressionString :  , Value : 0.3 , ValueIntent : PartUnits ,… || [PercentToolFlat#1] …artUnits , InheritanceStatus : False , Tag : 161753 }, StepoverType : PercentToolFlat , Tag : 161751 }, CheckGeometry :{ GeometryList :{ Length : 1 , Tag : 96113 }, Topology :{ AngleTolerance : 6 , DistanceTolerance : 0.508 , Tag : 96123 }, Tag : 96112 }, CornerLoops : False , Cu… || [PercentToolFlat#2] …condDirection : 0 , NumberOfStepovers : 0 , PercentOfDegression : 0 , PercentToolFlatBuilder :{ ExpressionString :  , Value : 70 , ValueIntent : PartUnits , InheritanceStatus : False , Tag : 132211 }, ScallopBuilder :{ ExpressionString :  , Value : 0.3 , ValueIntent : PartUnits ,…
+  -- E6 替换通道：StepoverType=Constant + DistanceBuilder.Value=1.5
+  写前 StepoverType = PercentToolFlat
+  OK   写 type=Constant + DistanceBuilder.Value=1.5
+  写后(未Commit) DistanceBuilder.Value = 1.5
+  Commit = ok
+  重开 StepoverType = PercentToolFlat
+  重开 DistanceBuilder.Value = 15
+  重开 DistanceBuilder.InheritanceStatus = False
+
+== 阶段: S3 SpindleMode 数值编码 ==
+  -- S3 SpindleMode（新腔 op 默认 + 写入实验）
+  默认 SpindleModeBuilder.Value = 0
+  默认 SpindleRpmBuilder.Value = 1061
+  默认 SurfaceSpeedBuilder.Value = 100
+  默认 SpindleRpmToggle(int) = 1
+  默认 RetractSpeedToggle(int) = 0
+  OK   写 SpindleRpmBuilder.Value=6000
+  Commit = ok
+  rpm6000 后 SpindleModeBuilder.Value = 0
+  rpm6000 后 SpindleRpmBuilder.Value = 6000
+  rpm6000 后 SurfaceSpeedBuilder.Value = 100
+  rpm6000 后 SpindleRpmToggle = 1
+  rpm6000 后 SpindleRpm.InheritanceStatus = False
+  rpm6000 后 SpindleMode.InheritanceStatus = True
+  OK   写 SpindleModeBuilder.Value=0
+  Commit = ok
+  回读 mode=0 -> Value = 0
+    rpm = 1061
+    sfm = 100
+  OK   写 SpindleModeBuilder.Value=1
+  Commit = ok
+  回读 mode=1 -> Value = 1
+    rpm = 1061
+    sfm = 100
+  OK   写 SpindleModeBuilder.Value=2
+  Commit = ok
+  回读 mode=2 -> Value = 2
+    rpm = 1061
+    sfm = 100
+  OK   写 SpindleModeBuilder.Value=3
+  Commit = ok
+  回读 mode=3 -> Value = 3
+    rpm = 1061
+    sfm = 100
+  OK   写 SpindleModeBuilder.Value=4
+  Commit = ok
+  回读 mode=4 -> Value = 4
+    rpm = 1061
+    sfm = 100
+  OK   写 SpindleModeBuilder.Value=5
+  Commit = ok
+  回读 mode=5 -> Value = 5
+    rpm = 1061
+    sfm = 100
+  OK   写 SpindleModeBuilder.Value=6
+  Commit = ok
+  回读 mode=6 -> Value = 6
+    rpm = 1061
+    sfm = 100
+
+== 阶段: S4 ToolDrivePoint + CycleTable（DRILLING） ==
+  OK   Create (hole_making, DRILLING)
+  -- S4 ToolDrivePoint + CycleTable（新 DRILLING op）
+  默认 GetToolDrivePoint() = SYS_CL_TIP
+  CycleTable 类型 = NXOpen.CAM.Cycle
+    CycleType = Drill
+    Dwell = Off
+    AxialStepover.StepoverType = None
+    AxialStepover.InheritableDistance.Value = (null)
+  OK   SetToolDrivePoint("TIP")
+  Commit = ok
+    回读 GetToolDrivePoint() = TIP
+  OK   SetToolDrivePoint("tip")
+  Commit = ok
+    回读 GetToolDrivePoint() = tip
+  OK   SetToolDrivePoint("Tip")
+  Commit = ok
+    回读 GetToolDrivePoint() = Tip
+  OK   SetToolDrivePoint("Tool Tip")
+  Commit = ok
+    回读 GetToolDrivePoint() = Tool Tip
+  OK   SetToolDrivePoint("CENTER")
+  Commit = ok
+    回读 GetToolDrivePoint() = CENTER
+  OK   SetToolDrivePoint("Center")
+  Commit = ok
+    回读 GetToolDrivePoint() = Center
+  OK   SetToolDrivePoint("Tool Center")
+  Commit = ok
+    回读 GetToolDrivePoint() = Tool Center
+  OK   SetToolDrivePoint("tool_center")
+  Commit = ok
+    回读 GetToolDrivePoint() = tool_center
+
+== 阶段: S5 test.prt 读侧：PTP 参数面/属性/MCS 扩展回读 ==
+  -- 5a PTP 参数面: 打点_COPY_COPY_COPY
+    用户属性 用户属性清单 = NX 10.0.0.24 2026/09/03 16:01:42
+  TopSurface 非空 = 有
+  BottomSurface 非空 = 有
+  HoleDepth.Value = 0
+  HoleDepth.InheritanceStatus = True
+  HoleDepthType = Point
+  HoleAxisType = Vector
+  RetractDistance.Value = 0
+  SafeClearance.Value = 0
+  DrivePoint(int, MillOperationBuilder 级) = 0
+  CutParameters.PartStock.Value = 0
+  FeedsBuilder.SpindleRpmBuilder.Value = 3000
+  FeedsBuilder.SpindleModeBuilder.Value = 0
+  FeedsBuilder.FeedCutBuilder.Value = 80
+  FeedsBuilder.SpindleRpm.InheritanceStatus = False
+    BuilderProperties = {"BottomSurface":{"SurfaceOption":"None","ZcConstant":"0","Tag":"195876"},"TopSurface":{"SurfaceOption":"None","ZcConstant":"0","Tag":"195874"},"CutParameters":{"AcrossVoids":{"MinTraverseDistance":{"Intent":"PartUnits","ExpressionString":"","Value":"0","ValueIntent":"PartUnits","InheritanceStatus":"True","Tag":"196858"},"MotionType":"Follow","Tag":"196857"},"ActionWhenGouging":"Warning","AdjacentBlades":"UseBladeStock","AllowUndercutting":"False","ApplyToLastPass":"False","BladeStock":{"ExpressionString":"","Value":"0","ValueIntent":"PartUnits","InheritanceStatus":"True","Tag":"196323"},"BlankDistance":{"ExpressionString":"","Value":"0","ValueIntent":"PartUnits","InheritanceStatus":"True","Tag":"196316"},"BlankOverhang":{"Intent":"PartUnits","ExpressionString":"","Value":"2540","ValueInte…(len=21090)
+    PTP cycle 键 BuilderProperties 键扫描 = (无命中)
+  -- 5a PTP 参数面: 钻头G83_COPY_3_COPY_COPY_COPY_1
+    用户属性 用户属性清单 = NX 10.0.0.24 2026/09/03 17:35:46
+  TopSurface 非空 = 有
+  BottomSurface 非空 = 有
+  HoleDepth.Value = 0
+  HoleDepth.InheritanceStatus = True
+  HoleDepthType = Point
+  HoleAxisType = Vector
+  RetractDistance.Value = 0
+  SafeClearance.Value = 0
+  DrivePoint(int, MillOperationBuilder 级) = 0
+  CutParameters.PartStock.Value = 0
+  FeedsBuilder.SpindleRpmBuilder.Value = 500
+  FeedsBuilder.SpindleModeBuilder.Value = 0
+  FeedsBuilder.FeedCutBuilder.Value = 35
+  FeedsBuilder.SpindleRpm.InheritanceStatus = False
+    BuilderProperties = {"BottomSurface":{"SurfaceOption":"None","ZcConstant":"0","Tag":"195876"},"TopSurface":{"SurfaceOption":"None","ZcConstant":"0","Tag":"195874"},"CutParameters":{"AcrossVoids":{"MinTraverseDistance":{"Intent":"PartUnits","ExpressionString":"","Value":"0","ValueIntent":"PartUnits","InheritanceStatus":"True","Tag":"196858"},"MotionType":"Follow","Tag":"196857"},"ActionWhenGouging":"Warning","AdjacentBlades":"UseBladeStock","AllowUndercutting":"False","ApplyToLastPass":"False","BladeStock":{"ExpressionString":"","Value":"0","ValueIntent":"PartUnits","InheritanceStatus":"True","Tag":"196323"},"BlankDistance":{"ExpressionString":"","Value":"0","ValueIntent":"PartUnits","InheritanceStatus":"True","Tag":"196316"},"BlankOverhang":{"Intent":"PartUnits","ExpressionString":"","Value":"2540","ValueInte…(len=21090)
+    PTP cycle 键 BuilderProperties 键扫描 = (无命中)
+  -- 5b 腔对照: CAVITY_MILL
+    用户属性 用户属性清单 = NX 10.0.0.24 2026/09/03 16:01:30 | Recommended for removing large volumes of material on mold cavities and cores, dies, castings, and forgings. | Part and blank geometry must be defined.  | Roughs a contoured shape by removing material in planar cut levels normal to a fixed tool axis.  | Cavity Mill | $UGII_CAM_TEMPLATE_IMAGE_DIR/oper_cavity_mill.bmp
+    BuilderProperties = {"BlankGeometry":{"GeometryList":{"Length":"1","Tag":"161784"},"Topology":{"AngleTolerance":"6","DistanceTolerance":"0.508","Tag":"96110"},"Tag":"161783"},"CutLevel":{"CutLevelType":"Constant","DistanceBelow":{"Intent":"ToolDep","ExpressionString":"","Value":"0","ValueIntent":"Function","InheritanceStatus":"False","Tag":"161769"},"GlobalDepthPerCut":{"AdditionalPasses":"0","Angular":"0","ApplyOn":"OnPlane","BlankContourNoLevels":"0","DistanceBuilder":{"Intent":"PartUnits","ExpressionString":"","Value":"1","ValueIntent":"PartUnits","InheritanceStatus":"False","Tag":"161764"},"MaximumAverage":"0","MinimumAverage":"0","NumberAtFirstDirection":"0","NumberAtSecondDirection":"0","NumberOfStepovers":"0","PercentOfDegression":"0","ScallopBuilder":{"ExpressionString":"","Value":"0.01","ValueIntent"…(len=40559)
+  SpindleModeBuilder.Value(真实值) = 0
+  SpindleRpmBuilder.Value(真实值) = 2400
+  SpindleRpmToggle = 1
+  SpindleRpm.InheritanceStatus = False
+    腔 Stepover/深度 键 BuilderProperties 键扫描 = [Stepover#0] … , NumberAtFirstDirection : 0 , NumberAtSecondDirection : 0 , NumberOfStepovers : 0 , PercentOfDegression : 0 , ScallopBuilder :{ ExpressionString :  , Value : 0.01 , ValueIntent : PartUnits , InheritanceStatus : False , Tag : 161765 }, StepoverType : Constant , Tag : 161763 }, R… || [Stepover#1] …ValueIntent : PartUnits , InheritanceStatus : False , Tag : 161765 }, StepoverType : Constant , Tag : 161763 }, RangeType : Automatic , TopOffCriticalDepths : False , TopZc : 0 , Tag : 161762 }, TrimBoundary :{ BoundaryList :{ Length : 1 , Tag : 184437 }, Tag : 184436 }, Addition… || [Stepover#2] …Top , AvoidanceMethods :{ AvoidanceMethod : None , Tag : 161761 }, BndStepover :{ AdditionalPasses : 0 , Angular : 0 , ApplyOn : OnPlane , BlankContourNoLevels : 0 , DistanceBuilder :{ Intent : PartUnits , ExpressionString :  , Value : 15 , ValueIntent : PartUnits , InheritanceSt… || [PercentToolFlat#0] …condDirection : 0 , NumberOfStepovers : 0 , PercentOfDegression : 0 , PercentToolFlatBuilder :{ ExpressionString :  , Value : 70 , ValueIntent : PartUnits , InheritanceStatus : False , Tag : 161755 }, ScallopBuilder :{ ExpressionString :  , Value : 0.3 , ValueIntent : PartUnits ,… || [PercentToolFlat#1] …artUnits , InheritanceStatus : False , Tag : 161753 }, StepoverType : PercentToolFlat , Tag : 161751 }, CheckGeometry :{ GeometryList :{ Length : 1 , Tag : 96113 }, Topology :{ AngleTolerance : 6 , DistanceTolerance : 0.508 , Tag : 96123 }, Tag : 96112 }, CornerLoops : False , Cu… || [PercentToolFlat#2] …condDirection : 0 , NumberOfStepovers : 0 , PercentOfDegression : 0 , PercentToolFlatBuilder :{ ExpressionString :  , Value : 70 , ValueIntent : PartUnits , InheritanceStatus : False , Tag : 132211 }, ScallopBuilder :{ ExpressionString :  , Value : 0.3 , ValueIntent : PartUnits ,… || [CutLevel#0] …ance : 6 , DistanceTolerance : 0.508 , Tag : 96110 }, Tag : 161783 }, CutLevel :{ CutLevelType : Constant , DistanceBelow :{ Intent : ToolDep , ExpressionString :  , Value : 0 , ValueIntent : Function , InheritanceStatus : False , Tag : 161769 }, GlobalDepthPerCut :{ AdditionalPa… || [CutLevel#1] …istanceTolerance : 0.508 , Tag : 96110 }, Tag : 161783 }, CutLevel :{ CutLevelType : Constant , DistanceBelow :{ Intent : ToolDep , ExpressionString :  , Value : 0 , ValueIntent : Function , InheritanceStatus : False , Tag : 161769 }, GlobalDepthPerCut :{ AdditionalPasses : 0 , A… || [DepthPerCut#0] …Intent : Function , InheritanceStatus : False , Tag : 161769 }, GlobalDepthPerCut :{ AdditionalPasses : 0 , Angular : 0 , ApplyOn : OnPlane , BlankContourNoLevels : 0 , DistanceBuilder :{ Intent : PartUnits , ExpressionString :  , Value : 1 , ValueIntent : PartUnits , Inheritance… || [DepthPerCut#1] …utPattern : FollowPart , Tag : 161757 }, DeferCuttingStatus : False , DepthPerCut :{ ExpressionString :  , Value : 0 , ValueIntent : PartUnits , InheritanceStatus : True , Tag : 161758 }, IslandCleanup : False , NonCuttingBuilder :{ ApplySafetyToDirect : False , ClearanceBuilder … || [DepthPerCut#2] …Limit : 1000 , FeedRateRange : Percent , LengthInterval : 10 , NominalDepthPerCut : 6 , NominalStepover : 15 , OptimizationMethod : MaterialRemovalRate , OptimizeNonCuttingFeedRate : False , PercentLowerLimit : 50 , PercentUpperLimit : 200 , Tag : 40169 }, OptimizeFeedRateWhenGen…
+  -- 5c MCS 扩展回读
+  FixtureOffset.Value = 1
+  FixtureOffset.InheritanceStatus = False
+  TransferClearance.ClearanceType = Automatic
+  TransferClearance.SafeDistance = 30
+  TransferClearance.Radius = 0
+  安全平面 PlaneXform(Origin/Normal) = (PlaneXform null)
+  Mcs 原点 = (75,0,100)
+  GetLowerLimitMode() = None
+  LowerLimitPlane = (null)
+
+== 阶段: S6 U-5c AskMassProps3d(face) 可行性 ==
+  -- S6 AskMassProps3d：face vs body 对照
+  AskMassProps3d(单 face) 调用 = 按预期拒绝: NXException Unknown feature type
+  AskMassProps3d(body 正对照) = area=0.168 volume=0.003 COF=(24.514,0.075,-0.062)
+== 汇总 ok=7 fail=0 ==
+== 结束 ==

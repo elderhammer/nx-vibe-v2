@@ -182,7 +182,7 @@ CAM.PlanarMillingBuilder builder = ops.CreatePlanarMillingBuilder(operation);
 builder.CutParameters.PartStock.Value     = 0.3;  // 侧壁余量（InheritableDoubleBuilder → .Value）
 builder.CutParameters.FloorStock.Value    = 0.3;  // 底面余量
 builder.CutParameters.Stepover.StepoverType = CAM.StepoverBuilder.StepoverTypes.PercentToolFlat;
-builder.CutParameters.Stepover.PercentToolFlatBuilder.Value = 50.0;  // 50% 刀径（取值链路待实测）
+builder.CutParameters.Stepover.PercentToolFlatBuilder.Value = 50.0;  // 50% 刀径（2026-09-04 实测：该链 commit 写无效，见索引 §2.1）
 builder.DepthPerCut.Value                  = 2.0;  // 每刀深度：在 PlanarOperationBuilder 上（非 CutParameters）
 builder.CutParameters.CutOrder             = CAM.CutParametersCutOrderTypes.LevelFirst; // 直接枚举，无 .Value
 builder.CutParameters.CutDirection.Type    = CAM.CutDirection.Types.Climb; // 类+嵌套枚举 .Type（无 Up，逆铣=Conventional）
@@ -268,7 +268,7 @@ Builder 继承链：`OperationBuilder → MillOperationBuilder → PlanarOperati
 | 参数 | 说明 | NX2406 取值形态（实证） |
 | :--- | :--- | :--- |
 | `PartStock` / `FloorStock` / `WallStock` | 侧壁/底面/壁余量 (mm)。`PartStock` 在基类 `CutParameters` 上 | `InheritableDoubleBuilder` → `.Value` |
-| `Stepover` | 步距。类型 `StepoverBuilder`，**无 `Percent` 属性** | `StepoverType`（如 `StepoverTypes.PercentToolFlat`）+ 对应子 Builder（`PercentToolFlatBuilder.Value`），链路待实测（附 B） |
+| `Stepover` | 步距。类型 `StepoverBuilder`，**无 `Percent` 属性** | `StepoverType`（22 值全枚举见索引 §2.3）+ 对应子 Builder（`PercentToolFlatBuilder.Value`）；**2026-09-04 实测：整链 commit 写入静默还原模板默认（读可、写无效）**，重建侧步距映射另寻通道（spec U-6，见索引 §2.1） |
 | `CutOrder` | 切削顺序。**直接枚举赋值** | `CutOrder = CAM.CutParametersCutOrderTypes.LevelFirst`（取值 `LevelFirst`/`DepthFirst`/`DepthFirstAlways`，**无 `AreaFirst`**） |
 | `CutDirection` | 顺逆铣。**类 + 嵌套枚举** | `CutDirection.Type = CAM.CutDirection.Types.Climb`（无 `Up`；逆铣=`Conventional`） |
 | `FinishPasses` | 精加工刀数。类型 `FinishPassesBuilder` | `.NumberOfFinishPasses`（int 直赋）+ `.FinishStepoverBuilder` |
@@ -284,7 +284,7 @@ Builder 继承链：`OperationBuilder → MillOperationBuilder → PlanarOperati
 | :--- | :--- |
 | `SpindleRpmBuilder` | 主轴转速 (rpm) |
 | `SurfaceSpeedBuilder` | 表面速度 (m/min)（与 rpm 二选一） |
-| `SpindleModeBuilder` | 主轴模式（RPM / SFM / MMPM）。**2406 实测返回 `InheritableIntBuilder`（非枚举）**，模式以数值编码，映射待实测 |
+| `SpindleModeBuilder` | 主轴模式（RPM / SFM / MMPM）。**2406 实测为 int 自由槽**：写 0..6 均原样持久、rpm/sfm 零联动（rpm=6000 持久而 mode 仍 0）；常态 RPM 场景 mode=0 + `SpindleRpmToggle`=1（2026-09-04，见索引 §2.1） |
 | `FeedCutBuilder` | 切削进给 (mm/min 或 mm/rev) |
 | `FeedApproachBuilder` / `FeedEngageBuilder` / `FeedDepartureBuilder` | 逼近/进刀/退刀进给 |
 | `RetractSpeed` | 退刀速度 |
@@ -312,7 +312,7 @@ Builder 继承链：`OperationBuilder → MillOperationBuilder → PlanarOperati
 | `RetractOutputMode` | 退刀输出模式 | 嵌套枚举 `RetractOutputModeType`：`ClearanceOnly\|ClearanceInitial\|Always` |
 | `IntersectionStrategy` | 与已加工特征相交策略 | 嵌套枚举 `IntersectionStrategyType`：`None\|Part\|Ipw\|IpwAndPart` |
 | `CrossOverDistance` | 越程距离 | `InheritableToolDepBuilder`（.NET 属性为 `CrossOverDistance`） |
-| `ToolDrivePoint` | 刀具驱动点 | **方法对 `GetToolDrivePoint()/SetToolDrivePoint(string)`，参数为 String**（非枚举属性），取值集合待实测 |
+| `ToolDrivePoint` | 刀具驱动点 | **方法对 `GetToolDrivePoint()/SetToolDrivePoint(string)`**；实测默认 `"SYS_CL_TIP"`，setter 任意串原样回读、无校验无 canonicalize（2026-09-04）→ 取值集合程序化不可枚举，映射侧透传/省略（见索引 §2.1） |
 | `CutParameters` / `CuttingParameters` | **两属性并存**：`CutParameters` → `HoleDrillingCutParameters`；`CuttingParameters` → `HoleMachiningCutParameters`（后者即文档所说"cuttingParameters"） | 只读属性 |
 
 **HoleMachiningBuilder 完整参数面（NX2406）**：`CuttingParameters`（→`HoleMachiningCutParameters`）/ `PredefinedDepth`（类型 `DimensionRule`，配合 `HoleDepthType`、`HoleDepth`）/ `CycleTable`（类型 `CAM.Cycle`；**无 `Cycle` 属性**）/ `CollisionCheck`（bool 直赋）/ `NonCuttingBuilder`（孔加工为 `NcmHoleMachining`，非 `NcmPlanarBuilder`）/ `Geometry`（`GeometryCiBuilder`）/ `FeedsBuilder`。
@@ -510,7 +510,7 @@ CAPP Plan (JSON, autocam-plan.schema.json)
   └─▶ NXPlugin Adapter（Mapper）
        ├─ 1:1 直填：tool 直径/刃长/螺距/刃数、深度、rpm/进给、余量
        ├─ 枚举映射：cut_pattern / cut_order / cut_direction / cycle → NX 枚举
-       ├─ 派生计算：stepover% → StepoverBuilder（StepoverType=PercentToolFlat + PercentToolFlatBuilder.Value，链路待实测）；安全平面 → ClearanceType=Plane + SafeDistance
+       ├─ 派生计算：stepover% → StepoverBuilder（StepoverType=PercentToolFlat + PercentToolFlatBuilder.Value；⚠️ 2026-09-04 实测整链 commit 写无效 → 落点待定，spec U-6）；安全平面 → ClearanceType=Plane + SafeDistance
        └─ 几何解析：geometry_ref（face_anchors 属性快照 / 面/边/孔心）→ NX Face/Edge/Point（面映射算法见本文件附 A 注记与 nx2406-install-index.md §2）
 ```
 
@@ -564,7 +564,7 @@ CAPP Plan (JSON, autocam-plan.schema.json)
 | `cut_order` | 枚举 | `MillCutParameters.CutOrder` = **`CutParametersCutOrderTypes`**（`LevelFirst`/`DepthFirst`/`DepthFirstAlways`，无 AreaFirst；直接枚举赋值） | 建议 |
 | `cut_direction` | 枚举 | `MillCutParameters.CutDirection.Type` = `CutDirection.Types`（`Climb`/`Conventional`/`Forward`/`Reverse`/`Mixed`；无 Up） | 建议 |
 | `depth_per_cut` | number(mm) | `PlanarOperationBuilder.DepthPerCut.Value` / `CavityMillingBuilder.DepthPerCut.Value`（**不在 MillCutParameters 上**） | 粗铣必填 |
-| `stepover` | number | `MillCutParameters.Stepover`（`StepoverBuilder`：`StepoverType` + 对应子 Builder，无 Percent；`50% 刀径` → `StepoverTypes.PercentToolFlat` + `PercentToolFlatBuilder.Value`，链路待实测） | 粗铣必填 |
+| `stepover` | number | `MillCutParameters.Stepover`（`StepoverBuilder`：`StepoverType`（22 值见索引 §2.3）+ 对应子 Builder，无 Percent）；⚠️ **整链 commit 写无效**（2026-09-04 实测，读可写无效）→ 重建侧映射另寻通道或降级（spec U-6） | 粗铣必填 |
 | `finish_passes` | int | `MillCutParameters.FinishPasses.NumberOfFinishPasses`（int 直赋） | 建议 |
 | `multi_depth_cut` | bool | `MillCutParameters.MultiDepthCut.Toggle`（bool）+ `StepMethod`/`Increment`/`NumberOfPasses` | 粗铣建议 |
 | `part_stock` / `floor_stock` / `wall_stock` | number(mm) | `MillCutParameters.PartStock/FloorStock/WallStock`（`InheritableDoubleBuilder`→.Value；PartStock 在基类 `CutParameters`） | 建议 |
@@ -576,7 +576,7 @@ CAPP Plan (JSON, autocam-plan.schema.json)
 | `top_offset` | number(mm) | `HoleMachiningCutParameters.TopOffset`（类型 `VerticalPosition`） | 可选 |
 | `control_point_offset` | 枚举 | `HoleDrillingBuilder.ControlPointOffset`（`ControlPointOffsetType`：`None`/`Feature`/`Initial`；与 UI 术语对账） | 可选 |
 | `retract_output_mode` | 枚举 | `HoleDrillingBuilder.RetractOutputMode`（`RetractOutputModeType`：`ClearanceOnly`/`ClearanceInitial`/`Always`） | 可选 |
-| `tool_drive_point` | 枚举 | **方法对** `HoleDrillingBuilder.GetToolDrivePoint()/SetToolDrivePoint(string)`（取值集合待实测） | 可选 |
+| `tool_drive_point` | 枚举 | **方法对** `HoleDrillingBuilder.GetToolDrivePoint()/SetToolDrivePoint(string)`（实测默认 `"SYS_CL_TIP"`，setter 任意串原样回读无校验 → 透传/省略，见索引 §2.1） | 可选 |
 | `cross_over_distance` | number(mm) | `HoleDrillingBuilder.CrossOverDistance`（`InheritableToolDepBuilder`） | 可选 |
 | `turn_cut_region` | 枚举 | `RoughTurningBuilder` 切削区域（未逐项核对，落地前实测） | 车削必填 |
 | `non_cutting.approach` / `engage` / `retract` / `final` | 对象 | `NcmPlanarBuilder` EngageClosed/EngageOpen/RetractArea/RetractFinal（`NcmPlanarEngRetBuilder`：策略+距离+角度） | 可选 |
@@ -630,7 +630,7 @@ CAPP Plan (JSON, autocam-plan.schema.json)
 | :--- | :--- | :--- |
 | `spindle_rpm` | `FeedsBuilder.SpindleRpmBuilder.Value` | rpm 数值 |
 | `surface_speed` | `FeedsBuilder.SurfaceSpeedBuilder.Value` | m/min，与 rpm 二选一 |
-| `spindle_mode` | `FeedsBuilder.SpindleModeBuilder` | RPM / SFM / MMPM（2406 返回 `InheritableIntBuilder`，数值编码映射待实测） |
+| `spindle_mode` | `FeedsBuilder.SpindleModeBuilder` | RPM / SFM / MMPM（2406 实测为 **int 自由槽无模式语义**，常态 RPM 场景 mode=0 + SpindleRpmToggle=1 → 导出只取 rpm 值，勿导 mode 数值，见索引 §2.1） |
 | `feed_cut` | `FeedsBuilder.FeedCutBuilder.Value` | 切削进给（mm/min 或 mm/rev，由单位字段决定） |
 | `feed_approach` / `feed_engage` / `feed_departure` | `FeedApproachBuilder` / `FeedEngageBuilder` / `FeedDepartureBuilder` | 细分进给 |
 | `retract_speed` | `FeedsBuilder.RetractSpeed` | 退刀速度 |
@@ -805,12 +805,19 @@ diagnostics[]   (info/warning/error)
 - 每个成员 remarks 含 `License requirements: …` 与 `Created in NXxxxx`。
 - 实证：`BottomClearance` → "Created in NX2312.0.0"；操作/组创建 → `cam_base`；`CreateFeatureProcessBuilder` → `ug_holemaking`。
 
-## 附 B：后续验证计划（建议）
+## 附 B：后续验证计划（进度注记 2026-09-04：除步骤 4 外主体均已实测收官）
 
-1. 在 NX 2406 上用 `run_journal.exe -nogui` 跑通 3.2 的最小示例（建组 → Create → Builder 设参 → Commit → `GenerateToolPath`），确认本文 typeName/组模板类型串/Builder 名称与示例代码**全部可编译可运行**（重点核对 §3.2 标注"待实测"处）。
-2. 用 NX 自带模板部件验证从空 Part 建 CAMSetup 的初始化步骤：`Part.CreateCamSetup("mill_contour")`（模板在 `mach\resource\template_part\metric\mill_contour.prt` 等；**NX2406 无 `cam_general_mill.prt`**）。
-3. 按 4.2 扩展 `autocam-plan.schema.json` 的 `operation_type` 枚举并补充 `nx_template` / `strategy` / `technology` 子结构（枚举值按附 A.2 校准）。
-4. 在本仓库 `src/NXPlugins`（`Autocam.Plugins.sln`）实现 PlanMapper 原型，用 4.9 MVP 字段清单生成一条 `CAVITY_MILL` + 一条 `DRILL` 工序做端到端验证。
-5. 实测三处待验证取值：`Stepover` 常量百分比链路（`StepoverTypes.PercentToolFlat` + `PercentToolFlatBuilder.Value`）、`GetToolDrivePoint()/SetToolDrivePoint(string)` 的 string 取值集合、`SpindleModeBuilder` 数值编码到 RPM/SFM/MMPM 的映射。
-6. 确认 `CAMSetup.View.MachineMethod` 与 UI"加工方法视图"标签的对应关系，以及 `GetRoot(View)` 四根组下 Program/Tool/Method/Geometry 组的模板 typeName 实际取值。
-7. 用 XML remarks 许可注记实现一次许可探测原型（对比当前许可与成员 `License requirements:` 字符串），验证风险 #5 的缓解方案。
+1. ✅ 已在 `run_journal.exe`（无 `-nogui` 旗标，即无界面批处理）跑通最小闭环（建组 → Create →
+   Builder 设参 → Commit → 刀路），typeName/组模板对/Builder 名全部可编译可运行（camprobe-op/
+   drill/toolpath/finalize 系列）。批处理 CAM 会话初始化顺序纪律见 nx2406-install-index.md §2.1。
+2. ✅ `CreateCamSetup("mill_contour")` 空 Part 初始化实证（camwrite/camprobe-op：模板默认组
+   MILL_* 方法组/MCS_MILL/PROGRAM/GENERIC_MACHINE 已录）。
+3. ✅ schema 实证化（CONFLICT-1：nx_template 语义修正 + strategy/technology 结构按附 A.2 校准，
+   schema v3 落档）。
+4. ⏳ `src/NXPlugins` 实现：PlanExporter 纯逻辑核心 + [U] 单测全绿、[I] 适配器跑通 test.prt 导出
+   （见 spec）；**PlanExecutor（设计 §7 步骤 2）未开工**。
+5. ✅ 三处待验证取值实测收官（2026-09-04，camprobe-finalize-010401）：Stepover 链路 = **.NET 整链
+   commit 写无效（读可）**；ToolDrivePoint 默认 "SYS_CL_TIP"、setter 无校验；SpindleMode = int 自由槽
+   无模式语义 → 均入 nx2406-install-index.md §2.1。残余 U-6（Stepover 有效写入通道）见 spec §5。
+6. ✅ `GetRoot(View)` 四根组与 UI 标签对应 + 模板 typeName 实证（索引 §2.1）。
+7. ✅ 许可探测原型（camprobe-license.txt）：LicenseManager.Reserve 试错 + XML remarks 提取配方成立。

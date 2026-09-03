@@ -19,7 +19,7 @@
 |---|---|---|
 | `test.prt`（**已入库**） | ground truth 首件（用户提供，2026-09-03；已在 NX2406 会话打开确认：含实体与完整 CAMSetup，6 道工序，见下方盘点） | 步骤①导出、③对比的基准；步骤 0 dump journal 的验证对象 |
 | `test.step`（计划） | 同件 STEP 导出 | 步骤②"打开原始 STEP"重建路径 |
-| `test.plan.json`（计划） | 由 test.prt 导出的 plan（schema 校验 + 回归基线） | 合同冒烟/对比基准 |
+| `test.plan.json`（**已入库**，2026-09-04） | 由 test.prt 导出的 plan（ExporterAdapter [I] 产物，schema 落盘复验 PASS） | 合同冒烟/导出回归基线 |
 
 ## test.prt 盘点记录（2026-09-03，NX2406 会话 + dump journal 实证）
 
@@ -46,6 +46,13 @@
 4. 四视图 UI 与四根组（`GetRoot(View)`）一一对应实证通过（含 `MachineMethod` ↔ 加工方法视图）。
 
 **判定**：覆盖「铣 + 孔」最小口径，可作步骤①导出、③对比的 ground truth 首件。
+
+### 2026-09-04 批处理证据档（run_journal 无界面驱动，结论回填索引 §2.1/§3）
+
+| 文件 | 内容 |
+|---|---|
+| `camprobe-finalize-20260904-010401.txt` | 收官批探针终版（ok=7 fail=0）：Stepover 写链无效（E1-E6）、InheritanceStatus 语义（U-3）、SpindleMode 自由槽、ToolDrivePoint="SYS_CL_TIP"、PTP 可读/不可读面、MCS 扩展回读（U-4）、U-5c face 负结案；批处理 CAM 会话初始化纪律修订痕迹亦在档内（同批失败迭代档未保留） |
+| `smoke-open-20260904-005304.txt` | run_journal 无界面批处理首证（ApplicationName=APP_NONE；无 `-nogui` 旗标） |
 
 > 注意：西门子安装目录内文件（模板/样例/程序集）受许可约束，**只引用、不复制进 git**；
 > 自建件由本仓库维护。

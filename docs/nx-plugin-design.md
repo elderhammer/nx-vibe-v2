@@ -106,7 +106,7 @@
 
 - **SDK**：NXOpen for .NET（C# .NET Framework 4.8；2406 样例工程目标 v4.5，兼容）
 - **版本策略**：仅支持 NX 2406（决策②），不做旧版本兼容
-- **入口**：NXOpen `INXAddIn` 或 Journal（`run_journal.exe -nogui` 支持 CI 批处理三步；`run_journal.exe` 存在于 NXBIN，`-nogui` 参数需实测）
+- **入口**：NXOpen `INXAddIn` 或 Journal（`run_journal.exe <journal.cs>` 无界面批处理已实证（2026-09-04：帮助无 `-nogui` 旗标；批处理 CAM 会话需先建件再 `Session.CreateCamSession()`，纪律见 nx2406-install-index.md §2.1），支持 CI 批处理三步）
 - **建模对象**：`CAM.CAMSetup`（含 `CAMGroupCollection` → `NCGroupCollection`、`CAMOperationCollection` → `OperationCollection`；**无 `CAMSetupBuilder` 类**——NX2406 实证）。初始化：空 Part 先 `Part.CreateCamSetup(templateName)`（2406 模板如 `mill_contour`，见 nxopen-research 附 B）。
 
 ## 4. 测试路径（先于插件落地）

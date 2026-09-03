@@ -8,9 +8,9 @@
 
 PlanExporter 是「许可 gate → 只读单遍扫描（Tag 去重）→ 分型 Builder 生效值回读 → schema v3 校验 →
 原子落盘」的 NX 会话内转换器。参数回读可行性已实证（FloorStock 生效值可读）；风险重心在契约层面：
-nx_template 细分模板类型无法程序化读回（白名单 + 歧义降级，U-1）；面级锚点数值契约（质心+面积）无生产源
-（U-5 结案）→ 首版 features 走组级 + anchor 兜底。运行载体：Journal（csc 编译 exe → Execute → NX Open，
-复用 src/NXPlugins/Journal 纪律）。
+nx_template 细分模板类型无法程序化读回（白名单 + 歧义降级，U-1 加固结案）；面级锚点数值契约（质心+面积）无生产源
+（U-5/U-5c 双结案）→ 首版 features 走组级 + anchor 兜底。运行载体：Journal 源经 `run_journal.exe` 无界面
+批处理（2026-09-04 实证，无 `-nogui` 旗标；CAM 会话初始化顺序纪律见索引 §2.1）或交互 Execute。
 
 ## 1. 协议（外部边界）
 
@@ -64,7 +64,8 @@ A3 四根组扫描 + Tag 去重收集（程序顺序树为序）→ INV-5/MONO-2
 A4 逐 op 元信息：Name/UserName、四父链 → INV-4
 A5 nx_template 白名单匹配（表：模板对，见 A3 收集的 GetNameOfType 大类 → 候选对）→ POST-6/PRE-3
 A6 分型 Builder 回读：形态注册表（成员路径+形态类）驱动 → strategy/technology 字段；回读失败 → diag
-   → POST-3/POST-4；`InheritanceStatus` 标记（bool 语义待实测）暂不输出（增强候选）
+   → POST-3/POST-4；`InheritanceStatus` 语义已结案（§5 U-3：True=继承、模板默认常 False）——
+   首版不输出（字段来源标注为增强候选）
 A7 刀具组（NCGroup→Builder 读回直径/刃数等 MVP 字段）/ MCS（MillOrientGeomBuilder.Mcs 属性）/
    方法组名 → resources/setups/method_ref → [I]
 A8 workingsteps 1:1 生成；COPY 链展开为独立 operation 条目（name 保留 _COPY 后缀链），diag 记副本关系
@@ -76,23 +77,38 @@ A12 `.tmp` 写入 + rename；diagnostics 汇总写回 → POST-2/POST-5/INV-6
 
 ## 5. 实证结案与未决
 
-- **U-5 结案**（camprobe-geom.txt）：腔铣面级可枚举（CutAreaGeometry → 13 Face + UF 类型/点/法向），
-  但 NXOpen.Face / UFModl **无面质心/面积 API** → face_anchors 数值契约无生产源 → 首版不导出（POST/§2 已含）；
-  区域级通道（CutRegionsData 质心+面积真值，仅腔铣）记为增强候选。
-- **U-5b**（离线归档）：Face/UFModl 反射负结果（2026-09-03）；孔工序 PTP 旧模板面通道存储未知 → 继续未决。
-- **U-5c**（[T]）：`UFModl.AskMassProps3d(Tag[]{face}, …)` 对 face 对象能否给出面积/质心——唯一存活候选，单独实测。
-- **U-1**（[T] 残余）：操作细分模板对若能经内部模板属性读回则精修；当前决议 = 白名单 + PTP 默认
-  (hole_making, DRILLING) + W diagnostic（打点类定心钻语义偏差以 diag 记录，不静默）。
-- **U-3**（[T]）：`InheritableBuilder.InheritanceStatus : bool`（2406 反射实证存在）布尔语义待运行验证；
-  首版导出生效值、不打显式/继承标。
-- **U-4**（[I]）：刀具/MCS 参数回读集成验证（A7）。
+- **U-5 结案**（camprobe-geom.txt + camprobe-finalize-010401）：腔铣面级可枚举（CutAreaGeometry → 13 Face
+  + UF 类型/点/法向），但 NXOpen.Face / UFModl **无面质心/面积 API**：U-5c 实测
+  `UFModl.AskMassProps3d(Tag[]{face},…)` → NXException "Unknown feature type"（C 头 uf_modl.h 亦注明
+  objects 仅收 solid/sheet body；mass_props[47]/statistics[13]/acc_value[11] 尺寸坐实）；
+  body 正对照成功（area/vol/COF 真值）→ **face_anchors 数值契约无生产源正式钉死**，首版不导出
+  （POST/§2 已含）；区域级通道（CutRegionsData 质心+面积真值，仅腔铣）记为增强候选。
+- **U-5b 结案**：Face/UFModl 反射负结果（2026-09-03）+ U-5c 运行时负结果（2026-09-04）齐全；
+  PTP 孔工序面级通道随 U-1/PTP 结案（无公开通道，见下）。
+- **U-5c 结案**（负，2026-09-04）：见 U-5。
+- **U-1 维持（加固）**（2026-09-04）：细分模板类型读回三路负证据——GetNameOfType 大类不可用；
+  用户属性仅腔 op 含模板描述串（"Cavity Mill"+bmp 路径），PTP op 只有版本时间戳；
+  BuilderProperties JSON 无 cycle 键。决议维持：白名单 + PTP 默认 (hole_making, DRILLING) + W
+  diagnostic（打点/G83 细分偏差以 diag 记录，不静默）。PTP 导出上限 = 默认对 + Feeds/深度等
+  OperationBuilder 级字段（可读面清单见索引 §2.1）。
+- **U-3 结案**（2026-09-04）：`InheritanceStatus` 语义实测——True=读值来自继承链（未显式写）；
+  写 `.Value` 后变 False 且值持久；**模板默认值参数亦常为 False**（"有本地值"≠"用户改过"）。
+  首版决议不变：导出生效值；status 可作字段来源标注，但勿当"显式/继承"二分用。
+- **U-4 结案**（2026-09-04）：MCS 扩展回读收官——FixtureOffset=1（G54，显式）；安全平面该件
+  ClearanceType=Automatic/SafeDistance=30/PlaneXform=null/Radius=0（无显式平面 → 导出应输出
+  clearance 类型而非 null，见 §6 差异提示）；GetLowerLimitMode=None、LowerLimitPlane=null。
+  显式 Plane 型件几何可经 NcmClearanceBuilder.PlaneXform（Plane.Origin/Normal）读。
+- **U-6 新增**（[T] 残余）：Stepover **有效写入通道未明**——.NET `CutParameters.Stepover` 整链
+  commit 写入静默还原模板默认（E1-E6：写 50→70、Constant+1.5→PercentToolFlat/15；普通参数
+  PartStock 写入可靠），源 camprobe-finalize-010401。Executor 重建步距字段前需另寻通道
+  （BuilderProperties 解析/内部参数名/UI 录制对照等）或降级 diag。
 - **决策②**：COPY 链展开为独立条目 + diag（不引入 schema 副本字段）。
-- **决策③**：导出生效值（实测可读）；显式/继承打标后置。
+- **决策③**：导出生效值（实测可读）；显式/继承打标按 U-3 结案语义处理。
 - **决策⑤ 冲突已决**：几何首版砍至组级（CONFLICT-2，理由见 U-5 结案）。
 
 ## 6. 与设计文档差异提示
 
 - nx-plugin-design.md §2.1 导出行"按 NX Tag → 几何属性锚点（FaceResolver 反向）"受 U-5 限制：
-  首版不可完整实现（面级锚点无质心/面积生产源）；待 U-5c 或区域级增强后回补。该处后续随 Exporter
-  实现进展修订。
+  首版不可完整实现（面级锚点无质心/面积生产源；U-5c 实测负结案，2026-09-04）→ 面级回补仅剩
+  区域级（CutRegionsData，腔铣）增强候选。该处后续随 Exporter 实现进展修订。
 - nxopen-research.md §4.6/§5 风险 1 同理：FaceResolver 0.01mm 质心匹配协议的"导出侧"源待 U-5 后续。
