@@ -11,7 +11,7 @@
 - `NXPlugins.csproj`：类库工程，已引用 NXOpen / NXOpen.UF / NXOpen.Utilities
   （HintPath 指向 `$(NX_DIR)\NXBIN\managed\`，默认
   `C:\Program Files\Siemens\NX2406`；`Private=False`，**NXOpen 程序集不随仓库分发**）。
-- `Properties/AssemblyInfo.cs`：装配元数据（占位 0.1.0）。
+- `Properties/AssemblyInfo.cs`：装配元数据（初始骨架，v0.1.0）。
 
 ## 规划目录（按 nx-plugin-design.md §7 步骤 0-4 逐步填充）
 

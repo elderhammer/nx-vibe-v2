@@ -3,7 +3,7 @@
     "$id": "https://autocam.local/schema/autocam-plan.schema.json",
     "title": "Autocam Plan (v3) — NX 双向验证闭环合同",
     "description": "NX 插件三步闭环（导出 plan.json → 按 plan 重建 → 对比偏差）共用合同。ground truth 采集（PlanExporter）、重建（PlanExecutor）、偏差计算（PlanComparer）三方读写同一实例；plan 是意图层（工艺决策），NX Builder 是参数层（CAM 执行）。",
-    "$comment": "本地口径：docs/nx-plugin-design.md §4.9（字段清单）+ docs/nxopen-research.md §4.3-4.7 与附 A（NX2406 实证的枚举/形态）。约定：1) 枚举值为 plan 层规范形式（大写 + 下划线），NX 侧 Mapper 负责映射到 NXOpen 枚举（如 FOLLOW_PART→CutPatternBuilder.Types.FollowPart）；2) nx_template 保留 NX 原串（typeName 字面量未实测，不做枚举约束）；3) 结构对象（mcs/nx_template/geometry_ref/workplan 节点等）禁多余字段，策略/技术/参数对象允许扩展字段（后续增强字段逐步入档）；4) 特征层双路径：当前闭环（NX 插件 导出→重建→对比）以 face_anchors（面属性快照）为准——导出侧从 NX 工序关联几何生成，重建侧经 FaceResolver 属性匹配回 Tag；云端/STEP 路径（geometry.json 的 OCCT 遍历 ID）尚未挂载，face_ids/edge_ids 语义预留；5) feature_type 为本地口径（本仓库当前为合同唯一持有方），出现外部共享方时再对齐并递增 contract_version。",
+    "$comment": "本地口径：docs/nx-plugin-design.md §5 与 nxopen-research.md §4.9（字段清单）+ docs/nxopen-research.md §4.3-4.7 与附 A（NX2406 实证的枚举/形态）。约定：1) 枚举值为 plan 层规范形式（大写 + 下划线），NX 侧 Mapper 负责映射到 NXOpen 枚举（如 FOLLOW_PART→CutPatternBuilder.Types.FollowPart）；2) nx_template 保留 NX 原串（typeName 字面量未实测，不做枚举约束）；3) 结构对象（mcs/nx_template/geometry_ref/workplan 节点等）禁多余字段，策略/技术/参数对象允许扩展字段（后续增强字段逐步入档）；4) 特征层双路径：当前闭环（NX 插件 导出→重建→对比）以 face_anchors（面属性快照）为准——导出侧从 NX 工序关联几何生成，重建侧经 FaceResolver 属性匹配回 Tag；云端/STEP 路径（geometry.json 的 OCCT 遍历 ID）尚未挂载，face_ids/edge_ids 语义预留；5) feature_type 为本地口径（本仓库当前为合同唯一持有方），出现外部共享方时再对齐并递增 contract_version；6) $id 域名为占位（autocam.local），正式发布前替换或去域。",
     "type": "object",
     "additionalProperties": false,
     "required": [

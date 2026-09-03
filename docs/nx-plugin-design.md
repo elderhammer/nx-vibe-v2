@@ -163,8 +163,8 @@ diagnostics[]   (info/warning/error)
    签名」实现基表，作为全部 Mapper 代码的依据。
 1. **PlanExporter**：读手编 prj（铣+孔最小集）→ plan.json（组树遍历：`GetRoot(View)` +
    `NCGroup.GetMembers()` + `Operation` 四父链；回读按形态表分支）
-2. **PlanExecutor 重建**：STEP + plan → prj′（复用 v2 的 PlanMapper 设计；建组/机床/刀具
-   参考官方样例 `CAMSetupImport`，见 nx2406-install-index.md §1）
+2. **PlanExecutor 重建**：STEP + plan → prj′（沿用早期 v2 设计的 PlanMapper 思路，
+   v2 文档不在本仓库；建组/机床/刀具参考官方样例 `CAMSetupImport`，见 nx2406-install-index.md §1）
 3. **PlanComparer**：prj′ vs prj 偏差表 + 汇总评分
 4. 并入 `Autocam.Plugins.sln` 发布
 

@@ -1,7 +1,7 @@
 # NX Open API 调研：CAM 编程能力全景与 CAPP Plan 对接
 
 更新时间：2026-09-03（按本机 NX2406 安装资料核对修正；资源索引/事实速查见 [nx2406-install-index.md](./nx2406-install-index.md)，属性取值形态速查见附 A）\
-适用范围：Siemens NX 2406+ / NX X（API 以 NXOpen .NET 为准，C++/Python/Java 同名；§3-4 的代码与表格已按 NX2406 实际 API 面修订）\
+适用范围：Siemens NX 2406+ / NX X（API 以 NXOpen .NET 为准，C++/Python/Java 同名；§3-4 的代码与表格已按 NX2406 实际 API 面修订；插件工程仅支持 2406，见 nx-plugin-design.md 头部决策②）\
 关联文档：[autocam-plan.schema.json](../schema/autocam-plan.schema.json)（本仓库 schema/；PRD 与特征→工序映射表属外部模块，未挂载，2026-09 起以本仓库为合同唯一持有方）
 
 ---
@@ -299,7 +299,7 @@ Builder 继承链：`OperationBuilder → MillOperationBuilder → PlanarOperati
 | `TopOffset` | 顶部偏置（从孔口/面起算）。2406 类型为 `VerticalPosition` | 类赋值 |
 | `CornerControl` | 转角控制（如倒角停留）。类型 `CornerControlBuilder` | 子 Builder |
 | `MinimalClearance` | 最小间隙 | **直接 double** |
-| `BottomClearance` | 底部间隙（XML 注记 **"Created in NX2312.0.0"**，原文档标注正确） | `InheritableDoubleBuilder` → `.Value` |
+| `BottomClearance` | 底部间隙（XML 注记 **"Created in NX2312.0.0"**，NX2312 新增成立） | `InheritableDoubleBuilder` → `.Value` |
 
 **HoleDrillingBuilder（继承 HoleMachiningBuilder；NX2406 属性名与取值已核对）**：
 
@@ -807,7 +807,7 @@ diagnostics[]   (info/warning/error)
 1. 在 NX 2406 上用 `run_journal.exe -nogui` 跑通 3.2 的最小示例（建组 → Create → Builder 设参 → Commit → `GenerateToolPath`），确认本文 typeName/组模板类型串/Builder 名称与示例代码**全部可编译可运行**（重点核对 §3.2 标注"待实测"处）。
 2. 用 NX 自带模板部件验证从空 Part 建 CAMSetup 的初始化步骤：`Part.CreateCamSetup("mill_contour")`（模板在 `mach\resource\template_part\metric\mill_contour.prt` 等；**NX2406 无 `cam_general_mill.prt`**）。
 3. 按 4.2 扩展 `autocam-plan.schema.json` 的 `operation_type` 枚举并补充 `nx_template` / `strategy` / `technology` 子结构（枚举值按附 A.2 校准）。
-4. 在 `autocam-plugins` 的 NX 插件中实现 PlanMapper 原型，用 4.9 MVP 字段清单生成一条 `CAVITY_MILL` + 一条 `DRILL` 工序做端到端验证。
+4. 在本仓库 `src/NXPlugins`（`Autocam.Plugins.sln`）实现 PlanMapper 原型，用 4.9 MVP 字段清单生成一条 `CAVITY_MILL` + 一条 `DRILL` 工序做端到端验证。
 5. 实测三处待验证取值：`Stepover` 常量百分比链路（`StepoverTypes.PercentToolFlat` + `PercentToolFlatBuilder.Value`）、`GetToolDrivePoint()/SetToolDrivePoint(string)` 的 string 取值集合、`SpindleModeBuilder` 数值编码到 RPM/SFM/MMPM 的映射。
 6. 确认 `CAMSetup.View.MachineMethod` 与 UI"加工方法视图"标签的对应关系，以及 `GetRoot(View)` 四根组下 Program/Tool/Method/Geometry 组的模板 typeName 实际取值。
 7. 用 XML remarks 许可注记实现一次许可探测原型（对比当前许可与成员 `License requirements:` 字符串），验证风险 #5 的缓解方案。
