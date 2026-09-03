@@ -1,0 +1,10 @@
+== SmokeOpen ==
+IsCamSessionInitialized=False
+ApplicationName=UG_APP_NOPART
+Work=(null)
+DisplayedCount=0
+OK   Open -> test
+FAIL OpenDisplay : NXOpen.NXException 文件已存在
+FAIL OpenActiveDisplay : NXOpen.NXException 文件已存在
+OK   OpenDisplay(template mill_contour) -> mill_contour
+== 结束 ==
