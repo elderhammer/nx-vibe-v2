@@ -1,0 +1,21 @@
+== CamProbeOp ==
+time: 2026-09-03 23:13:05
+CreateCamSetup(mill_contour) ok
+四组创建 OK (第三轮实证的字面量对)
+  OK  (mill_contour, CAVITY_MILL) -> op=CAVITY_PROBE
+  OK   形态1 .Value: PartStock=0.3
+  OK   形态1 .Value: DepthPerCut=2.0
+  OK   形态2 直接double: BoundaryInTol=0.01
+  OK   形态3 直接枚举: CutOrder=LevelFirst
+  OK   形态4 类+嵌套: CutDirection.Type=Climb
+  OK   步距链: StepoverType=PercentToolFlat
+  OK   步距链: PercentToolFlatBuilder.Value=50
+  Commit = ok
+  回读 PartStock.Value = 0.3
+  回读 DepthPerCut.Value = 2
+  回读 BoundaryInTol = 0
+  回读 CutOrder = LevelFirst
+  回读 CutDirection.Type = Climb
+  回读 StepoverType = PercentToolFlat
+  回读 PercentToolFlat.Value = 70
+  回读 FloorStock.Value(未显式设=继承生效值?) = 1

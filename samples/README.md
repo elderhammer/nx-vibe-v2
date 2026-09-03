@@ -2,8 +2,8 @@
 
 > 状态盘点（2026-09-03，按 docs/nx2406-install-index.md §1 检索）：
 > NX2406 安装目录**没有**现成的手编 ground truth（含 CAMSetup 工序的 .prt）与 STEP 样例；
-> 只有两类可用素材（见下）。决策③：**首件由用户提供（samples/test.prt，内容待 NX 会话
-> 确认）**，其余自建件由 NX2406 会话手编后入库。
+> 只有两类可用素材（见下）。决策③：**首件由用户提供（samples/test.prt，2026-09-03 已在
+> NX2406 会话确认可作基准，见下方盘点）**，其余自建件由 NX2406 会话手编后入库。
 
 ## NX 安装目录可参考素材（**不提交 vendor 文件**，仅引用绝对路径）
 
@@ -17,9 +17,35 @@
 
 | 文件 | 内容 | 用途 |
 |---|---|---|
-| `test.prt`（**已入库**） | ground truth 首件（用户提供，2026-09-03；OLE2 容器，NX 私有格式，内容与版本待 NX 会话确认——预期含完整 CAMSetup 与工序） | 步骤①导出、③对比的基准；**开工第 0 步先用 NX2406 打开确认**：可读性/版本/含哪些工序与几何 |
+| `test.prt`（**已入库**） | ground truth 首件（用户提供，2026-09-03；已在 NX2406 会话打开确认：含实体与完整 CAMSetup，6 道工序，见下方盘点） | 步骤①导出、③对比的基准；步骤 0 dump journal 的验证对象 |
 | `test.step`（计划） | 同件 STEP 导出 | 步骤②"打开原始 STEP"重建路径 |
 | `test.plan.json`（计划） | 由 test.prt 导出的 plan（schema 校验 + 回归基线） | 合同冒烟/对比基准 |
+
+## test.prt 盘点记录（2026-09-03，NX2406 会话 + dump journal 实证）
+
+| 确认项 | 结果 |
+|---|---|
+| 打开 | NX2406 正常打开，无版本/格式转换提示（创建版本 ≤ 2406） |
+| 部件 / CAM | 含实体几何；自带 CAMSetup（加工模块直接加载，无"创建环境"弹窗） |
+| 结构盘点 | 见下要点；dump 产物 `samples/test.camdump.txt`，dump journal 源码 `src/NXPlugins/Journal/DumpCamSetup.cs` |
+| 工序 | 6 条（4 Cavity Milling + 2 孔类）；**每个操作在四视图树各出现一次**（遍历须按 Tag 去重） |
+
+### dump 结构树要点
+
+- **程序顺序**（根 NC_PROGRAM → PROGRAM）：`A01`（4×Cavity Milling）、`A1-1`（打点）、`A1-3`（钻头G83）
+- **几何**：单链 `MCS_MILL → WORKPIECE`，6 工序共用（几何父组均 WORKPIECE）
+- **加工方法**（根 METHOD）：`MILL_ROUGH`/`MILL_SEMI_FINISH`/`MILL_FINISH`/`DRILL_METHOD` 组均空，操作全部直接挂根 METHOD
+- **机床**（根 GENERIC_MACHINE → CARRIER / HEAD）：铣刀-5 参数 ×3（组名=直径 17.0 / 13.94 / 9.96）、HEAD → 倒斜铣刀（D6.0X90中心钻）、钻刀 ×2（8.5 / 17.5）
+- 操作真实名（copy 链长名）：`CAVITY_MILL`、`CAVITY_MILL_COPY`、`CAVITY_MILL_COPY_COPY`、`CAVITY_MILL_COPY_COPY_COPY`、`打点_COPY_COPY_COPY`、`钻头G83_COPY_3_COPY_COPY_COPY_1`
+
+### 实证结论（2026-09-03，均入库索引 §2.1/§2.5）
+
+1. `CAMObject.GetNameOfType()` 返回**模板大类描述串**（`Cavity Milling` / `Point to Point` / `Generic PARAM object`…），**不是** `OperationCollection.Create()` 的 typeName 字面量；打点与钻头G83 均返回 `Point to Point`——**细分模板类型（定心钻 vs G83）无公开读回**。导出侧 `operation_type` 的来源须另找（候选：模板属性/UI 类型名，未实测）。
+2. 刀具组 `GetNameOfType` 为中文模板名（铣刀-5 参数 / 倒斜铣刀 / 钻刀），**组名即规格值**（直径）→ 与 CAPP 刀具选型字段的对应靠后续 Builder 回读验证。
+3. COPY 链呈现为**独立 Operation 对象**（名带 _COPY 后缀链）→ plan 合同/重建侧"副本"表述口径待决策（schema v3 无副本字段）。
+4. 四视图 UI 与四根组（`GetRoot(View)`）一一对应实证通过（含 `MachineMethod` ↔ 加工方法视图）。
+
+**判定**：覆盖「铣 + 孔」最小口径，可作步骤①导出、③对比的 ground truth 首件。
 
 > 注意：西门子安装目录内文件（模板/样例/程序集）受许可约束，**只引用、不复制进 git**；
 > 自建件由本仓库维护。

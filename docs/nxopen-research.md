@@ -156,22 +156,24 @@ CAM.NCGroup methodRoot = camSetup.GetRoot(CAM.CAMSetup.View.MachineMethod);
 标准流程五步：**取根组建四类组 → Create 操作 → 取 Builder 设参 → Commit → Destroy**。
 
 ```csharp
-// ---- 1. 建组：父组 = 各视图根组（见 3.1）；(typeName, subtypeName) 为组模板类型串；
-//        第 4 参是 NCGroupCollection.UseDefaultName 枚举 ----
+// ---- 1. 建组：父组 = 各视图根组（见 3.1）；(typeName, subtypeName)=模板部件名/对象模板类型
+//        （2026-09-03 NX 会话实证，见 nx2406-install-index.md §2.1）；第 4 参是
+//         NCGroupCollection.UseDefaultName 枚举 ----
 CAM.NCGroup programGroup = groups.CreateProgram(progRoot,
-    "MainProgram", "", CAM.NCGroupCollection.UseDefaultName.True, "PROGRAM_MAIN");
+    "mill_contour", "PROGRAM", CAM.NCGroupCollection.UseDefaultName.True, "PROGRAM_MAIN");
 CAM.NCGroup methodGroup  = groups.CreateMethod(methodRoot,
-    "MILL_ROUGH", "",  CAM.NCGroupCollection.UseDefaultName.True, "MILL_ROUGH");
+    "mill_contour", "MILL_METHOD", CAM.NCGroupCollection.UseDefaultName.True, "MILL_ROUGH");
 CAM.NCGroup toolGroup    = groups.CreateTool(toolRoot,
-    "MillingTool", "", CAM.NCGroupCollection.UseDefaultName.True, "T1_D10");
+    "mill_planar", "MILL", CAM.NCGroupCollection.UseDefaultName.True, "T1_D10");
 CAM.NCGroup geomGroup    = groups.CreateGeometry(geomRoot,
-    "MCS", "",         CAM.NCGroupCollection.UseDefaultName.True, "MCS_1");
+    "mill_contour", "MCS", CAM.NCGroupCollection.UseDefaultName.True, "MCS_1");
 
-// ---- 2. 创建操作：四个父组 + typeName + subtypeName + 默认命名枚举 + 新名 ----
+// ---- 2. 创建操作：四个父组 + (typeName=模板部件名, subtypeName=操作子类型) + 命名枚举 + 新名
+//        （2026-09-03 实证：CAVITY_MILL 注册于 mill_contour 部件下；空 subtype 非法）----
 CAM.Operation operation = ops.Create(
     programGroup, methodGroup, toolGroup, geomGroup,
-    "CAVITY_MILL",                              // typeName（模板类型串，见 3.3 注）
-    "",                                         // subtypeName
+    "mill_contour",                             // typeName（模板部件名）
+    "CAVITY_MILL",                              // subtypeName（操作模板类型，见 3.3 注）
     CAM.OperationCollection.UseDefaultName.True,// 注意：是枚举，不是 bool
     "CAVITY_1");
 
@@ -199,7 +201,7 @@ builder.Destroy();
 
 关键约定（NX2406 实证）：
 
-- `Create()` 的 **typeName / subtypeName** 语义是"模板类型 / 模板子类型"名，可写进 Plan 的 `nx_template` 字段；**字面量（如 `CAVITY_MILL`）需运行时验证**（本地安装资料零字面量，见附 B）。
+- `Create()` 的 **typeName / subtypeName** 语义 = **模板部件名 / 对象模板类型**（2026-09-03 NX 会话实证：`(mill_contour, CAVITY_MILL)` 创建成功、空 subtype 报"需要的模板不存在"；组创建同族，见索引 §2.1）。完整合法配对用 `Session.CAMSession.GetTemplateTypes()/GetTemplateSubtypes()` 枚举（重建侧参数来源，勿手写表）；Plan 的 `nx_template` 字段建议存这对字面量。
 - 每个操作类型对应一个 **Builder 类**；工厂（约 75 个 `CreateXxxBuilder(operation)` + 通用 `CreateBuilder`）**全部挂在 `OperationCollection` 上**；Builder 暴露的参数即 NX 工序对话框参数。
 - Builder 是**增量修改**模型：`builder` 属性读当前值、属性写值、`Commit()` 生效、`Destroy()` 释放。
 - **参数取值是四种形态混合**（速查见附 A），不是统一的 `xxx.Value = …`：
@@ -233,7 +235,8 @@ builder.Destroy();
 > 注（NX2406 实证）：① 表中"对应 Builder"类的工厂（`CreateXxxBuilder(operation)`）均在
 > `OperationCollection` 上，且 **Builder 与 typeName 并非一一对应**（如 `ZLEVEL_PROFILE` /
 > `ZLEVEL_FOLLOW_PARTS` 共用 `CreateZlevelMillingBuilder`，注意工厂名小写 l、类名 `ZLevelMillingBuilder`）；
-> ② typeName/subtypeName 字面量需运行时实测（本地安装资料无字面量样例，见附 B）；
+> ② typeName/subtypeName 语义 = 模板部件名/对象模板类型（2026-09-03 实证，见索引 §2.1），
+> 完整配对表用 CAMSession 模板枚举获取；
 > ③ 表中大类均有对应类型/工厂（含探测、机床控制、用户定义、文档类），覆盖广度可信。
 
 ### 3.4 Builder 参数面：铣削

@@ -1,0 +1,15 @@
+== CamProbeDrill ==
+time: 2026-09-03 23:18:03
+
+== A. 孔加工创建侧（空 Part, mill_contour）==
+  组创建: OK
+  CreateDrillStdToolBuilder -> 刀具直径 = ok(8.5)
+  OK Create (hole_making, DRILLING) -> PROBE_DRILL  GetNameOfType=Drilling
+  OK     BottomStock.Value=0.5
+    CycleTable 类型 = NXOpen.CAM.Cycle
+    Commit = ok
+    回读 BottomStock.Value = 0.5
+  FAIL (hole_making, SPOT_DRILLING) : 输入名已存在。
+
+== B. test.prt 刀路（内存生成，不保存）==
+!! 顶层异常: 文件已存在

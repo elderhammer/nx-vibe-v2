@@ -35,10 +35,16 @@
 
 - `CAMSetup` 只暴露两个集合：`CAMGroupCollection`（→`NCGroupCollection`，**四视图组对象统一仓库**）、`CAMOperationCollection`（→`OperationCollection`，操作 + **全部操作 Builder 工厂**）。
 - **`ProgramOrderView / MachineToolView / GeometryView / MethodView` 类及 `.Root` 在 NX2406 已不存在**（XML/头文件零命中，属旧版形态）。
-- 视图根组：`camSetup.GetRoot(CAMSetup.View)`，`CAMSetup.View` 枚举 = `ProgramOrder | MachineMethod | Geometry | MachineTool`（"机床/方法"两棵树与 UI 四个导航标签的确切对应待运行时确认）。
-- 组创建（`NCGroupCollection`，全部 cam_base）：`CreateProgram/CreateTool/CreateMethod/CreateGeometry(parentGroup, typeName, subtypeName, useDefaultName, newGroupName)` —— **必须传父组**（顶层传 `GetRoot(...)` 根组），`typeName/subtypeName` 是模板类型串（运行时验证）。
+- 视图根组：`camSetup.GetRoot(CAMSetup.View)`，`CAMSetup.View` 枚举 = `ProgramOrder | MachineMethod | Geometry | MachineTool`（2026-09-03 实证：四根组与 UI 四个导航标签一一对应，见下）。
+- 组创建（`NCGroupCollection`，全部 cam_base）：`CreateProgram/CreateTool/CreateMethod/CreateGeometry(parentGroup, typeName, subtypeName, useDefaultName, newGroupName)` —— **必须传父组**（顶层传 `GetRoot(...)` 根组）。**typeName/subtypeName 语义（2026-09-03 实证）**：typeName=**模板部件名**（如 `mill_contour`/`mill_planar`），subtypeName=**对象模板类型**（如 `PROGRAM`/`MILL`）；空 subtype 非法。实测配对：Program=(mill_contour, PROGRAM)、Method=(mill_contour, MILL_METHOD)、Tool=(mill_planar, MILL)、Geometry=(mill_contour, WORKPIECE)。
 - 树遍历：`NCGroup.GetMembers() / GetParent()`；操作挂四父链：`Operation.ParentProgramOrder / ParentMachineTool / ParentGeometry / ParentMachineMethod`（`GetParent(CAMSetup.View)` 亦可）。
-- 操作创建：`OperationCollection.Create(programG, methodG, toolG, geomG, typeName, subtypeName, UseDefaultName, newName)`；第 7 参是**枚举** `OperationCollection.UseDefaultName.{False,True}` 不是 bool。
+- 类型名读回（2026-09-03 反射 + dump 实测）：`CAMObject.GetNameOfType()` → string（CAMSetup/NCGroup/Operation 通用；**XML remarks 标注 "internal API, can be changed at any time"**，Created in NX1899，cam_base/insp_programming）。**实测返回模板大类描述串**（test.prt dump：`Cavity Milling` / `Point to Point` / `Generic PARAM object` / `Tool Carrier` / `Head`），**不是 `Create()` 的 typeName 字面量**；打点与钻头G83 均返回 `Point to Point` → 细分模板类型无公开读回，导出侧 `operation_type` 来源另找（候选：模板属性/UI 类型名，未实测）。不得固化为导出侧正式接口；subtypeName **无公开读回成员**（全 CAM 命名空间零命中，见 §2.5）。
+- 四视图 UI 标签与 `GetRoot(View)` 四根组一一对应（2026-09-03 test.prt dump 实证：内容语义吻合，MachineMethod 根下为方法组）。
+- 打开既有 prt（无只读重载）：`PartCollection.Open(string, out PartLoadStatus)` → Part（另见 `OpenDisplay`/`OpenActiveDisplay`）；只读纪律靠"不保存"。空会话取件纪律（2026-09-03 实测）：**只能用 `OpenDisplay` 再 `SetWork`**——空会话下 `Open` 仅装载、`SetWork`/`SetDisplay` 均报"无显示部件"；文件已被会话打开后 `Open`/`OpenDisplay` 均报"文件已存在"（探针须在干净会话运行）。
+- 模板注册表枚举（2026-09-03 实证，源：samples/camprobe-types.txt）：`Session.CAMSession`（`IsCamSessionInitialized()`/`CreateCamSession()`）；`GetTemplateTypes()` → string[]；`GetTemplateSubtypes(typeName, CAMSession.ObjectSubtype{Setup|Tool|Method|Geometry|Operation|Program})` → string[]。17 个模板部件（mill_planar/hole_making/mill_contour/…）的完整子类型注册表 = 重建侧 Create 参数权威来源；导出侧 `Tool.GetTypeAndSubtype(out Types, out Subtypes)` 可读回刀具类型。
+- 生效值回读与两处写入未保留（2026-09-03 实测，源：samples/camprobe-op.txt）：未显式设置的 Inheritable 参数**回读生效值可行**（FloorStock → 1，设计 2.1"导出回读生效值"方案成立）；但 `BoundaryInTol` 写 0.01 回读 0、Stepover `PercentToolFlatBuilder.Value` 写 50 回读 70——写入未保留，语义待查（勿固化映射，见 §3 项 3）。
+- 孔加工与刀路（2026-09-03 实测，源：samples/camprobe-drill.txt、camprobe-toolpath.txt）：模板对 `(hole_making, DRILLING)`/`(hole_making, SPOT_DRILLING)`、刀具 `(hole_making, STD_DRILL)`、方法组 `DRILL_METHOD` 均创建成功；`HoleDrillingBuilder.CuttingParameters.BottomStock` 写读一致（Inheritable 形态）；`CycleTable` 类型实证 = `NXOpen.CAM.Cycle`（§2.5"无 Cycle 属性"正向确认）；`CAMSetup.GenerateToolPath(CAMObject[])` 运行成功（当前许可覆盖刀路生成），`Operation.GetToolpathTime()/GetToolpathLength()` 回读真实数值；新建 DRILLING 的 `GetNameOfType`="Drilling"（test.prt 旧工序="Point to Point"——随模板来源变，佐证其不可作 typeName 依据）。
+- 操作创建：`OperationCollection.Create(programG, methodG, toolG, geomG, typeName, subtypeName, UseDefaultName, newName)`；第 7 参是**枚举** `OperationCollection.UseDefaultName.{False,True}` 不是 bool。**typeName/subtypeName 与组创建同族语义（2026-09-03 实证）**：模板部件名/操作子类型对，如 CAVITY_MILL=(mill_contour, CAVITY_MILL)，空 subtype 报"需要的模板不存在"（旧文献把 typeName 直接当字面量传已修正，见 nxopen-research §3.2）。
 - 操作 Builder 工厂：`OperationCollection.CreatePlanarMillingBuilder(operation)` 等约 75 个 + 通用 `CreateBuilder(CAMObject)`（**不在 CAMSetup 上**；CAMSetup 只有 18 个非操作类 Builder 工厂）。类名注意：`ZLevelMillingBuilder`（工厂 `CreateZlevelMillingBuilder`，L 大小写不一致）。
 - `CAMSetupBuilder` 类**不存在**；初始化 CAMSetup = `Part.CreateCamSetup(templateName)`（单参，cam_base）。
 
@@ -75,20 +81,21 @@
 
 - `HoleMachiningCutParameters.BottomClearance`：remarks = **"Created in NX2312.0.0"** → 两文档关于"NX2312 新增"的说法成立。
 - 许可注记样例：`OperationCollection.Create`/组创建/`CreatePlanarMillingBuilder` = `cam_base`；`CAMSetup.CreateFeatureProcessBuilder` = **`ug_holemaking`** → 许可检查应按 XML remarks 程序化探测，而非手写许可表。
+- 许可探测配方（2026-09-03 实证，源：samples/camprobe-license.txt）：运行时宿主 = `Session.LicenseManager`（成员实证：`Reserve(license, context)/Release`、`CheckPresence`、`IsCheckedOut`）；做法 = 从 NXOpen.xml 提取成员 `License requirements:` 注记（截到 `</para>`；**部分 member 名无参数括**，前缀匹配须容错）→ 对每个许可 token 走 `Reserve` 预占试错。本机 `cam_base` 与 `ug_holemaking` 均可用（Reserve=OK）→ 风险 #5 缓解方案落地（许可缺失时可前置报错而非等调用失败）。注：注记含 `("UG Holemaking")` 等显示名，token 提取注意大小写噪音（如误切出 "olemaking"）。
 
 ### 2.5 易错"不存在项"清单（NX2406）
 
-`CAMSetupBuilder`；`CAMSetup.ProgramOrderView/MachineToolView/GeometryView/MethodView`；`camSetup.CreatePlanarMillingBuilder(...)`（应在 OperationCollection）；`MillCutParameters.DepthPerCut`（应在 `PlanarOperationBuilder/CavityMillingBuilder`）；`Stepover.Percent`；`MillCutParameters.CutOrder` 用顶层 `CutOrder` 枚举（类型是 `CutParametersCutOrderTypes`）；`HoleMachiningBuilder.Cycle`（**只有 `CycleTable`**，类型 `CAM.Cycle`）；`Operation.gougeCheck / getCuttingTime / getCuttingLength`（gouge 在 `CAMSetup.GougeCheck/CreateGougeCheckBuilder` 与 `Operation.GougeCheckStatus/Results`）；`MillingToolBuilder.holderSectionBuilder`（有 `ShankSectionBuilder`）；`setMcs/setRcs` 方法（`Mcs/Rcs` 是可写属性）；`cam_general_mill.prt`（2406 用 `mill_contour.prt` 等）。
+`CAMSetupBuilder`；`CAMSetup.ProgramOrderView/MachineToolView/GeometryView/MethodView`；`camSetup.CreatePlanarMillingBuilder(...)`（应在 OperationCollection）；`MillCutParameters.DepthPerCut`（应在 `PlanarOperationBuilder/CavityMillingBuilder`）；`Stepover.Percent`；`MillCutParameters.CutOrder` 用顶层 `CutOrder` 枚举（类型是 `CutParametersCutOrderTypes`）；`HoleMachiningBuilder.Cycle`（**只有 `CycleTable`**，类型 `CAM.Cycle`）；`Operation.gougeCheck / getCuttingTime / getCuttingLength`（gouge 在 `CAMSetup.GougeCheck/CreateGougeCheckBuilder` 与 `Operation.GougeCheckStatus/Results`）；`MillingToolBuilder.holderSectionBuilder`（有 `ShankSectionBuilder`）；`setMcs/setRcs` 方法（`Mcs/Rcs` 是可写属性）；`cam_general_mill.prt`（2406 用 `mill_contour.prt` 等）；`CAMObject` 的 subtypeName/子类型读回成员（XML/反射零命中，仅有 `GetNameOfType()` 且为内部 API）；`PartCollection.OpenReadOnly`（无只读打开重载）。
 
 ---
 
-## 3. 待运行时验证清单（本地资料无法证实的项）
+## 3. 待运行时验证清单（本地资料无法证实的项；★=2026-09-03 NX 会话已实证）
 
-1. `OperationCollection.Create` 的 typeName 字面量（如 `"CAVITY_MILL"`）：XML 只定义语义为"template type 名"，安装目录零字面量命中 → 用 `run_journal.exe -nogui` 或 NX 会话实测。
-2. 组创建 `typeName/subtypeName`（Program/Tool/Method/Geometry 组模板类型串）的实际取值。
-3. `StepoverBuilder` 常量百分比链路（`StepoverType = PercentToolFlat` + `PercentToolFlatBuilder.Value`）是否如预期生效；`ToolDrivePoint` 为 `Get/SetToolDrivePoint(string)`，string 取值集合待实测。
-4. `CreateCamSetup("mill_contour")` 空 Part 初始化流程；`run_journal.exe -nogui` 批处理参数。
-5. `CAMSetup.View.MachineMethod` 与 UI"加工方法视图"标签的对应关系。
+1. ~~`OperationCollection.Create` 的 typeName 字面量~~ ★ 已实证：typeName=模板部件名 + subtypeName=子类型（如 `(mill_contour, CAVITY_MILL)` 创建成功，§2.1）；`GetNameOfType()` 返回模板大类描述串、不能替代字面量（§2.1）。
+2. ~~组创建 `typeName/subtypeName` 实际取值~~ ★ 已实证：配对见 §2.1（组与操作同族语义）；完整注册表 = CAMSession 枚举（samples/camprobe-types.txt）。
+3. `StepoverBuilder` 常量百分比链路：**已实测写入未保留（50→70，见 §2.1/源 camprobe-op.txt），生效机制待查**；`ToolDrivePoint` string 取值集合、`SpindleModeBuilder` 数值编码仍未测。
+4. ~~`CreateCamSetup("mill_contour")` 空 Part 初始化流程~~ ★ 已实证：创建成功且模板自带默认组（MILL_* 方法组/MCS_MILL/PROGRAM/GENERIC_MACHINE，见 CamWriteProbe 输出）；`run_journal.exe -nogui` 批处理参数**仍未测**。
+5. ~~`CAMSetup.View.MachineMethod` 与 UI"加工方法视图"标签的对应关系~~ ★ 已实证（2026-09-03 test.prt dump：四根组与 UI 四导航标签一一对应，见 §2.1）。
 
 ---
 

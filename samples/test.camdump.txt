@@ -1,0 +1,68 @@
+== DumpCamSetup ==
+part: C:\Users\21505\Code\nx-vibe-v2\samples\test.prt
+time: 2026-09-03 22:39:23
+!! 顶层异常: 文件已存在
+== DumpCamSetup ==
+part: C:\Users\21505\Code\nx-vibe-v2\samples\test.prt
+time: 2026-09-03 22:39:48
+CAMSetup.GetNameOfType() = Generic PARAM object
+
+[root] view=ProgramOrder  type=Generic PARAM object  name=NC_PROGRAM  user=
+  [G] type=Generic PARAM object  name=NONE  user=
+  [G] type=Generic PARAM object  name=PROGRAM  user=
+  [G] type=Generic PARAM object  name=A01  user=
+    [O] type=Cavity Milling  name=CAVITY_MILL  user=  parents: prog=A01 tool=17.0 geom=WORKPIECE method=METHOD
+    [O] type=Cavity Milling  name=CAVITY_MILL_COPY  user=  parents: prog=A01 tool=9.96 geom=WORKPIECE method=METHOD
+    [O] type=Cavity Milling  name=CAVITY_MILL_COPY_COPY  user=  parents: prog=A01 tool=9.96 geom=WORKPIECE method=METHOD
+    [O] type=Cavity Milling  name=CAVITY_MILL_COPY_COPY_COPY  user=  parents: prog=A01 tool=9.96 geom=WORKPIECE method=METHOD
+    [G] type=Generic PARAM object  name=A1-1  user=
+      [O] type=Point to Point  name=打点_COPY_COPY_COPY  user=  parents: prog=A1-1 tool=D6.0X90中心钻 geom=WORKPIECE method=METHOD
+    [G] type=Generic PARAM object  name=A1-3  user=
+      [O] type=Point to Point  name=钻头G83_COPY_3_COPY_COPY_COPY_1  user=  parents: prog=A1-3 tool=8.5 geom=WORKPIECE method=METHOD
+
+[root] view=MachineMethod  type=Generic PARAM object  name=METHOD  user=
+  [G] type=Generic PARAM object  name=NONE  user=
+  [G] type=Generic PARAM object  name=MILL_ROUGH  user=
+  [G] type=Generic PARAM object  name=MILL_SEMI_FINISH  user=
+  [G] type=Generic PARAM object  name=MILL_FINISH  user=
+  [G] type=Generic PARAM object  name=DRILL_METHOD  user=
+  [O] type=Cavity Milling  name=CAVITY_MILL  user=  parents: prog=A01 tool=17.0 geom=WORKPIECE method=METHOD
+  [O] type=Cavity Milling  name=CAVITY_MILL_COPY  user=  parents: prog=A01 tool=9.96 geom=WORKPIECE method=METHOD
+  [O] type=Cavity Milling  name=CAVITY_MILL_COPY_COPY  user=  parents: prog=A01 tool=9.96 geom=WORKPIECE method=METHOD
+  [O] type=Cavity Milling  name=CAVITY_MILL_COPY_COPY_COPY  user=  parents: prog=A01 tool=9.96 geom=WORKPIECE method=METHOD
+  [O] type=Point to Point  name=打点_COPY_COPY_COPY  user=  parents: prog=A1-1 tool=D6.0X90中心钻 geom=WORKPIECE method=METHOD
+  [O] type=Point to Point  name=钻头G83_COPY_3_COPY_COPY_COPY_1  user=  parents: prog=A1-3 tool=8.5 geom=WORKPIECE method=METHOD
+
+[root] view=Geometry  type=Generic PARAM object  name=GEOMETRY  user=
+  [G] type=Generic PARAM object  name=NONE  user=
+  [G] type=Generic PARAM object  name=MCS_MILL  user=
+    [G] type=Generic PARAM object  name=WORKPIECE  user=
+      [O] type=Cavity Milling  name=CAVITY_MILL  user=  parents: prog=A01 tool=17.0 geom=WORKPIECE method=METHOD
+      [O] type=Cavity Milling  name=CAVITY_MILL_COPY  user=  parents: prog=A01 tool=9.96 geom=WORKPIECE method=METHOD
+      [O] type=Cavity Milling  name=CAVITY_MILL_COPY_COPY  user=  parents: prog=A01 tool=9.96 geom=WORKPIECE method=METHOD
+      [O] type=Cavity Milling  name=CAVITY_MILL_COPY_COPY_COPY  user=  parents: prog=A01 tool=9.96 geom=WORKPIECE method=METHOD
+      [O] type=Point to Point  name=打点_COPY_COPY_COPY  user=  parents: prog=A1-1 tool=D6.0X90中心钻 geom=WORKPIECE method=METHOD
+      [O] type=Point to Point  name=钻头G83_COPY_3_COPY_COPY_COPY_1  user=  parents: prog=A1-3 tool=8.5 geom=WORKPIECE method=METHOD
+
+[root] view=MachineTool  type=Generic PARAM object  name=GENERIC_MACHINE  user=
+  [G] type=Generic PARAM object  name=NONE  user=
+  [G] type=Tool Carrier  name=CARRIER  user=
+    [G] type=铣刀-5 参数  name=17.0  user=
+      [O] type=Cavity Milling  name=CAVITY_MILL  user=  parents: prog=A01 tool=17.0 geom=WORKPIECE method=METHOD
+    [G] type=铣刀-5 参数  name=13.94  user=
+    [G] type=铣刀-5 参数  name=9.96  user=
+      [O] type=Cavity Milling  name=CAVITY_MILL_COPY  user=  parents: prog=A01 tool=9.96 geom=WORKPIECE method=METHOD
+      [O] type=Cavity Milling  name=CAVITY_MILL_COPY_COPY  user=  parents: prog=A01 tool=9.96 geom=WORKPIECE method=METHOD
+      [O] type=Cavity Milling  name=CAVITY_MILL_COPY_COPY_COPY  user=  parents: prog=A01 tool=9.96 geom=WORKPIECE method=METHOD
+    [G] type=Head  name=HEAD  user=
+      [G] type=倒斜铣刀  name=D6.0X90中心钻  user=
+        [O] type=Point to Point  name=打点_COPY_COPY_COPY  user=  parents: prog=A1-1 tool=D6.0X90中心钻 geom=WORKPIECE method=METHOD
+    [G] type=钻刀  name=8.5  user=
+      [O] type=Point to Point  name=钻头G83_COPY_3_COPY_COPY_COPY_1  user=  parents: prog=A1-3 tool=8.5 geom=WORKPIECE method=METHOD
+    [G] type=钻刀  name=17.5  user=
+
+== 汇总 ==
+operations 总数: 6
+按 GetNameOfType 分组:
+    Cavity Milling × 4
+    Point to Point × 2

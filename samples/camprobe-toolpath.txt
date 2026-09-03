@@ -1,0 +1,11 @@
+== CamProbeToolpath ==
+time: 2026-09-03 23:25:48
+OpenDisplay 成功
+  -- CAVITY_MILL (GetNameOfType=Cavity Milling)
+    GenerateToolPath = ok
+    GetToolpathTime (min) = 57.9883
+    GetToolpathLength (mm) = 118134.7152
+  -- 打点_COPY_COPY_COPY (GetNameOfType=Point to Point)
+    GenerateToolPath = ok
+    GetToolpathTime (min) = 0.1344
+    GetToolpathLength (mm) = 203.46

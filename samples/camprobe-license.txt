@@ -1,0 +1,27 @@
+== CamProbeLicense ==
+time: 2026-09-03 23:31:18
+== ① NXOpen.xml remarks 提取 ==
+  OperationCollection.Create -> cam_base ("CAM BASE")
+  NCGroupCollection.CreateTool -> cam_base ("CAM BASE")
+  CAMSetup.CreateFeatureProcessBuilder -> ug_holemaking ("UG Holemaking")
+  CAMSetup.GenerateToolPath -> cam_base ("CAM BASE")
+  OperationCollection.CreateHoleDrillingBuilder -> cam_base ("CAM BASE")
+  OperationCollection.CreateCavityMillingBuilder -> cam_base ("CAM BASE")
+  CAMSetup.GougeCheck -> cam_base ("CAM BASE")
+
+== ② LicenseManager 逐许可验证 ==
+  license=cam_base  CheckPresence=True  IsCheckedOut=False  Reserve=OK
+  license=ug_holemaking  CheckPresence=True  IsCheckedOut=False  Reserve=OK
+  Reserve(olemaking) 失败: 请求的许可证功能部件不可用。
+  license=olemaking  CheckPresence=False  IsCheckedOut=False  Reserve=不可用
+
+== ③ 汇总（成员 → 注记许可 → 本机可用性）==
+  OperationCollection.Create | cam_base ("CAM BASE") | 见上逐许可结果
+  NCGroupCollection.CreateTool | cam_base ("CAM BASE") | 见上逐许可结果
+  CAMSetup.CreateFeatureProcessBuilder | ug_holemaking ("UG Holemaking") | 见上逐许可结果
+  CAMSetup.GenerateToolPath | cam_base ("CAM BASE") | 见上逐许可结果
+  OperationCollection.CreateHoleDrillingBuilder | cam_base ("CAM BASE") | 见上逐许可结果
+  OperationCollection.CreateCavityMillingBuilder | cam_base ("CAM BASE") | 见上逐许可结果
+  CAMSetup.GougeCheck | cam_base ("CAM BASE") | 见上逐许可结果
+
+结论口径：若 cam_base Reserve=OK 而 ug_holemaking 不可用，则 CreateFeatureProcessBuilder 应报许可错误——验证风险#5 缓解可行。

@@ -1,0 +1,43 @@
+== CamProbeGroups ==
+time: 2026-09-03 23:07:36
+CreateCamSetup(mill_contour) ok
+GetRoot(ProgramOrder) -> NC_PROGRAM
+
+== CreateProgram 候选 ==
+  FAIL "PROGRAM" : 需要的模板不存在
+  FAIL "NC_PROGRAM" : 需要的模板不存在
+  FAIL "main" : 需要的模板不存在
+  FAIL "MAIN" : 需要的模板不存在
+GetRoot(MachineMethod) -> METHOD
+
+== CreateMethod 候选 ==
+  FAIL "MILL_METHOD" : 需要的模板不存在
+  FAIL "MILL_ROUGH" : 需要的模板不存在
+  FAIL "mill_rough" : 需要的模板不存在
+  FAIL "DRILL_METHOD" : 需要的模板不存在
+GetRoot(MachineTool) -> GENERIC_MACHINE
+
+== CreateTool 候选 ==
+  FAIL "BALL_MILL" : 需要的模板不存在
+  FAIL "MILL_7_PARAMETER" : 需要的模板不存在
+  FAIL "MILL_10_PARAMETER" : 需要的模板不存在
+  FAIL "SPOTDRILLING_TOOL" : 需要的模板不存在
+  FAIL "SPOTFACING_TOOL" : 需要的模板不存在
+  FAIL "THREAD_MILL" : 需要的模板不存在
+  FAIL "DRILL" : 需要的模板不存在
+  FAIL "drill" : 需要的模板不存在
+GetRoot(Geometry) -> GEOMETRY
+
+== CreateGeometry 候选 ==
+  FAIL "MCS_MILL" : 需要的模板不存在
+  FAIL "MCS_MAIN" : 需要的模板不存在
+  FAIL "WORKPIECE" : 需要的模板不存在
+  FAIL "NCGEOM" : 需要的模板不存在
+  FAIL "MCS" : 需要的模板不存在
+
+== 兜底：模板自带组 ==
+  找到模板组: PROGRAM
+  找到模板组: MILL_ROUGH
+  找到模板组: MCS_MILL
+  兜底结果: prog=PROGRAM method=MILL_ROUGH tool=(null) geom=MCS_MILL
+  组不全，跳过操作创建

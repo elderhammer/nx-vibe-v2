@@ -1,0 +1,26 @@
+== CamWriteProbe ==
+time: 2026-09-03 23:03:19
+
+== 阶段: 新建空 Part ==
+  part=CamWriteProbe
+
+== 阶段: CreateCamSetup ==
+  CAMSetup ok=True
+
+== 阶段: 模板初始化后根组清单 ==
+  view=ProgramOrder  root=NC_PROGRAM  members=NONE(Generic PARAM object), PROGRAM(Generic PARAM object)
+  view=MachineMethod  root=METHOD  members=NONE(Generic PARAM object), DRILL_METHOD(Generic PARAM object), MILL_METHOD(Generic PARAM object), MILL_ROUGH(Generic PARAM object), MILL_SEMI_FINISH(Generic PARAM object), MILL_FINISH(Generic PARAM object)
+  view=Geometry  root=GEOMETRY  members=NONE(Generic PARAM object), MCS_MILL(Generic PARAM object)
+  view=MachineTool  root=GENERIC_MACHINE  members=NONE(Generic PARAM object)
+
+== 阶段: 建四组 ==
+  FAIL CreateProgram MainProgram : 需要的模板不存在
+  FAIL CreateMethod MILL_ROUGH : 需要的模板不存在
+  FAIL CreateTool MillingTool : 需要的模板不存在
+  FAIL CreateGeometry MCS : 需要的模板不存在
+
+== 阶段: Create CAVITY_MILL ==
+  !! 阶段异常: 四组不全，跳过操作创建
+
+== 汇总 ==
+ok=4  fail=1
