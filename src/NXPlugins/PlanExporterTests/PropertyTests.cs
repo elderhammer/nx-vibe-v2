@@ -296,5 +296,44 @@ namespace NXPlugins.PlanExporterTests
             PlanDocument doc = ExporterCore.Build(snap, WhiteList.Resolve);
             AssertValid(doc, "MONO-2 空快照产出合法空 plan");
         }
+
+        // ---------- D-4 (docs/nx-plan-contract-cleanup-spec.md §3 C1-*) ----------
+
+        // C1-INV-1：operation_type/feature_type 无枚举断言——任意档词汇（含外部细类词）均合法。
+        public static void test_C1INV1_free_string_two_tier_words_valid()
+        {
+            ExportSnapshot snap = SampleSnapshot();
+            PlanDocument doc = ExporterCore.Build(snap, WhiteList.Resolve);
+            doc.operations[0].operation_type = "mill_cavity";     // 外部 CAPP 细类词示例（不再非法）
+            doc.features[0].feature_type = "pocket";              // 识别侧 AP224 词示例（不再非法）
+            AssertValid(doc, "C1-INV-1 自由串两档：细类词应合法");
+        }
+
+        // C1-INV-2：产出 JSON 不含 geometry_ref/machines 等已删结构（序列化层同步，无孤儿字段）。
+        public static void test_C1INV2_no_orphan_fields_in_serialized_output()
+        {
+            PlanDocument doc = ExporterCore.Build(SampleSnapshot(), WhiteList.Resolve);
+            string json = new PlanJsonSerializer().Serialize(doc);
+            Assert.True(json.IndexOf("machines", StringComparison.Ordinal) < 0,
+                "C1-INV-2 序列化不应含 machines");
+            Assert.True(json.IndexOf("geometry_ref", StringComparison.Ordinal) < 0,
+                "C1-INV-2 序列化不应含 geometry_ref");
+            Assert.True(json.IndexOf("face_anchors", StringComparison.Ordinal) < 0
+                && json.IndexOf("anchor_point", StringComparison.Ordinal) < 0,
+                "C1-INV-2 序列化不应含面级锚点字段");
+        }
+
+        // C1-INV-3/4：feature 条目 = id + feature_type(geometry_group 缺省) + params，ws 1:1 引用闭合保持。
+        public static void test_C1INV34_feature_slim_shape_and_default_type()
+        {
+            PlanDocument doc = ExporterCore.Build(SampleSnapshot(), WhiteList.Resolve);
+            Assert.True(doc.features.Count == doc.workingsteps.Count, "C1-INV-3 1 ws ↔ 1 feature 保持");
+            foreach (FeatureJson f in doc.features)
+            {
+                Assert.True(f.feature_type == "geometry_group", "C1-INV-4 feature_type 缺省恒 geometry_group");
+                Assert.True(f.@params != null && f.@params.Count == 0, "C1-INV-4 params 恒空");
+            }
+            AssertValid(doc, "C1-INV-3 瘦身 feature 后 validator 闭合仍过");
+        }
     }
 }

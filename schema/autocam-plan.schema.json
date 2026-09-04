@@ -3,7 +3,7 @@
     "$id": "https://autocam.local/schema/autocam-plan.schema.json",
     "title": "Autocam Plan (v3) — NX 双向验证闭环合同",
     "description": "NX 插件三步闭环（导出 plan.json → 按 plan 重建 → 对比偏差）共用合同。ground truth 采集（PlanExporter）、重建（PlanExecutor）、偏差计算（PlanComparer）三方读写同一实例；plan 是意图层（工艺决策），NX Builder 是参数层（CAM 执行）。",
-    "$comment": "本地口径：docs/nx-plugin-design.md §5 与 nxopen-research.md §4.9（字段清单）+ docs/nxopen-research.md §4.3-4.7 与附 A（NX2406 实证的枚举/形态）。约定：1) 枚举值为 plan 层规范形式（大写 + 下划线），NX 侧 Mapper 负责映射到 NXOpen 枚举（如 FOLLOW_PART→CutPatternBuilder.Types.FollowPart）；2) nx_template 保留 NX 原串对：type/subtype = **模板部件名 / 对象模板类型**（NX2406 实测，2026-09-03，见 nx2406-install-index.md §2.1；如 mill_contour/CAVITY_MILL，成对供 OperationCollection.Create 直用，空 subtype 非法）；3) 结构对象（mcs/nx_template/geometry_ref/workplan 节点等）禁多余字段，策略/技术/参数对象允许扩展字段（后续增强字段逐步入档）；4) 特征层双路径（设计目标）：NX 闭环走面属性快照（face_anchors）经 FaceResolver 匹配回 Tag，云端 OCCT 走 face_ids/edge_ids。**导出侧面级锚点受 U-5 实证负结案限制**（NXOpen.Face / UFModl 无面质心/面积 API，2026-09-03 探针 camprobe-geom + 2026-09-04 U-5c 运行时负证据）：首版导出为组级存在性 + anchor 兜底、face_anchors 留空并写 diagnostic；**U-5/U-5b/U-5c 三路负结案**——面级回补仅剩区域级（CutRegionsData，腔铣）增强候选，FaceResolver 面匹配退 v2。云端/STEP 路径（OCCT 遍历 ID）尚未挂载，face_ids/edge_ids 语义预留；5) feature_type 为本地口径（本仓库当前为合同唯一持有方），出现外部共享方时再对齐并递增 contract_version；6) $id 域名为占位（autocam.local），正式发布前替换或去域。",
+    "$comment": "本地口径：docs/nx-plugin-design.md §5 与 nxopen-research.md §4.9（字段清单）+ docs/nxopen-research.md §4.3-4.7 与附 A（NX2406 实证的枚举/形态）。约定：1) 枚举值为 plan 层规范形式（大写 + 下划线），NX 侧 Mapper 负责映射到 NXOpen 枚举（如 FOLLOW_PART→CutPatternBuilder.Types.FollowPart）；2) nx_template 保留 NX 原串对：type/subtype = **模板部件名 / 对象模板类型**（NX2406 实测，2026-09-03，见 nx2406-install-index.md §2.1；如 mill_contour/CAVITY_MILL，成对供 OperationCollection.Create 直用，空 subtype 非法）；3) 结构对象（mcs/nx_template/workplan 节点等）禁多余字段，策略/技术/参数对象允许扩展字段（后续增强字段逐步入档）；4) 特征为组级口径（v1）：feature 条目 = id + feature_type(恒 geometry_group) + params(恒空)；面级/云端几何字段（face_anchors/face_ids/edge_ids/anchor）已删除——面质心/面积无 NX API（U-5 三路负结案，2026-09-03/04；uf_modl.h 仅收 solid/sheet body，NXOpen.Face 零成员），v2 几何挂载时按当时通道（区域级 CutRegionsData 候选/外部素材）重新设计字段；5) operation_type/feature_type 为自由串两档：NX 导出侧产实态值（milling/drilling/other、geometry_group），外部共享方（CAPP/识别）素材挂载后再断言其词表并递增 contract_version——本仓库当前为合同唯一持有方；6) $id 域名为占位（autocam.local），正式发布前替换或去域。",
     "type": "object",
     "additionalProperties": false,
     "required": [
@@ -60,18 +60,13 @@
                 "tools": {
                     "type": "array",
                     "items": { "$ref": "#/definitions/tool" }
-                },
-                "machines": {
-                    "type": "array",
-                    "items": { "$ref": "#/definitions/machine" },
-                    "description": "可选：机床/控制器定义（setup.machine_ref 指向 machine_id）"
                 }
             }
         },
         "features": {
             "type": "array",
             "items": { "$ref": "#/definitions/feature" },
-            "description": "加工特征（v1 组级口径）。⚠️ 面级锚点契约受 U-5 实证负结案限制（NXOpen.Face/UFModl 无面质心/面积 API，2026-09-03/04 camprobe-geom/finalize）：导出侧 face_anchors 无生产源、留空；首版条目 = 工序关联几何组 + anchor 兜底 + diagnostic；面级回补仅剩区域级（CutRegionsData，腔铣）增强候选，FaceResolver 面匹配退 v2。云端 STEP/识别路径（OCCT face_ids）为预留表示（外部模块未挂载）"
+            "description": "加工特征（v1 组级口径，1 workingstep ↔ 1 feature）：条目 = feature_id + feature_type(恒 geometry_group) + params(恒空)。面级/云端几何锚点字段已删除（U-5 负结案：面质心/面积无 NX API，见 $comment 约定 4）；v2 几何挂载时重设计"
         },
         "operations": {
             "type": "array",
@@ -104,30 +99,6 @@
             "description": "[x, y, z]，mm（模型局部坐标）"
         },
 
-        "face_anchor": {
-            "type": "object",
-            "additionalProperties": false,
-            "required": ["centroid", "area", "face_type"],
-            "properties": {
-                "local_id": {
-                    "type": "string",
-                    "description": "导出侧本地面标识（如 NX 面名/序号），仅供对比报告引用；无跨文件语义"
-                },
-                "centroid": { "$ref": "#/definitions/vector3", "description": "面质心（mm，模型局部坐标）" },
-                "area": { "type": "number", "minimum": 0, "description": "面面积 mm²" },
-                "face_type": {
-                    "type": "string",
-                    "enum": ["plane", "cylinder", "cone", "sphere", "torus", "b_surface", "blend", "other"],
-                    "$comment": "plan 层面类型口径；NX 侧映射 SolidFaceType（Plane/Cylinder/Cone/Sphere/Torus/BSurface/Blend…）"
-                },
-                "normal": {
-                    "$ref": "#/definitions/vector3",
-                    "description": "面法向（平面类必写；回转类可省）"
-                }
-            },
-            "$comment": "FaceResolver 匹配键：质心+面积+类型+法向，容差 0.01mm；对称特征可能多面同属性 → 由调用方标 diagnostic"
-        },
-
         "setup": {
             "type": "object",
             "additionalProperties": false,
@@ -153,14 +124,6 @@
                 "fixture_offset": {
                     "type": "integer",
                     "description": "夹具偏置号（G54=1, G55=2 …）；NX 落点 FixtureOffsetBuilder"
-                },
-                "machine_ref": {
-                    "type": "string",
-                    "description": "指向 resources.machines[].machine_id（缺省则 NX 侧用模板机床）"
-                },
-                "blank_ref": {
-                    "type": "string",
-                    "description": "毛坯体引用（云端几何 id / NX 体名），首道工序前建议给出；NX 落点 MillGeomBuilder.Blank"
                 }
             }
         },
@@ -205,68 +168,21 @@
             "$comment": "刀具参数是最'直填'的一层：字段与 NX MillingToolBuilder/DrillToolBuilder 的 Tl*Builder 基本一一对应（均 InheritableDoubleBuilder → .Value）"
         },
 
-        "machine": {
-            "type": "object",
-            "additionalProperties": false,
-            "required": ["machine_id"],
-            "properties": {
-                "machine_id": { "$ref": "#/definitions/id" },
-                "name": { "type": "string", "description": "机床型号/库名（NX: MachineGroupBuilder / 库检索）" },
-                "controller": { "type": "string" },
-                "library_ref": { "type": "string", "description": "机床库引用串（如 cam_general / 3_axis_mill）" }
-            }
-        },
-
         "feature": {
             "type": "object",
             "additionalProperties": false,
-            "required": ["feature_id", "feature_type", "geometry_ref"],
+            "required": ["feature_id", "feature_type"],
             "properties": {
                 "feature_id": { "$ref": "#/definitions/id" },
                 "feature_type": {
                     "type": "string",
-                    "enum": [
-                        "hole", "thread_hole", "pocket", "slot", "step", "groove",
-                        "chamfer", "round", "boss", "notch", "outer_round",
-                        "planar_face", "profile_feature", "compound_feature",
-                        "turning_feature", "general", "geometry_group"
-                    ],
-                    "$comment": "AP224 15 类口径本地版（thread 以 thread_hole 表达）。导出侧（当前 NX 闭环）若无法给出 AP224 语义类型（NX 工序关联几何组），用 geometry_group；识别侧接入后可填具体类型"
+                    "description": "特征层分类，自由串两档：NX 导出侧恒 'geometry_group'（v1 组级口径，工序关联几何组）；识别模块挂载后可补 AP224 细类（hole/pocket/…）——本批不断言词表（见大 $comment 约定 5）"
                 },
-                "geometry_ref": { "$ref": "#/definitions/geometry_ref" },
                 "params": {
                     "type": "object",
-                    "description": "特征参数（直径/深度/螺距…自由对象）：当前 NX 闭环可由导出侧从工序几何回读；云端/识别路径为 geometry.json 直通；不重复进 geometry_ref"
+                    "description": "特征参数（直径/深度/螺距…自由对象，v1 恒空）；外部素材挂载后直通"
                 }
             }
-        },
-
-        "geometry_ref": {
-            "type": "object",
-            "additionalProperties": false,
-            "required": ["anchor_point"],
-            "properties": {
-                "face_anchors": {
-                    "type": "array",
-                    "items": { "$ref": "#/definitions/face_anchor" },
-                    "description": "面属性快照（当前 NX 闭环的主表示）：导出侧由 NX 工序关联面按属性生成，重建侧 FaceResolver 依此匹配回 NX Tag"
-                },
-                "face_ids": {
-                    "type": "array",
-                    "items": { "type": "string" },
-                    "description": "OCCT 遍历 ID（原始 STEP B-Rep 面，云端 geometry.json faces[]）——云端路径预留"
-                },
-                "edge_ids": {
-                    "type": "array",
-                    "items": { "type": "string" },
-                    "description": "OCCT 遍历 ID（原始 STEP B-Rep 边）——云端路径预留"
-                },
-                "anchor_point": {
-                    "$ref": "#/definitions/vector3",
-                    "description": "特征位置锚点（孔心/质心）：当前 NX 闭环导出时随 face_anchors 一起写；纯 OCCT/兜底场景不可省"
-                }
-            },
-            "$comment": "跨 prt 的面/边 Tag 无共享标识 → 匹配一律走属性（face_anchors：质心+面积+类型+法向，FaceResolver，容差 0.01mm）；对称特征可能命中错面 → 命中不唯一时写 diagnostic(GEOM_AMBIGUOUS_MATCH)"
         },
 
         "operation": {
@@ -278,17 +194,7 @@
                 "name": { "type": "string", "description": "工序显示名（缺省由 NX 默认命名）" },
                 "operation_type": {
                     "type": "string",
-                    "enum": [
-                        "mill_cavity", "mill_planar", "mill_face", "mill_plunge", "mill_groove",
-                        "mill_zlevel", "mill_surface", "mill_flowcut", "mill_chamfer", "mill_engrave", "mill_cylinder",
-                        "drill_center", "drill", "drill_peck", "drill_break_chip",
-                        "tap", "thread_mill", "ream", "bore", "counterbore", "countersink",
-                        "turn_rough", "turn_finish", "turn_thread", "turn_drill", "turn_mill",
-                        "multi_axis_rough", "multi_axis_wall_finish", "multi_axis_deburr",
-                        "wedm", "additive_planar", "additive_rotary", "probe",
-                        "machine_control", "user_defined", "other"
-                    ],
-                    "$comment": "工序层分类（升格后的 operation_type，nxopen-research §4.2）；特征层分类仍走 feature_type"
+                    "description": "工序层分类，自由串两档：NX 导出侧产实态粗类（milling/drilling/other，源自 GetNameOfType 大类映射）；外部 CAPP 素材挂载后可补细类（如 mill_cavity/drill_peck，nxopen-research §4.2 建议表）并 additive 恢复枚举——本批不断言词表（见大 $comment 约定 5）。精确类型语义以 nx_template 成对为准"
                 },
                 "nx_template": {
                     "type": "object",

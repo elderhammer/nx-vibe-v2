@@ -48,7 +48,6 @@ namespace NXPlugins.PlanExporter
     public sealed class ResourcesJson
     {
         public List<ToolJson> tools = new List<ToolJson>();
-        public List<object> machines = new List<object>();
     }
 
     public sealed class ToolJson
@@ -64,17 +63,8 @@ namespace NXPlugins.PlanExporter
     public sealed class FeatureJson
     {
         public string feature_id = "";
-        public string feature_type = "geometry_group";
-        public GeometryRefJson geometry_ref = new GeometryRefJson();
+        public string feature_type = "geometry_group";   // 自由串两档（D-4/X）：导出恒组级口径
         public Dictionary<string, double> @params = new Dictionary<string, double>();
-    }
-
-    public sealed class GeometryRefJson
-    {
-        public List<object> face_anchors = new List<object>();   // U-5 结案：首版恒空
-        public List<string> face_ids = new List<string>();
-        public List<string> edge_ids = new List<string>();
-        public double[] anchor_point = null;
     }
 
     public sealed class OperationJson

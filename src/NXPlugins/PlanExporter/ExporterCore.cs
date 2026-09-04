@@ -131,8 +131,6 @@ namespace NXPlugins.PlanExporter
                     setup_ref = snap.Setups.Count > 0 ? "S-01" : "",
                 });
                 doc.features.Add(new FeatureJson { feature_id = "F-" + featIdx.ToString("D2") });
-                // geometry_ref.anchor 兜底（U-5 结案：face_anchors 留空）
-                doc.features[doc.features.Count - 1].geometry_ref.anchor_point = null;
 
                 // workplan：工序节点挂到其程序父组（缺父 → 挂 root）
                 WorkplanNodeJson parent;

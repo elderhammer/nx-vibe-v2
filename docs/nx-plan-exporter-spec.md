@@ -9,7 +9,8 @@
 PlanExporter 是「许可 gate → 只读单遍扫描（Tag 去重）→ 分型 Builder 生效值回读 → schema v3 校验 →
 原子落盘」的 NX 会话内转换器。参数回读可行性已实证（FloorStock 生效值可读）；风险重心在契约层面：
 nx_template 细分模板类型无法程序化读回（白名单 + 歧义降级，U-1 加固结案）；面级锚点数值契约（质心+面积）无生产源
-（U-5/U-5c 双结案）→ 首版 features 走组级 + anchor 兜底。运行载体：Journal 源经 `run_journal.exe` 无界面
+（U-5/U-5c 双结案）→ 首版 features 走组级条目（D-4 后 schema 几何锚点字段族已删除，见
+nx-plan-contract-cleanup-spec.md）。运行载体：Journal 源经 `run_journal.exe` 无界面
 批处理（2026-09-04 实证，无 `-nogui` 旗标；CAM 会话初始化顺序纪律见索引 §2.1）或交互 Execute。
 
 ## 1. 协议（外部边界）
@@ -29,8 +30,9 @@ nx_template 细分模板类型无法程序化读回（白名单 + 歧义降级�
   workingsteps[]/workplan/diagnostics[]。
 - `nx_template = {type, subtype}`：**type=模板部件名、subtype=对象模板类型**（如 mill_contour/CAVITY_MILL，
   成对直供 Create）。CONFLICT-1 已修（schema $comment/字段描述/minimal 示例）。
-- features[] 首版条目：1 workingstep → 1 feature（feature_type=geometry_group），geometry_ref 仅
-  anchor 兜底，**face_anchors 留空数组** + diagnostic（U-5 结案，见 §5）。
+- features[] 首版条目：1 workingstep → 1 feature = {feature_id, feature_type(恒 geometry_group), params(恒空)}；
+  geometry_ref/face_* 字段族已删（D-4，2026-09-04——U-5 结案见 §5；合同形状以 schema 与
+  nx-plan-contract-cleanup-spec.md 为准）。
 - ref 五类闭合（tool/method/setup/feature/operation ↔ workingstep）。
 - 数值：double 原样 round-trip（JSON number，不格式化截断）（POST-4）。
 
@@ -83,6 +85,8 @@ A12 `.tmp` 写入 + rename；diagnostics 汇总写回 → POST-2/POST-5/INV-6
   objects 仅收 solid/sheet body；mass_props[47]/statistics[13]/acc_value[11] 尺寸坐实）；
   body 正对照成功（area/vol/COF 真值）→ **face_anchors 数值契约无生产源正式钉死**，首版不导出
   （POST/§2 已含）；区域级通道（CutRegionsData 质心+面积真值，仅腔铣）记为增强候选。
+  **D-4 跟进（2026-09-04）**：schema 的 geometry_ref/face_anchors/face_ids/edge_ids 字段族已随本结案删除
+  （见 nx-plan-contract-cleanup-spec.md；NX 源码侧背书 = uf_modl.h:4324 body-only 注记 + NXOpen.Face 零成员）。
 - **U-5b 结案**：Face/UFModl 反射负结果（2026-09-03）+ U-5c 运行时负结果（2026-09-04）齐全；
   PTP 孔工序面级通道随 U-1/PTP 结案（无公开通道，见下）。
 - **U-5c 结案**（负，2026-09-04）：见 U-5。

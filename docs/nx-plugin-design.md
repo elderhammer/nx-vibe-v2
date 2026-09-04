@@ -69,7 +69,7 @@
 | Method 组 | 工序 `method_ref` | 回读方法组名 |
 | Operation 类型 | `operation_type` + `nx_template` | 按 typeName/subtypeName 映射 |
 | Builder 参数 | `strategy` / `technology` | 各 Builder 实际值回读 |
-| 关联几何 | `feature.geometry_ref` | 按 NX Tag → 几何属性锚点（与 FaceResolver 反向） |
+| 关联几何 | —（v1 组级：工序关联几何组） | 面级锚点字段已删（U-5 负结案 + D-4，见 nx-plan-contract-cleanup-spec.md） |
 
 > ⚠️ 关键点：NX Builder 参数**未显式设置时继承父组/方法组默认值**。
 > 导出必须回读**生效值（resolved value）**而非仅显式值，否则 plan 缺字段，
@@ -125,7 +125,7 @@
 plan_id / input_ref / name
 setups[]        mcs(origin,z_axis,x_axis), safe_plane_z, fixture_offset
 resources.tools[] type,diameter,num_flutes,(flute_length),lower_corner_radius
-features[]      feature_id,feature_type,geometry_ref(anchor_point),params
+features[]      feature_id,feature_type,params
 operations[]    operation_id,operation_type(+nx_template),tool_ref,strategy,technology
 workingsteps[]  workingstep_id,feature_ref,operation_ref,setup_ref
 workplan(root,elements)  → Program 组树
@@ -134,6 +134,9 @@ diagnostics[]   (info/warning/error)
 
 > 导出时该清单为**必填输出**（尽量完整）；导入时缺省字段允许继承组默认值（见 2.1 风险）。
 > 对比时以清单字段为对齐基线，其余增强字段（非切削细分/避让点等）逐步加入。
+> 2026-09-04（D-4）：features[] 为组级口径（feature_type 恒 geometry_group、params 恒空）；几何面级/云端
+> 锚点字段已从合同删除（U-5 负结案：面质心/面积无 NX API）；operation_type/feature_type 为自由串两档
+> （NX 实态值 + 外部素材细类词，不押注词表）——设计依据见 docs/nx-plan-contract-cleanup-spec.md。
 
 ## 6. 风险与备注
 

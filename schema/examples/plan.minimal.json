@@ -14,9 +14,21 @@
             "setup_id": "S-01",
             "name": "MCS_1",
             "mcs": {
-                "origin": [0.0, 0.0, 0.0],
-                "z_axis": [0.0, 0.0, 1.0],
-                "x_axis": [1.0, 0.0, 0.0]
+                "origin": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "z_axis": [
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "x_axis": [
+                    1.0,
+                    0.0,
+                    0.0
+                ]
             },
             "safe_plane_z": 50.0,
             "fixture_offset": 1
@@ -32,37 +44,23 @@
                 "flute_length": 30.0,
                 "lower_corner_radius": 0.0
             }
-        ],
-        "machines": []
+        ]
     },
     "features": [
         {
             "feature_id": "F-01",
             "feature_type": "geometry_group",
-            "geometry_ref": {
-                "face_anchors": [
-                    { "local_id": "f1", "centroid": [20.0, 0.0, 5.0], "area": 400.0, "face_type": "plane", "normal": [0, -1, 0] },
-                    { "local_id": "f2", "centroid": [20.0, 40.0, 5.0], "area": 400.0, "face_type": "plane", "normal": [0, 1, 0] },
-                    { "local_id": "f3", "centroid": [0.0, 20.0, 5.0], "area": 400.0, "face_type": "plane", "normal": [-1, 0, 0] },
-                    { "local_id": "f4", "centroid": [40.0, 20.0, 5.0], "area": 400.0, "face_type": "plane", "normal": [1, 0, 0] },
-                    { "local_id": "f5", "centroid": [20.0, 20.0, 0.0], "area": 1600.0, "face_type": "plane", "normal": [0, 0, -1] }
-                ],
-                "face_ids": [],
-                "edge_ids": [],
-                "anchor_point": [20.0, 20.0, 0.0]
-            },
-            "params": {
-                "length": 40.0,
-                "width": 40.0,
-                "depth": 10.0
-            }
+            "params": {}
         }
     ],
     "operations": [
         {
             "operation_id": "OP-001",
-            "operation_type": "mill_cavity",
-            "nx_template": { "type": "mill_contour", "subtype": "CAVITY_MILL" },
+            "operation_type": "milling",
+            "nx_template": {
+                "type": "mill_contour",
+                "subtype": "CAVITY_MILL"
+            },
             "tool_ref": "T-001",
             "method_ref": "MILL_ROUGH",
             "strategy": {
@@ -70,21 +68,43 @@
                 "cut_order": "LEVEL_FIRST",
                 "cut_direction": "CLIMB",
                 "depth_per_cut": 2.0,
-                "stepover": { "mode": "percent", "value": 50.0 },
+                "stepover": {
+                    "mode": "percent",
+                    "value": 50.0
+                },
                 "multi_depth_cut": true,
                 "floor_stock": 0.3,
                 "wall_stock": 0.3,
                 "non_cutting": {
-                    "clearance": { "type": "plane", "safe_distance": 10.0, "origin": [0, 0, 50], "normal": [0, 0, 1] }
+                    "clearance": {
+                        "type": "plane",
+                        "safe_distance": 10.0,
+                        "origin": [
+                            0,
+                            0,
+                            50
+                        ],
+                        "normal": [
+                            0,
+                            0,
+                            1
+                        ]
+                    }
                 }
             },
             "technology": {
                 "spindle_mode": "RPM",
                 "spindle_rpm": 6000,
-                "feed_cut": { "value": 1200, "unit": "MMPM" },
+                "feed_cut": {
+                    "value": 1200,
+                    "unit": "MMPM"
+                },
                 "retract_speed": 3000,
                 "coolant": "FLOOD",
-                "tolerance": { "intol": 0.01, "outtol": 0.01 }
+                "tolerance": {
+                    "intol": 0.01,
+                    "outtol": 0.01
+                }
             }
         }
     ],

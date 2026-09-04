@@ -23,7 +23,8 @@ PlanExecutor = 「plan.json（PlanDocument）→ 引用校验 → 展开为**有
 
 | 项 | 约定 |
 |---|---|
-| 输入 | plan.json（schema v3 合同族）。**导出侧实际产物事实**（test.plan.json，DataContractJsonSerializer 渲染）：① strategy/technology 为 **Key-Value 数组**形态（schema 对象形；模型层 Dictionary 已归一，解析层无感——记录不修）；② `nx_template.{type,subtype}` 成对（type=模板部件名，如 mill_contour/hole_making）；③ `method_ref`=方法父组名（test.plan 为根名 "METHOD"）；④ `tool.type`=**NX 中文家族串**（违反 schema 枚举，v1 简化 → D-2）；⑤ features 无面锚点；⑥ 每 op 经 workingstep 1:1 挂 setup_ref |
+| 输入 | plan.json（schema v3 合同族）。**导出侧实际产物事实**（test.plan.json，DataContractJsonSerializer 渲染）：① strategy/technology 为 **Key-Value 数组**形态（schema 对象形；模型层 Dictionary 已归一，解析层无感——记录不修）；② `nx_template.{type,subtype}` 成对（type=模板部件名，如 mill_contour/hole_making）；③ `method_ref`=方法父组名（test.plan 为根名 "METHOD"）；④ `tool.type`=**NX 中文家族串**（违反 schema 枚举，v1 简化 → D-2）；⑤ features 无面锚点（D-4 后 schema 几何字段族已删：条目 = {feature_id, feature_type, params}，见
+nx-plan-contract-cleanup-spec.md）；⑥ 每 op 经 workingstep 1:1 挂 setup_ref |
 | 调用序列（[I]） | NX 会话 File → Execute 预编译 exe（csc 合编核心+适配器，scripts/compile-executor-adapter.ps1）：`NewDisplay` → `Session.CreateCamSession()` → 许可 gate（cam_base Reserve）→ `CreateCamSetup("mill_contour")`（camprobe-drill 先例：孔工序/刀具同 setup 可行；全钻 plan 用 hole_making，预检实证）→ 指令序执行（Program/Method/Tool/Geometry 组 → 工序 → MCS/fixture → 参数子集）→ **不生成刀路** → 落盘 prj′ → 回读对照报告。⚠️ 运行载体注记（2026-09-04 实测）：核心依赖 `DataContractJsonSerializer`，journal 编译器缺 `System.Runtime.Serialization` 引用 → **run_journal 单文件 journal 合并不适用**（试编译报命名空间缺失）；[I] 层与 ExporterAdapter 同款 GUI Execute 工作流 |
 | 失败语义 | 结构级（解析失败/ref 断开/许可缺/PRE 系）→ 中止不落盘；单项（未知刀具家族/拒写参数/组重名）→ diag 继续 |
 | 状态/所有权 | 纯逻辑核心无状态；NX 侧会话内新建 prj′（落盘件属仓库自建资产）；上游 PlanDocument/序列化器只读复用 |
@@ -90,6 +91,10 @@ A8 [I] 回读对照报告（I-1..I-4）
 - **几何/刀路缺席**：D-1 决策；对比范围声明见 §0，Comparer 落地时须显式限定维度。
 - **method_ref 语义**：导出写父组名；重建侧"复用模板默认组/挂根"兜底与 ground truth 的组名一致性
   以回读对照（I-2）为判据，偏差入 diag。
+- **feature_ref 闭合执行面**（2026-09-04 代码审计 + D-4）：ExecutorCore A2 仅强制 tool_ref/setup_ref/
+  operation_ref/workplan 闭合，**feature_ref 未索引**——与 §3 PRE-2 表述（含 feature_ref）有差；D-4 后
+  features 为 {feature_id, feature_type, params} 级结构条目（1 ws ↔ 1 feature 保持），闭合检查由导出侧
+  validator（INV-2）承担。PRE-2 执行面以本节为准。
 - **GetNameOfType 语言敏感**（2026-09-04 预检实证）：刀具家族串随会话语言变化（中文/英文）→ 凡基于
   家族串的导出字段（tools[].type）会跨会话漂移；op 级白名单键为英文模板大类不受影响。U-7 刀具枚举化
   一并解决。

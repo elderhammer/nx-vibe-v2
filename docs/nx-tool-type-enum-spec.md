@@ -114,3 +114,7 @@ operation_type 33 词（产出实态 milling/drilling/other 违例、无消费�
 恒 geometry_group）、geometry_ref face_ids/edge_ids/face_anchors 占位与 anchor_point required-null 矛盾、
 machines[]、全文档 CAPP/云端注记校准、PlanValidator 枚举收紧口径——各占位的删除/收窄影响已在对话纪要
 列清单，另开批逐项过。
+
+> **D-4 已执行（2026-09-04，docs/nx-plan-contract-cleanup-spec.md）**：operation_type/feature_type → 自由串
+> 两档（X）；geometry_ref 字段族/machines/machine_ref/blank_ref → 删除（i）；索引回填三项已落。PlanValidator
+> 枚举收紧仍挂起——统一在 A′ 实现批收尾开启。

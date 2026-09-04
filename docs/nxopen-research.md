@@ -16,7 +16,7 @@
 - **了解 NX CAM 编程 API（创建工序/刀具/几何/MCS/非切削/刀路生成）**：读第 3 章
 - **指导 CAPP Plan 输出字段设计（按 NX Builder 参数面反推）**：读第 4 章
 - 评估对接落地风险：读第 5 章
-- 特征识别与交叉验证（外部模块文档，未挂载；当前 NX 闭环以 face_anchors 属性快照替代，见 schema geometry_ref 注记）
+- 特征识别与交叉验证（外部模块文档，未挂载；当前 NX 闭环 v1 为组级特征条目——面级/云端几何锚点字段已随 U-5 负结案删除（2026-09-04，见 schema 注记与 nx-plan-contract-cleanup-spec.md））
 
 > 本文档第 3-4 章是核心新增内容：回答"NX Open 能否让 CAPP 输出 Plan 后直接创建工序、包含完整参数"以及"Plan 应该输出什么才能无歧义映射到 NX"。
 
@@ -718,6 +718,7 @@ geometry_ref: {
 > ⚠️ **U-5 实证负结案**（2026-09-03/04，camprobe-geom/finalize，见 nx-plan-exporter-spec.md §5）：NXOpen.Face/
 > UFModl 无面质心/面积 API → 导出侧 face_anchors **无生产源**、首版留空（组级条目 + anchor 兜底 + diagnostic）；
 > 面级回补仅剩区域级通道（CutRegionsData，腔铣，增强候选）。FaceResolver 面匹配退 v2 重议。
+> （2026-09-04 D-4 跟进：schema 的 geometry_ref/face_* 字段族已随本结案从合同删除，见 nx-plan-contract-cleanup-spec.md。）
 
 ### 4.7 setup 补 MCS 与机床
 
