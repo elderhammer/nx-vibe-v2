@@ -1,5 +1,9 @@
 # NX Open API 调研：CAM 编程能力全景与 CAPP Plan 对接
 
+> 顶层注记（2026-09-04）：本文为 pivot 前调研资产（主叙事"CAPP Plan 对接"）。API 能力与三路实证结论
+> 仍然有效（事实源 = nx2406-install-index.md）；§4 对接建议为历史视角（详见该章定位注记），合同语义以
+> schema 注释、索引与各模块 spec 为准。
+
 更新时间：2026-09-03（按本机 NX2406 安装资料核对修正；资源索引/事实速查见 [nx2406-install-index.md](./nx2406-install-index.md)，属性取值形态速查见附 A）\
 适用范围：Siemens NX 2406+ / NX X（API 以 NXOpen .NET 为准，C++/Python/Java 同名；§3-4 的代码与表格已按 NX2406 实际 API 面修订；插件工程仅支持 2406，见 nx-plugin-design.md 头部决策②）\
 关联文档：[autocam-plan.schema.json](../schema/autocam-plan.schema.json)（本仓库 schema/；PRD 与特征→工序映射表属外部模块，未挂载，2026-09 起以本仓库为合同唯一持有方）
@@ -74,7 +78,7 @@ NXOpen.Features.Feature (抽象基类)
 | 面 UV 参数域      | `UF_MODL_ask_face_uv_minmax()`                             | 精确值                    | ✅    |
 | 设计特征 ↔ 面映射    | `Feature.GetEntities()`, `BodyFeature.GetFaces()`          | 直接关联                   | ✅    |
 | 特征参数读取        | `GetExpressions()`, 具体 Builder 的 Get 方法                    | 设计参数原值                 | ✅    |
-| 无 GUI 运行      | `run_journal.exe -nogui`                                   | 支持批处理                  | ✅    |
+| 无 GUI 运行      | `run_journal.exe <journal.cs>`（无 `-nogui` 旗标——2026-09-04 实证即无界面批处理）                                   | 支持批处理                  | ✅    |
 | Remoting 长驻服务 | NXOpen Remoting                                            | 支持服务化                  | ✅    |
 
 ### 2.4 NX Open API 编程示例
@@ -501,6 +505,11 @@ NX CAM 不仅接受"手动选几何建工序"，还支持**特征驱动**链路�
 
 ## 4. CAPP Plan 输出对接建议（核心交付）
 
+> 定位注记（2026-09-04）：本节成文于初始版本 pivot 前，主叙事为「CAPP 输出 Plan → NX 执行」；当前设计
+> （nx-plugin-design.md 顶注）**初始版本不直接消费云端 CAPP 计划**——先以工程师手编 NX 工程为 ground truth
+> 验证 plan 合同无歧义。本节的 NX Builder 落点列（多数已实证）仍是 schema 字段的出处，保留为调研资产；
+> 合同语义以 schema 注释、nx2406-install-index.md 与各模块 spec 为准。
+
 ### 4.1 总体映射架构
 
 原则：**Plan 是意图层（工艺决策），NX Builder 是参数层（CAM 执行）**。Plan 字段设计要以"能否无歧义映射到 Builder 参数"为准，而不是以 AP224 特征分类为准。
@@ -528,13 +537,19 @@ CAPP Plan (JSON, autocam-plan.schema.json)
 
 ### 4.2 operation_type 建议枚举（对齐 NX 大类）
 
-当前 schema 中 `operation_type` 只有 `milling / drilling / other`，粒度不足以映射 NX。建议扩展为**分层枚举 + nx_template 字段**：
+> ⚠️ 语义修正（CONFLICT-1 补记，2026-09-03 修正、2026-09-04 复核）：本小节示例 JSON 与下表第三列的
+> 大写串是**对象模板类型**（`OperationCollection.Create` 的 subtypeName，如 CAVITY_MILL/DRILLING）；
+> `nx_template.type` 应为**模板部件名**（如 mill_contour），两者**成对**使用、空 subtype 在 NX 侧非法——
+> 语义以 schema nx_template 注释与 nx2406-install-index.md §2.1 为准（下述示例 JSON 已按此修正）。
+> operation_type 分层枚举已按本建议落入 schema v3（33 词，见 schema operation 定义），本小节作为其出处保留。
+
+建议扩展为**分层枚举 + nx_template 字段**（原 schema `operation_type` 仅 `milling/drilling/other`，粒度不足以映射 NX）：
 
 ```json
 {
   "operation_id": "OP-001",
   "operation_type": "mill_cavity",
-  "nx_template": { "type": "CAVITY_MILL", "subtype": "" },
+  "nx_template": { "type": "mill_contour", "subtype": "CAVITY_MILL" },
   "tool_ref": "T-001",
   "strategy": { "...": "..." },
   "technology": { "...": "..." }
@@ -543,7 +558,7 @@ CAPP Plan (JSON, autocam-plan.schema.json)
 
 **建议 operation_type 枚举（覆盖 NX 全大类）**：
 
-| 大类 | 建议枚举值（operation_type） | 对应 nx_template typeName |
+| 大类 | 建议枚举值（operation_type） | 对应 subtypeName（对象模板类型；typeName=模板部件名见索引 §2.1） |
 | :--- | :--- | :--- |
 | 铣削 2.5 轴 | `mill_cavity` / `mill_planar` / `mill_face` / `mill_plunge` / `mill_groove` | `CAVITY_MILL` / `PLANAR_MILL` / `FACE_MILLING` / `PLUNGE_MILL` / `GROOVE_MILL` |
 | 铣削 3 轴 | `mill_zlevel` / `mill_surface` / `mill_flowcut` / `mill_chamfer` / `mill_engrave` / `mill_cylinder` | `ZLEVEL_PROFILE` / `SURFACE_CONTOUR` / `FLOWCUT` / `CHAMFER_MILL` / `ENGRAVE` / `CYLINDER_MILL` |
@@ -657,7 +672,7 @@ CAPP Plan (JSON, autocam-plan.schema.json)
 
 | Plan 字段 | NX Builder 落点 | 说明 |
 | :--- | :--- | :--- |
-| `type` | `MillToolBuilder.CutterSubtype`（嵌套枚举 `CutterSubtypes`：`Mill5`/`Mill7`/`Mill10`/`MillBall`/`ChamferTool`/`SphericalMill`/`DovetailMill`）或钻孔子类型 | 平底/球头/牛鼻/T 型(Dovetail)/倒角/钻头/丝锥… |
+| `type` | `MillToolBuilder.CutterSubtype`（嵌套枚举 `CutterSubtypes`：`Mill5`/`Mill7`/`Mill10`/`MillBall`/`ChamferTool`/`SphericalMill`/`DovetailMill`）或钻孔子类型 | 平底/球头/牛鼻/T 型(Dovetail)/倒角/钻头/丝锥… ⚠️ 读回通道 2026-09-04 定案 = `Tool.GetTypeAndSubtype`（全家族、钻族可读、语言无关；CutterSubtype 仅铣族可读）；schema 词集与映射见 [nx-tool-type-enum-spec.md](./nx-tool-type-enum-spec.md) |
 | `diameter` | `tlDiameterBuilder.Value` | 刀具直径 |
 | `height` | `tlHeightBuilder.Value` | 总长 |
 | `flute_length` | `tlFluteLnBuilder.Value` | 刃长 |
@@ -699,6 +714,10 @@ geometry_ref: {
 - 特征参数（直径/深度/螺距…）走 `feature.params`，不重复进 `geometry_ref`
 
 **几何解析链路**：当前 NX 闭环（面属性快照路径）中，Plan 的 `face_anchors`（质心+面积+类型+法向）由 NX 侧 **FaceResolver** 按属性匹配解析成 NX Tag（容差 0.01mm，命中不唯一写 `GEOM_AMBIGUOUS_MATCH` diagnostic）；云端 OCCT 路径的 `face_id / edge_id` 为预留表示，接入时走同一属性匹配；`anchor_point` 为无映射能力时的近似兜底。这是整个对接中唯一需要算法的环节（算法规格随 PlanComparer 首版校准后固化）。
+
+> ⚠️ **U-5 实证负结案**（2026-09-03/04，camprobe-geom/finalize，见 nx-plan-exporter-spec.md §5）：NXOpen.Face/
+> UFModl 无面质心/面积 API → 导出侧 face_anchors **无生产源**、首版留空（组级条目 + anchor 兜底 + diagnostic）；
+> 面级回补仅剩区域级通道（CutRegionsData，腔铣，增强候选）。FaceResolver 面匹配退 v2 重议。
 
 ### 4.7 setup 补 MCS 与机床
 
@@ -760,14 +779,14 @@ diagnostics[]   (info/warning/error)
 
 | # | 风险 | 说明 | 缓解 |
 | :--- | :--- | :--- | :--- |
-| 1 | **几何映射鸿沟** | 跨文件的面无共享标识（NX Tag / OCCT ID / 重建后新 Tag 均不同），需几何属性匹配 | 质心+面积+类型+法向属性匹配（face_anchors，容差 0.01mm），命中不唯一写 diagnostic；当前 NX 闭环先跑通 NX↔NX，OCCT 接入时复用同算法 |
+| 1 | **几何映射鸿沟** | 跨文件的面无共享标识（NX Tag / OCCT ID / 重建后新 Tag 均不同），需几何属性匹配 | 质心+面积+类型+法向属性匹配（face_anchors，容差 0.01mm），命中不唯一写 diagnostic；当前 NX 闭环先跑通 NX↔NX，OCCT 接入时复用同算法 ⚠️ U-5 结案后导出侧无面级生产源（见 §4.6 注记），NX↔NX 面映射通道随 v2 重议 |
 | 2 | **STEP 哑体** | 导入 STEP 无参数化特征树，AFR 的 Parametric 模式失效 | 用 Workpiece 识别模式；CAPP 侧以 B-Rep 特征输出为准 |
 | 3 | **CAM 会话前置** | 每个 .prt 需要 CAMSetup；空 Part 要先 `CreateCamSetup()` + 建模板组 | 插件封装"模板化初始化"（预置 MACHINE/METHOD 模板） |
 | 4 | **Inheritable 继承语义** | Builder 参数不设置时继承父组/方法组默认值，Plan 缺字段可能导致"结果和预期不同" | Mapper 显式填充关键参数；校验报告回读实际值。另注意**属性取值四形态混合**（附 A.1）——导出回读与导入写入必须按形态分支，不能统一 `.Value` |
 | 5 | **许可证** | 操作创建/组创建/通用 Builder 均 cam_base，但具体功能许可不同（实证反例：`CreateFeatureProcessBuilder` 需 `ug_holemaking`） | 前置 License 检查，不满足时报错而非静默失败；**许可要求可从 XML remarks（`License requirements:`）程序化读取**，建议做成探测而非手写表 |
 | 6 | **版本差异** | 如 `BottomClearance` 为 NX2312 新增（XML remarks "Created in NX2312.0.0" 实证）；API 面随版本漂移（2406 实证：`ProgramOrderView` 等视图对象移除、Builder 工厂移至 `OperationCollection`、`UseDefaultName` 枚举化、枚举嵌套化） | 文档标注最低版本；成员级版本可查 XML remarks "Created in NXxxxx"；能力探测 + 以 [nx2406-install-index.md](./nx2406-install-index.md) 事实清单为基准 |
-| 7 | **部署形态** | NX 是重型桌面应用，`run_journal.exe -nogui` 可批处理但启动慢；Remoting 可长驻 | 工厂端插件（推荐）或 Remoting 服务，不建议云端按需拉起 |
-| 8 | **刀路校验闭环** | NX 生成的刀路时间/长度/过切与 CAPP 预估可能不一致 | 回读 `getToolpathTime/getToolpathLength/gougeCheck` 结果反哺 Plan 评分 |
+| 7 | **部署形态** | NX 是重型桌面应用，`run_journal.exe <journal.cs>`（无 `-nogui` 旗标——2026-09-04 实证即无界面批处理） 可批处理但启动慢；Remoting 可长驻 | 工厂端插件（推荐）或 Remoting 服务，不建议云端按需拉起 |
+| 8 | **刀路校验闭环** | NX 生成的刀路时间/长度/过切与 CAPP 预估可能不一致 | 回读 `Operation.GetToolpathTime()/GetToolpathLength()` 与过切检查结果（`CAMSetup.CreateGougeCheckBuilder` / `Operation.GougeCheckStatus/Results`；无 `Operation.gougeCheck`，见索引 §2.5）反哺 Plan 评分 |
 
 ---
 
@@ -805,7 +824,7 @@ diagnostics[]   (info/warning/error)
 - 每个成员 remarks 含 `License requirements: …` 与 `Created in NXxxxx`。
 - 实证：`BottomClearance` → "Created in NX2312.0.0"；操作/组创建 → `cam_base`；`CreateFeatureProcessBuilder` → `ug_holemaking`。
 
-## 附 B：后续验证计划（进度注记 2026-09-04：除步骤 4 外主体均已实测收官）
+## 附 B：后续验证计划（进度注记 2026-09-04：探针主体全部实测收官；实现进度见步骤 4 更新）
 
 1. ✅ 已在 `run_journal.exe`（无 `-nogui` 旗标，即无界面批处理）跑通最小闭环（建组 → Create →
    Builder 设参 → Commit → 刀路），typeName/组模板对/Builder 名全部可编译可运行（camprobe-op/
@@ -814,8 +833,9 @@ diagnostics[]   (info/warning/error)
    MILL_* 方法组/MCS_MILL/PROGRAM/GENERIC_MACHINE 已录）。
 3. ✅ schema 实证化（CONFLICT-1：nx_template 语义修正 + strategy/technology 结构按附 A.2 校准，
    schema v3 落档）。
-4. ⏳ `src/NXPlugins` 实现：PlanExporter 纯逻辑核心 + [U] 单测全绿、[I] 适配器跑通 test.prt 导出
-   （见 spec）；**PlanExecutor（设计 §7 步骤 2）未开工**。
+4. ✅ `src/NXPlugins` 实现：PlanExporter（spec 落档 + [U] 全绿 + [I] 跑通 test.prt 导出并落盘复验）与
+   PlanExecutor（spec D-1/D-2=A + [U] 33/33 + [I] 三连跑收官）均已完成（2026-09-04，见各自 spec）；
+   **剩余实现 = PlanComparer（设计 §7 步骤 3）**。
 5. ✅ 三处待验证取值实测收官（2026-09-04，camprobe-finalize-010401）：Stepover 链路 = **.NET 整链
    commit 写无效（读可）**；ToolDrivePoint 默认 "SYS_CL_TIP"、setter 无校验；SpindleMode = int 自由槽
    无模式语义 → 均入 nx2406-install-index.md §2.1。残余 U-6（Stepover 有效写入通道）见 spec §5。
