@@ -130,98 +130,128 @@ public static class NxCollect
         return null;
     }
 
-    // ---- 采集：操作（程序顺序树，单视图；Tag 即唯一键） ----
+    // ---- 采集：操作 + 程序组树（程序顺序视图，单视图；Tag 即唯一键） ----
+    // v1.5-①（2026-09-04）：ProgramTree = 程序组树真实嵌套（组内成员序 = GetMembers 序，保刀路输出
+    // 序）；顶层 op（NC_PROGRAM 直接层）不进树 → exporter 兜底挂 root。ProgramOrder 保留顶层组名序
+    // （comparer 顶层组序比对口径）。NONE 组不进树/序，其下 op 仍收集（v1 parity：挂 root 兜底）。
 
     public static void CollectOperations(CAMSetup cam, ExportSnapshot snap, Action<string> log)
     {
         NCGroup root = cam.GetRoot(CAMSetup.View.ProgramOrder);
-        foreach (NCGroup top in TopProgramGroups(root))
-            snap.ProgramOrder.Add(top.Name);
-        WalkOps(root, snap, cam, log);
+        foreach (CAMObject m in SafeMembers(root, log))
+        {
+            NCGroup sub = m as NCGroup;
+            if (sub == null)
+            {
+                Operation topOp = m as Operation;                    // NC_PROGRAM 直接层 op
+                if (topOp != null) CollectOperation(topOp, snap, cam, log);
+                continue;
+            }
+            if (sub.Name == "NONE") { WalkNoneOps(sub, snap, cam, log); continue; }   // parity
+            string fam = NameOfTypeSafe(sub);
+            if (fam != "Generic PARAM object") continue;             // 程序组大类（既有口径）
+            snap.ProgramOrder.Add(sub.Name);
+            snap.ProgramTree.Add(BuildProgramNode(sub, snap, cam, log));
+        }
     }
 
-    private static void WalkOps(NCGroup g, ExportSnapshot snap, CAMSetup cam, Action<string> log)
+    private static void WalkNoneOps(NCGroup noneGroup, ExportSnapshot snap, CAMSetup cam, Action<string> log)
     {
+        foreach (CAMObject m in SafeMembers(noneGroup, log))
+        {
+            NCGroup sub = m as NCGroup;
+            if (sub != null) { WalkNoneOps(sub, snap, cam, log); continue; }
+            Operation op = m as Operation;
+            if (op != null) CollectOperation(op, snap, cam, log);
+        }
+    }
+
+    private static ProgramNode BuildProgramNode(NCGroup g, ExportSnapshot snap, CAMSetup cam, Action<string> log)
+    {
+        var node = new ProgramNode { Name = g.Name };
         foreach (CAMObject m in SafeMembers(g, log))
         {
-            if (m is NCGroup) { WalkOps((NCGroup)m, snap, cam, log); continue; }
+            NCGroup sub = m as NCGroup;
+            if (sub != null)
+            {
+                node.Members.Add(new ProgramMember { IsOperation = false, Group = BuildProgramNode(sub, snap, cam, log) });
+                continue;
+            }
             Operation op = m as Operation;
-            if (op == null) continue;
-            var o = new OperationItem
+            if (op != null)
             {
-                Name = op.Name,
-                UserName = op.UserName ?? "",
-                Key = new TagKey((ulong)(long)(int)op.Tag),
-                TypeFamily = NameOfTypeSafe(op),
-                ProgramParent = ParentName(op.ParentProgramOrder),
-                MethodParent = ParentName(op.ParentMachineMethod),
-                ToolParent = ParentName(op.ParentMachineTool),
-                GeometryParent = ParentName(op.ParentGeometry),
-                HasGeometryParent = op.ParentGeometry != null,
-            };
-            if (o.TypeFamily == "Cavity Milling")
-            {
-                try
-                {
-                    CavityMillingBuilder b = cam.CAMOperationCollection.CreateCavityMillingBuilder(op);
-                    try
-                    {
-                        TryParam(b, o, "part_stock", () => b.CutParameters.PartStock.Value);
-                        TryParam(b, o, "floor_stock", () => b.CutParameters.FloorStock.Value);
-                        TryParam(b, o, "depth_per_cut", () => b.DepthPerCut.Value);
-                    }
-                    finally { b.Destroy(); }
-                }
-                catch (Exception e) { o.ReadbackErrors.Add("cavity builder 打不开: " + e.Message); }
+                OperationItem o = CollectOperation(op, snap, cam, log);
+                node.Members.Add(new ProgramMember
+                { IsOperation = true, OpName = op.Name, OpKey = o.Key });
             }
-            else if (o.TypeFamily == "Drilling")
-            {
-                // 新模板 DRILLING 家族 → HoleDrillingBuilder（camprobe-drill 实证 BottomStock 可读）
-                try
-                {
-                    HoleDrillingBuilder b = cam.CAMOperationCollection.CreateHoleDrillingBuilder(op);
-                    try { TryParam(b, o, "bottom_stock", () => b.CuttingParameters.BottomStock.Value); }
-                    finally { b.Destroy(); }
-                }
-                catch (Exception e) { o.ReadbackErrors.Add("hole builder 打不开: " + e.Message); }
-            }
-            else if (o.TypeFamily == "Point to Point")
-            {
-                // PTP 旧模板（打点/钻头G83）→ PointToPointBuilder（2406 实证：CreateHoleDrillingBuilder
-                // 会类型转换失败）；参数面仅 HoleDepth/Retract 等（孔细分参数面属 #3 范围，不扩读）
-                try
-                {
-                    PointToPointBuilder b = cam.CAMOperationCollection.CreatePointToPointBuilder(op);
-                    try
-                    {
-                        TryParam(b, o, "hole_depth", () => b.HoleDepth.Value);
-                        log("  PTP op " + o.Name + " 参数面待 #3 细化（builder 已开验证，当前仅读 hole_depth）");
-                    }
-                    finally { b.Destroy(); }
-                }
-                catch (Exception e) { o.ReadbackErrors.Add("ptp builder 打不开: " + e.Message); }
-            }
-            snap.Operations.Add(o);
         }
+        return node;
+    }
+
+    private static OperationItem CollectOperation(Operation op, ExportSnapshot snap, CAMSetup cam, Action<string> log)
+    {
+        var o = new OperationItem
+        {
+            Name = op.Name,
+            UserName = op.UserName ?? "",
+            Key = new TagKey((ulong)(long)(int)op.Tag),
+            TypeFamily = NameOfTypeSafe(op),
+            ProgramParent = ParentName(op.ParentProgramOrder),
+            MethodParent = ParentName(op.ParentMachineMethod),
+            ToolParent = ParentName(op.ParentMachineTool),
+            GeometryParent = ParentName(op.ParentGeometry),
+            HasGeometryParent = op.ParentGeometry != null,
+        };
+        if (o.TypeFamily == "Cavity Milling")
+        {
+            try
+            {
+                CavityMillingBuilder b = cam.CAMOperationCollection.CreateCavityMillingBuilder(op);
+                try
+                {
+                    TryParam(b, o, "part_stock", () => b.CutParameters.PartStock.Value);
+                    TryParam(b, o, "floor_stock", () => b.CutParameters.FloorStock.Value);
+                    TryParam(b, o, "depth_per_cut", () => b.DepthPerCut.Value);
+                }
+                finally { b.Destroy(); }
+            }
+            catch (Exception e) { o.ReadbackErrors.Add("cavity builder 打不开: " + e.Message); }
+        }
+        else if (o.TypeFamily == "Drilling")
+        {
+            // 新模板 DRILLING 家族 → HoleDrillingBuilder（camprobe-drill 实证 BottomStock 可读）
+            try
+            {
+                HoleDrillingBuilder b = cam.CAMOperationCollection.CreateHoleDrillingBuilder(op);
+                try { TryParam(b, o, "bottom_stock", () => b.CuttingParameters.BottomStock.Value); }
+                finally { b.Destroy(); }
+            }
+            catch (Exception e) { o.ReadbackErrors.Add("hole builder 打不开: " + e.Message); }
+        }
+        else if (o.TypeFamily == "Point to Point")
+        {
+            // PTP 旧模板（打点/钻头G83）→ PointToPointBuilder（2406 实证：CreateHoleDrillingBuilder
+            // 会类型转换失败）；参数面仅 HoleDepth/Retract 等（孔细分参数面属 #3 范围，不扩读）
+            try
+            {
+                PointToPointBuilder b = cam.CAMOperationCollection.CreatePointToPointBuilder(op);
+                try
+                {
+                    TryParam(b, o, "hole_depth", () => b.HoleDepth.Value);
+                    log("  PTP op " + o.Name + " 参数面待 #3 细化（builder 已开验证，当前仅读 hole_depth）");
+                }
+                finally { b.Destroy(); }
+            }
+            catch (Exception e) { o.ReadbackErrors.Add("ptp builder 打不开: " + e.Message); }
+        }
+        snap.Operations.Add(o);
+        return o;
     }
 
     private static void TryParam(object builder, OperationItem o, string key, Func<double> getter)
     {
         try { o.Params[key] = getter(); }
         catch (Exception e) { o.ReadbackErrors.Add("参数 " + key + " 回读失败: " + e.Message); }
-    }
-
-    private static List<NCGroup> TopProgramGroups(NCGroup root)
-    {
-        var list = new List<NCGroup>();
-        foreach (CAMObject m in SafeMembers(root, null))
-        {
-            NCGroup sub = m as NCGroup;
-            if (sub == null || sub.Name == "NONE") continue;
-            string fam = NameOfTypeSafe(sub);
-            if (fam == "Generic PARAM object") list.Add(sub);   // 程序组大类；机床/方法等树同名大类不在此调用
-        }
-        return list;
     }
 
     // ---- 工具 ----

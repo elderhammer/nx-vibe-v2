@@ -88,7 +88,7 @@ public class ExecutorAdapter
             var methodMap = new Dictionary<string, NCGroup>();
             var setupWpMap = new Dictionary<string, NCGroup>();
 
-            Step("程序组（模板默认 PROGRAM 根，子组按 plan）", () =>
+            Step("程序组根准备（模板默认 PROGRAM 复用；子组在 Steps 交错步中按 plan DFS 创建）", () =>
             {
                 NCGroup root = cam.GetRoot(CAMSetup.View.ProgramOrder);
                 NCGroup defProg = FindChildByName(root, "PROGRAM");
@@ -98,21 +98,6 @@ public class ExecutorAdapter
                         NCGroupCollection.UseDefaultName.False, "PROGRAM");
                 }
                 progMap["PROGRAM"] = defProg;
-                // 父先子后（按 Full 排序）
-                var ordered = new List<ProgramCommand>(rp.Programs);
-                ordered.Sort(delegate(ProgramCommand a, ProgramCommand b)
-                { return StringComparer.Ordinal.Compare(a.Full, b.Full); });
-                foreach (ProgramCommand pc in ordered)
-                {
-                    if (pc.Full == "PROGRAM" && pc.ParentFull == "") continue;   // 默认组本身
-                    NCGroup parent = pc.ParentFull.Length == 0 ? defProg
-                        : (progMap.ContainsKey(pc.ParentFull) ? progMap[pc.ParentFull] : defProg);
-                    if (FindChildByName(parent, pc.Name) != null) { progMap[pc.Full] = parent; continue; }
-                    NCGroup g = cam.CAMGroupCollection.CreateProgram(parent, "mill_contour", "PROGRAM",
-                        NCGroupCollection.UseDefaultName.False, pc.Name);
-                    progMap[pc.Full] = g;
-                    Log("  program: " + pc.Full + " (parent=" + pc.ParentFull + ")");
-                }
             });
 
             Step("刀具组（模板对 + 数值直填）", () =>
@@ -228,10 +213,29 @@ public class ExecutorAdapter
                 Log("  方法锚点数=" + methodMap.Count);
             });
 
-            Step("逐 op 创建 + 白名单参数写（DFS 序）", () =>
+            Step("重建执行（workplan DFS 交错：组↔工序，v1.5-① 保序）", () =>
             {
-                foreach (OpCommand c in rp.Operations)
+                NCGroup rootProg = cam.GetRoot(CAMSetup.View.ProgramOrder);
+                foreach (RebuildStep st in rp.Steps)
                 {
+                    if (st.IsProgram)
+                    {
+                        ProgramCommand pc = st.Program;
+                        if (progMap.ContainsKey(pc.Full)) continue;   // 幂等
+                        NCGroup parent;
+                        // v1.5-①：ParentFull="" = NX 程序根（顶层组）；"PROGRAM"/其它父全名 → progMap（缺 → 默认组兜底）
+                        if (pc.ParentFull.Length == 0) parent = rootProg;
+                        else parent = progMap.ContainsKey(pc.ParentFull) ? progMap[pc.ParentFull] : progMap["PROGRAM"];
+                        NCGroup existing = FindChildByName(parent, pc.Name);
+                        if (existing != null) { progMap[pc.Full] = existing; continue; }   // 已存在（默认/同名）→ 复用
+                        NCGroup g = cam.CAMGroupCollection.CreateProgram(parent, "mill_contour", "PROGRAM",
+                            NCGroupCollection.UseDefaultName.False, pc.Name);
+                        progMap[pc.Full] = g;
+                        Log("  program: " + pc.Full + " (parent=" + pc.ParentFull + ")");
+                        continue;
+                    }
+                    // 工序步：四父锚点齐才创建（POST-1）
+                    OpCommand c = st.Operation;
                     NCGroup prog = progMap.ContainsKey(c.ProgramFull) ? progMap[c.ProgramFull] : progMap["PROGRAM"];
                     NCGroup method = methodMap.ContainsKey(c.MethodAnchor) ? methodMap[c.MethodAnchor] : null;
                     NCGroup tool = toolMap.ContainsKey(c.ToolId) ? toolMap[c.ToolId] : null;

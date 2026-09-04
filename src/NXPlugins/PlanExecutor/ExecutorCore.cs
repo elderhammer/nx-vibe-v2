@@ -109,7 +109,7 @@ namespace NXPlugins.PlanExecutor
             var wsOrder = new List<string>();            // DFS 前序叶（INV-3）
             var wsToProgramFull = new Dictionary<string, string>();
             var wsToName = new Dictionary<string, string>();
-            CollectWorkplan(plan.workplan.root, "", programsByFull, wsOrder, wsToProgramFull, wsToName, r);
+            CollectWorkplan(plan.workplan.root, "", true, programsByFull, wsOrder, wsToProgramFull, wsToName, r);
             foreach (WorkingstepJson w in plan.workingsteps)
                 if (!wsToProgramFull.ContainsKey(w.workingstep_id))
                 {
@@ -165,7 +165,9 @@ namespace NXPlugins.PlanExecutor
                         "op 被 " + n + " 个 workingstep 引用（1:1 违反）");
             }
 
-            foreach (string wsId in wsOrder)   // INV-3：DFS 叶序
+            // 逐 ws 构建 op 指令（wsOrder = DFS 叶序，INV-3）
+            var opByWsCmd = new Dictionary<string, OpCommand>();
+            foreach (string wsId in wsOrder)
             {
                 WorkingstepJson w = wsById[wsId];
                 OperationJson o = opById[w.operation_ref];
@@ -199,7 +201,11 @@ namespace NXPlugins.PlanExecutor
                 AppendParams(opCmd, o.technology, true, r);
 
                 r.Operations.Add(opCmd);
+                opByWsCmd[wsId] = opCmd;
             }
+
+            // v1.5-① 保序：Steps = 树 DFS 交错（组 ↔ 工序），executor 依此创建（NX 成员序=创建序）
+            BuildSteps(plan.workplan.root, "", true, programsByFull, opByWsCmd, r);
             return r;
         }
 
@@ -241,8 +247,11 @@ namespace NXPlugins.PlanExecutor
             }
         }
 
-        /// <summary>DFS：程序指令（去重 by Full）、ws 叶前序、ws → 最近程序路径（无 → ""）与叶名。</summary>
-        private static void CollectWorkplan(WorkplanNodeJson node, string parentFull,
+        /// <summary>DFS：程序指令（去重 by Full）、ws 叶前序、ws → 最近程序路径（无 → ""）与叶名。
+        /// 根语义（v1.5-①，2026-09-04）：plan root = NC_PROGRAM 镜像；root 的直接程序子节点 = 顶层组，
+        /// 建在 NX 程序根（ProgramCommand.ParentFull=""）；其中与模板默认同名（"PROGRAM"）→ 复用默认组
+        /// 不产生指令（子孙父链以 "PROGRAM/…" 表达）；root 直挂 ws → ""（fallback 默认组，同 v1）。</summary>
+        private static void CollectWorkplan(WorkplanNodeJson node, string parentFull, bool isRoot,
             Dictionary<string, ProgramCommand> programsByFull,
             List<string> wsOrder, Dictionary<string, string> wsToProgramFull,
             Dictionary<string, string> wsToName, RebuildPlan r)
@@ -259,13 +268,48 @@ namespace NXPlugins.PlanExecutor
                     }
                     continue;
                 }
+                if (isRoot && child.name == "PROGRAM")
+                {
+                    // 顶层组与模板默认同名 → 复用默认组（不建指令），其子孙容器 = "PROGRAM"
+                    CollectWorkplan(child, "PROGRAM", false, programsByFull, wsOrder,
+                        wsToProgramFull, wsToName, r);
+                    continue;
+                }
                 string full = parentFull.Length == 0 ? child.name : parentFull + "/" + child.name;
                 if (programsByFull.ContainsKey(full))
                     AddDiag(r, RebuildDiagLevel.Warning, "DUP_PROGRAM", full,
                         "程序组路径重复（合并）: " + full);
                 else
                     programsByFull[full] = new ProgramCommand(child.name, parentFull);
-                CollectWorkplan(child, full, programsByFull, wsOrder, wsToProgramFull, wsToName, r);
+                CollectWorkplan(child, full, false, programsByFull, wsOrder, wsToProgramFull, wsToName, r);
+            }
+        }
+
+        /// <summary>v1.5-① 保序：按 plan workplan 树 DFS 生成交错执行序（组↔工序）。
+        /// 顶层与模板默认同名 PROGRAM → 复用容器不产生组步（子孙 op 挂默认组，无组步前导）；
+        /// 树外 ws（顶层直挂）→ op 步照发（放默认组，同 v1 fallback）。</summary>
+        private static void BuildSteps(WorkplanNodeJson node, string container, bool isRoot,
+            Dictionary<string, ProgramCommand> programsByFull,
+            Dictionary<string, OpCommand> opByWsCmd, RebuildPlan r)
+        {
+            foreach (WorkplanNodeJson child in node.children)
+            {
+                if (child.kind == "workingstep")
+                {
+                    OpCommand opCmd;
+                    if (string.IsNullOrEmpty(child.@ref)) continue;
+                    if (opByWsCmd.TryGetValue(child.@ref, out opCmd)) r.Steps.Add(RebuildStep.ForOperation(opCmd));
+                    continue;
+                }
+                if (isRoot && child.name == "PROGRAM")
+                {
+                    BuildSteps(child, "PROGRAM", false, programsByFull, opByWsCmd, r);   // 复用默认组
+                    continue;
+                }
+                string full = container.Length == 0 ? child.name : container + "/" + child.name;
+                ProgramCommand pc;
+                if (programsByFull.TryGetValue(full, out pc)) r.Steps.Add(RebuildStep.ForProgram(pc));
+                BuildSteps(child, full, false, programsByFull, opByWsCmd, r);
             }
         }
 

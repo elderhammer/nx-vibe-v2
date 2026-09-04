@@ -40,14 +40,30 @@ namespace NXPlugins.PlanExecutor
         { ToolId = toolId; Pair = pair; TypeInferred = typeInferred; }
     }
 
-    /// <summary>程序组指令（全名 = 父链路径拼 "/"，根层 PROGRAM 为默认组不建）。</summary>
+    /// <summary>程序组指令（全名 = 父链路径拼 "/"）。
+    /// 父语义（v1.5-①，2026-09-04）：ParentFull="" = NX 程序根（顶层组，GetRoot(ProgramOrder) 下）；
+    /// ParentFull="PROGRAM" = 模板默认组容器（顶层同名组复用，不建指令）；其余 = 父组全名。
+    /// 顶层与模板默认同名（PROGRAM）的组不产生指令（ExecutorCore 复用分支）。</summary>
     public sealed class ProgramCommand
     {
-        public readonly string Full;            // 如 "A01"（根层）/ "A01/子组"
+        public readonly string Full;            // 如 "A01"（顶层）/ "PROGRAM/A1-1" / "A01/子组"
         public readonly string Name;            // 本组名
-        public readonly string ParentFull;      // 父全名（"" = 默认 PROGRAM 组下）
+        public readonly string ParentFull;      // 父全名（"" = NX 程序根；"PROGRAM" = 默认组容器）
         public ProgramCommand(string name, string parentFull)
         { Name = name; ParentFull = parentFull; Full = parentFull.Length == 0 ? name : parentFull + "/" + name; }
+    }
+
+    /// <summary>重建执行步（v1.5-① 保序，160101 comparer ORDER_SHIFT 实证）：workplan DFS 交错序——
+    /// 程序组与工序按 plan 树序交替，executor 依此创建 → rebuilt 组成员序与 gt 同构（刀路输出序一致）。</summary>
+    public sealed class RebuildStep
+    {
+        public readonly bool IsProgram;         // true = 建组；false = 建工序
+        public readonly ProgramCommand Program; // IsProgram 时非空
+        public readonly OpCommand Operation;    // !IsProgram 时非空
+        private RebuildStep(bool isProgram, ProgramCommand p, OpCommand o)
+        { IsProgram = isProgram; Program = p; Operation = o; }
+        public static RebuildStep ForProgram(ProgramCommand p) { return new RebuildStep(true, p, null); }
+        public static RebuildStep ForOperation(OpCommand o) { return new RebuildStep(false, null, o); }
     }
 
     /// <summary>setup → MCS 几何链指令（MCS 组 + 其下 WORKPIECE 子组，v1 无几何指派）。</summary>
@@ -94,5 +110,7 @@ namespace NXPlugins.PlanExecutor
         public readonly List<ToolCommand> Tools = new List<ToolCommand>();
         public readonly List<GeometryChainCommand> Setups = new List<GeometryChainCommand>();
         public readonly List<OpCommand> Operations = new List<OpCommand>();
+        /// <summary>DFS 交错执行序（程序组 + 工序，v1.5-① 保序；空 = 无指令）。</summary>
+        public readonly List<RebuildStep> Steps = new List<RebuildStep>();
     }
 }

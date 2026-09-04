@@ -1,7 +1,10 @@
 // ExporterCore.cs — 快照 → PlanDocument 的核心映射（纯逻辑，无 NX 依赖）
 // 性质落点：INV-3（1 op ↔ 1 ws）、INV-4（四父链缺失 warning）、INV-5（Tag 去重守卫）、
 // INV-6（diagnostics 聚合：同 op 同 code 一次）、POST-3（ReadbackErrors → diag，不静默）、
-// POST-6（歧义 → 默认对 + warning）。workplan 树序 = 快照顶层程序组序列 + 每工序节点。
+// POST-6（歧义 → 默认对 + warning）。
+// workplan 树（v1.5-①，2026-09-04）：root = NC_PROGRAM 镜像（虚拟，名 "PROGRAM" 落盘展示）；
+// 树形 = 快照 ProgramTree 递归渲染（嵌套组真实展开，组内成员序 = NX GetMembers 序保刀路输出序）；
+// op 经 TagKey 精确定位 ws 叶；树中缺失 op（顶层直挂/父组不在树）→ 兜底挂 root 尾。
 
 using System;
 using System.Collections.Generic;
@@ -68,16 +71,12 @@ namespace NXPlugins.PlanExporter
                 toolSeqByName[t.Name] = tid;
             }
 
-            // operations / workingsteps / features（1:1）与 workplan 节点
-            var wpByParent = new Dictionary<string, WorkplanNodeJson>();
+            // operations / workingsteps / features（1:1）；workplan 节点树在 op 循环后渲染
+            // （v1.5-①：root = NC_PROGRAM 镜像（虚拟），树形 = ProgramTree 真实嵌套展开）
+            var wsByOpKey = new Dictionary<TagKey, string>();    // op.Key → wsId（生产，key 精确定位）
+            var wsByOpName = new Dictionary<string, string>();   // op.Name → wsId（夹具退化，首名）
             var root = doc.workplan.root;
             root.name = "PROGRAM";
-            foreach (string prog in snap.ProgramOrder)
-            {
-                var g = new WorkplanNodeJson { kind = "program", name = prog };
-                root.children.Add(g);
-                wpByParent[prog] = g;
-            }
 
             int opIdx = 0, wsIdx = 0, featIdx = 0;
             foreach (OperationItem o in snap.Operations)
@@ -150,11 +149,23 @@ namespace NXPlugins.PlanExporter
                     setup_ref = snap.Setups.Count > 0 ? "S-01" : "",
                 });
                 doc.features.Add(new FeatureJson { feature_id = "F-" + featIdx.ToString("D2") });
+                wsByOpKey[o.Key] = wsId;
+                if (!wsByOpName.ContainsKey(o.Name)) wsByOpName[o.Name] = wsId;   // 首名（夹具退化）
+            }
 
-                // workplan：工序节点挂到其程序父组（缺父 → 挂 root）
-                WorkplanNodeJson parent;
-                if (!wpByParent.TryGetValue(o.ProgramParent, out parent)) parent = root;
-                parent.children.Add(new WorkplanNodeJson { kind = "workingstep", name = o.Name, @ref = wsId });
+            // workplan 渲染（v1.5-①）：ProgramTree 递归建组（组内成员序 = NX GetMembers 序），
+            // op 成员 → ws 叶（key 精确定位，同名/跨组不串挂）；树中缺失 op → 兜底挂 root 尾。
+            var renderedKeys = new HashSet<TagKey>();
+            var renderedNames = new HashSet<string>();   // 夹具退化（无 OpKey）渲染登记
+            foreach (ProgramNode top in snap.ProgramTree)
+                RenderGroup(top, root, wsByOpKey, wsByOpName, renderedKeys, renderedNames);
+            foreach (OperationItem o in snap.Operations)
+            {
+                // 被剔除 op（Key null）或已在树内（key/退化名命中）→ 跳过
+                if (o.Key == null || renderedKeys.Contains(o.Key) || renderedNames.Contains(o.Name)) continue;
+                string wsId = wsByOpKey[o.Key];
+                renderedKeys.Add(o.Key);
+                root.children.Add(new WorkplanNodeJson { kind = "workingstep", name = o.Name, @ref = wsId });
             }
 
             // INV-6：聚合 + 落文档
@@ -167,6 +178,36 @@ namespace NXPlugins.PlanExporter
                     operation_id = d.OperationName,
                 });
             return doc;
+        }
+
+        /// <summary>v1.5-①：递归渲染 ProgramTree 组节点（成员序 = NX GetMembers 序，组/ws 交错保真）。
+        /// op 成员渲染后登记（生产 key / 夹具退化名），防兜底循环重复挂载。</summary>
+        private static void RenderGroup(ProgramNode node, WorkplanNodeJson parentJson,
+            Dictionary<TagKey, string> wsByOpKey, Dictionary<string, string> wsByOpName,
+            HashSet<TagKey> renderedKeys, HashSet<string> renderedNames)
+        {
+            var pn = new WorkplanNodeJson { kind = "program", name = node.Name };
+            foreach (ProgramMember m in node.Members)
+            {
+                if (m.IsOperation)
+                {
+                    string wsId;
+                    if (m.OpKey != null)
+                    {
+                        if (!wsByOpKey.TryGetValue(m.OpKey, out wsId)) continue;
+                        renderedKeys.Add(m.OpKey);
+                    }
+                    else
+                    {
+                        if (!wsByOpName.TryGetValue(m.OpName, out wsId)) continue;   // 夹具退化（首名）
+                        renderedNames.Add(m.OpName);
+                    }
+                    pn.children.Add(new WorkplanNodeJson { kind = "workingstep", name = m.OpName, @ref = wsId });
+                }
+                else if (m.Group != null)
+                    RenderGroup(m.Group, pn, wsByOpKey, wsByOpName, renderedKeys, renderedNames);
+            }
+            parentJson.children.Add(pn);
         }
 
         /// <summary>GetNameOfType 大类 → operation_type 粗类（U-1 决议：细类交给识别/CAPP 层）。</summary>

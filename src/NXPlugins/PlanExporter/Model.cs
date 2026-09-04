@@ -30,7 +30,27 @@ namespace NXPlugins.PlanExporter
         public readonly List<OperationItem> Operations = new List<OperationItem>();
         public readonly List<ToolItem> Tools = new List<ToolItem>();
         public readonly List<SetupItem> Setups = new List<SetupItem>();
-        public readonly List<string> ProgramOrder = new List<string>(); // 顶层程序组名序列（树序）
+        /// <summary>顶层程序组名序列（comparer 顶层组序比对用；导出侧不再消费——v1.5-① 起树形取 ProgramTree）。</summary>
+        public readonly List<string> ProgramOrder = new List<string>();
+        /// <summary>顶层程序组树（v1.5-①：嵌套组真实展开，组内成员保 NX GetMembers 序；空 = 无程序组）。</summary>
+        public readonly List<ProgramNode> ProgramTree = new List<ProgramNode>();
+    }
+
+    /// <summary>程序组树节点（ProgramOrder 视图自包含结构；子组经 Members 引用嵌套）。</summary>
+    public sealed class ProgramNode
+    {
+        public string Name = "";
+        /// <summary>组内有序成员（NX GetMembers 序：工序与子组混合——保刀路输出序）。</summary>
+        public readonly List<ProgramMember> Members = new List<ProgramMember>();
+    }
+
+    /// <summary>程序组内一个有序成员。</summary>
+    public sealed class ProgramMember
+    {
+        public bool IsOperation = true;   // false = 子组
+        public ProgramNode Group = null;  // !IsOperation：子组节点（递归）
+        public string OpName = "";        // IsOperation：工序名（日志/退化关联）
+        public TagKey OpKey = null;       // IsOperation：工序去重键（生产采集必填，同名/跨组精确定位）
     }
 
     /// <summary>一个工序在 NX 中的结构镜像（INV-4：四父链；INV-5：TagKey 唯一）。</summary>

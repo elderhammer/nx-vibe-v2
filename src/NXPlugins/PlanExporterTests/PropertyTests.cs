@@ -53,6 +53,10 @@ namespace NXPlugins.PlanExporterTests
                 CreatedAt = "2026-09-03T08:00:00+08:00",
             };
             snap.ProgramOrder.Add("A01");
+            var a01 = new ProgramNode { Name = "A01" };
+            a01.Members.Add(new ProgramMember { IsOperation = true, OpName = "CAVITY_MILL" });
+            a01.Members.Add(new ProgramMember { IsOperation = true, OpName = "打点_COPY_COPY_COPY" });
+            snap.ProgramTree.Add(a01);
             snap.Setups.Add(new SetupItem
             {
                 Name = "MCS_1",
@@ -336,6 +340,79 @@ namespace NXPlugins.PlanExporterTests
                 Assert.True(f.@params != null && f.@params.Count == 0, "C1-INV-4 params 恒空");
             }
             AssertValid(doc, "C1-INV-3 瘦身 feature 后 validator 闭合仍过");
+        }
+
+        // ---------- v1.5-①（comparer spec §2 口径破绽根因修复：workplan 树真实展开） ----------
+
+        // 嵌套夹具：模拟 test.prt 程序树——顶层 [PROGRAM(空), A01]；
+        // A01 成员序 = [CAVITY_MILL, A1-1(→打点), A1-3(→钻头G83)]（组与工序混合序）。
+        private static ExportSnapshot NestedSnapshot()
+        {
+            var snap = new ExportSnapshot { Name = "嵌套程序组样例", InputRef = "nested.prt" };
+            snap.ProgramOrder.Add("PROGRAM");
+            snap.ProgramOrder.Add("A01");
+            snap.ProgramTree.Add(new ProgramNode { Name = "PROGRAM" });     // 顶层真实空组
+            var a01 = new ProgramNode { Name = "A01" };
+            var a11 = new ProgramNode { Name = "A1-1" };
+            a11.Members.Add(new ProgramMember { IsOperation = true, OpName = "打点_COPY_COPY_COPY" });
+            var a13 = new ProgramNode { Name = "A1-3" };
+            a13.Members.Add(new ProgramMember { IsOperation = true, OpName = "钻头G83_COPY_3_COPY_COPY_COPY_1" });
+            a01.Members.Add(new ProgramMember { IsOperation = true, OpName = "CAVITY_MILL" });
+            a01.Members.Add(new ProgramMember { IsOperation = false, Group = a11 });
+            a01.Members.Add(new ProgramMember { IsOperation = false, Group = a13 });
+            snap.ProgramTree.Add(a01);
+            snap.Setups.Add(new SetupItem { Name = "MCS_1", McsOrigin = new double[] { 0, 0, 0 } });
+            snap.Tools.Add(new ToolItem { Name = "T1", NxType = "Mill", NxSubtype = "Mill5" });
+            snap.Operations.Add(Op("CAVITY_MILL", "Cavity Milling", "1", "A01", "MILL_ROUGH", "T1", true));
+            snap.Operations.Add(Op("打点_COPY_COPY_COPY", "Point to Point", "2", "A1-1", "DRILL_METHOD", "T1", true));
+            snap.Operations.Add(Op("钻头G83_COPY_3_COPY_COPY_COPY_1", "Point to Point", "3", "A1-3", "DRILL_METHOD", "T1", true));
+            return snap;
+        }
+
+        private static WorkplanNodeJson FindChild(WorkplanNodeJson n, string name)
+        {
+            foreach (WorkplanNodeJson c in n.children)
+                if (c.name == name) return c;
+            return null;
+        }
+
+        // v1.5-①：嵌套程序组真实展开——op 的 ws 挂其真实父组节点，不再压平归 root。
+        public static void test_v15_nested_program_groups_expand_not_flattened()
+        {
+            PlanDocument doc = ExporterCore.Build(NestedSnapshot(), WhiteList.Resolve);
+            WorkplanNodeJson root = doc.workplan.root;
+            Assert.True(root.children.Count == 2, "root.children 应 = 顶层组 [PROGRAM, A01]");
+            WorkplanNodeJson a01 = FindChild(root, "A01");
+            Assert.NotNull(a01, "顶层 A01 组节点应存在");
+            Assert.True(a01.children.Count == 3, "A01.children 应 = [ws CAVITY_MILL, A1-1, A1-3]（成员序保真）");
+            Assert.True(a01.children[0].kind == "workingstep" && a01.children[0].name == "CAVITY_MILL",
+                "A01 首个成员应为 CAVITY_MILL ws");
+            WorkplanNodeJson a11 = a01.children[1];
+            Assert.True(a11.kind == "program" && a11.name == "A1-1", "A01 第二成员应为 A1-1 组");
+            Assert.True(a11.children.Count == 1 && a11.children[0].name == "打点_COPY_COPY_COPY",
+                "打点 ws 应挂 A1-1 组下（不再归 root）");
+            WorkplanNodeJson a13 = a01.children[2];
+            Assert.True(a13.kind == "program" && a13.name == "A1-3"
+                && a13.children[0].name == "钻头G83_COPY_3_COPY_COPY_COPY_1",
+                "G83 ws 应挂 A1-3 组下（不再归 root）");
+            // ws ref 与 operations/workingsteps 1:1 闭合（INV-3 保持）
+            Assert.True(doc.workingsteps.Count == 3 && doc.operations.Count == 3, "1 op ↔ 1 ws 保持");
+            AssertValid(doc, "v1.5-① 嵌套展开后校验通过");
+        }
+
+        // v1.5-①：树中缺失/顶层 op（ProgramParent 空串）→ ws 兜底挂 root（现状语义不回归）。
+        public static void test_v15_op_missing_from_tree_hangs_root_fallback()
+        {
+            ExportSnapshot snap = SampleSnapshot();   // ProgramTree=[A01(CAVITY,打点)]，与 ops 一致
+            snap.Operations.Add(Op("顶层直挂op", "Cavity Milling", "9", "", "MILL_ROUGH", "PROBE_T1", true));
+            snap.Operations.Add(Op("孤儿组op", "Cavity Milling", "8", "NO_SUCH_GROUP", "MILL_ROUGH", "PROBE_T1", true));
+            PlanDocument doc = ExporterCore.Build(snap, WhiteList.Resolve);
+            WorkplanNodeJson root = doc.workplan.root;
+            WorkplanNodeJson topOp = FindChild(root, "顶层直挂op");
+            WorkplanNodeJson orphan = FindChild(root, "孤儿组op");
+            Assert.NotNull(topOp, "顶层 op（ProgramParent 空）应兜底挂 root");
+            Assert.NotNull(orphan, "父组不在树中的 op 应兜底挂 root（不静默丢失）");
+            AssertValid(doc, "v1.5-① 兜底挂 root 后校验通过");
         }
     }
 }

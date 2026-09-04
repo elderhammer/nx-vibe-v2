@@ -32,7 +32,9 @@ nx-plan-contract-cleanup-spec.md）；⑥ 每 op 经 workingstep 1:1 挂 setup_r
 
 ## 2. 数据结构要点
 
-- `RebuildPlan`（纯逻辑指令容器）：Programs 树（名+层级，源 workplan DFS）、Tools 列表（数值字段 +
+- `RebuildPlan`（纯逻辑指令容器）：Programs 树（名+层级，源 workplan DFS；**根语义 v1.5-①
+  2026-09-04**：plan root=NC_PROGRAM 镜像，顶层组 ParentFull=""=NX 程序根；顶层与模板默认同名
+  PROGRAM → 复用默认组不建指令，子孙父链 "PROGRAM/…"）、Tools 列表（数值字段 +
   经 D-2 决策得到的模板对）、Operations（op_id/名/四父**锚点名**/可写参数指令表）、SetupGeometries
   （每 setup：MCS 组名 + WORKPIECE 子组）。
 - 四父锚点解析规则：**Program**=workplan 树序建组（缺父挂根，与导出 A8 同口径）；**Method**=模板

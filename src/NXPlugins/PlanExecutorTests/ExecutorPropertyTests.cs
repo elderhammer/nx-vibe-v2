@@ -323,5 +323,134 @@ namespace NXPlugins.PlanExporterTests
                 if (d.Code == "REF_DANGLING") n++;
             Assert.True(n == 2, "两个不同 scope 各一条（n=" + n + "）");
         }
+
+        // ---------- v1.5-①（comparer spec §2 口径破绽根因修复：workplan 根语义对齐） ----------
+
+        private static ProgramCommand FindProgram(RebuildPlan r, string full)
+        {
+            foreach (ProgramCommand p in r.Programs)
+                if (p.Full == full) return p;
+            return null;
+        }
+
+        private static string OpProgramFull(RebuildPlan r, string opId)
+        {
+            foreach (OpCommand c in r.Operations)
+                if (c.OpId == opId) return c.ProgramFull;
+            return "(未找到 " + opId + ")";
+        }
+
+        // v1.5-① X1（语义回归锚）：plan root 直接程序子节点 = 顶层组 → ProgramCommand.ParentFull=""
+        // = "NX 程序根"（v1.5 语义；v1 实现把 ParentFull="" 落到模板默认 PROGRAM 组下——错位一级的
+        // 差异在 adapter 解析的 [I] 层，comparer PROGRAM_ORDER_DIFF 根因；[U] 层钉指令形状不回归）。
+        public static void test_v15_toplevel_groups_map_to_nx_root_not_default_program()
+        {
+            PlanDocument p = SamplePlan();   // root.children = [A01(WS-01), WS-02 直挂根]
+            var root = p.workplan.root;
+            var top1 = new WorkplanNodeJson { kind = "program", name = "TOP1" };
+            top1.children.Add(new WorkplanNodeJson { kind = "workingstep", name = "顶组op", @ref = "WS-02" });
+            root.children.Clear();
+            root.children.Add(top1);                          // TOP1 顶层（原 WS-02 根挂改为挂 TOP1 下）
+            var a01 = new WorkplanNodeJson { kind = "program", name = "A01" };
+            a01.children.Add(new WorkplanNodeJson { kind = "workingstep", name = "CAVITY_MILL", @ref = "WS-01" });
+            root.children.Add(a01);
+            RebuildPlan r = ExecutorCore.Build(p);
+            Assert.True(r.Ok, "合法嵌套 plan 应 Ok");
+            Assert.NotNull(FindProgram(r, "TOP1"), "TOP1 应为顶层程序指令");
+            Assert.NotNull(FindProgram(r, "A01"), "A01 应为顶层程序指令");
+            Assert.True(FindProgram(r, "TOP1").ParentFull == "", "TOP1.ParentFull 应为空串（=NX 程序根）");
+            Assert.True(OpProgramFull(r, "OP-002") == "TOP1", "OP-002 程序锚点应 = TOP1（顶层组）");
+            Assert.True(OpProgramFull(r, "OP-001") == "A01", "OP-001 程序锚点应 = A01");
+        }
+
+        // v1.5-① X2：plan 顶层组与模板默认同名（PROGRAM）→ 复用默认组不建指令，子孙组父链以
+        // "PROGRAM/…" 表达（与 gt 顶层真实 PROGRAM 组语义合并）。
+        public static void test_v15_toplevel_program_group_reuses_default_not_created()
+        {
+            var p = new PlanDocument();
+            p.contract_version = "3.0";
+            p.plan_id = "P-2";
+            p.input_ref = "x";
+            p.setups.Add(new SetupJson { setup_id = "S-01", name = "MCS_MILL" });
+            p.resources.tools.Add(new ToolJson { tool_id = "T-001", type = "Mill", subtype = "Mill5" });
+            for (int i = 1; i <= 3; i++)
+            {
+                p.operations.Add(new OperationJson
+                {
+                    operation_id = "OP-00" + i, operation_type = "milling",
+                    nx_template = new NxTemplateJson { type = "mill_contour", subtype = "CAVITY_MILL" },
+                    tool_ref = "T-001", method_ref = "MILL_ROUGH",
+                });
+                p.workingsteps.Add(new WorkingstepJson
+                {
+                    workingstep_id = "WS-0" + i, feature_ref = "F-0" + i,
+                    operation_ref = "OP-00" + i, setup_ref = "S-01",
+                });
+            }
+            var root = p.workplan.root;
+            root.name = "PROGRAM";
+            var progGroup = new WorkplanNodeJson { kind = "program", name = "PROGRAM" };  // 顶层=默认组名
+            var a11 = new WorkplanNodeJson { kind = "program", name = "A1-1" };
+            a11.children.Add(new WorkplanNodeJson { kind = "workingstep", name = "op嵌套", @ref = "WS-02" });
+            progGroup.children.Add(a11);
+            progGroup.children.Add(new WorkplanNodeJson { kind = "workingstep", name = "op直挂PROGRAM", @ref = "WS-03" });
+            root.children.Add(progGroup);
+            var a01 = new WorkplanNodeJson { kind = "program", name = "A01" };
+            a01.children.Add(new WorkplanNodeJson { kind = "workingstep", name = "CAVITY_MILL", @ref = "WS-01" });
+            root.children.Add(a01);
+            RebuildPlan r = ExecutorCore.Build(p);
+            Assert.True(r.Ok, "合法嵌套 plan 应 Ok");
+            Assert.Null(FindProgram(r, "PROGRAM"), "顶层 PROGRAM 组应复用默认组，不产生程序指令");
+            Assert.NotNull(FindProgram(r, "A01"), "A01 顶层指令应存在");
+            Assert.NotNull(FindProgram(r, "PROGRAM/A1-1"), "A1-1 应挂在 PROGRAM/ 容器下");
+            Assert.True(FindProgram(r, "PROGRAM/A1-1").ParentFull == "PROGRAM",
+                "A1-1.ParentFull 应 = PROGRAM（默认组容器）");
+            Assert.True(OpProgramFull(r, "OP-001") == "A01", "OP-001 锚点应 = A01");
+            Assert.True(OpProgramFull(r, "OP-002") == "PROGRAM/A1-1", "OP-002 锚点应 = PROGRAM/A1-1");
+            Assert.True(OpProgramFull(r, "OP-003") == "PROGRAM", "OP-003 锚点应 = PROGRAM（默认组）");
+        }
+
+        // v1.5-① 保序（160101 comparer ORDER_SHIFT 实证）：指令集应产 DFS 交错序（组/ws 交错），
+        // executor 按此序创建 → rebuilt NX 组成员序与 gt 同构（刀路输出序一致）。
+        public static void test_v15_steps_interleave_program_and_op_in_dfs_order()
+        {
+            var p = new PlanDocument();
+            p.contract_version = "3.0";
+            p.plan_id = "P-3";
+            p.input_ref = "x";
+            p.setups.Add(new SetupJson { setup_id = "S-01", name = "MCS_MILL" });
+            p.resources.tools.Add(new ToolJson { tool_id = "T-001", type = "Mill", subtype = "Mill5" });
+            for (int i = 1; i <= 2; i++)
+            {
+                p.operations.Add(new OperationJson
+                {
+                    operation_id = "OP-00" + i, operation_type = "milling",
+                    nx_template = new NxTemplateJson { type = "mill_contour", subtype = "CAVITY_MILL" },
+                    tool_ref = "T-001", method_ref = "MILL_ROUGH",
+                });
+                p.workingsteps.Add(new WorkingstepJson
+                {
+                    workingstep_id = "WS-0" + i, feature_ref = "F-0" + i,
+                    operation_ref = "OP-00" + i, setup_ref = "S-01",
+                });
+            }
+            var root = p.workplan.root;
+            root.name = "PROGRAM";
+            // 模拟 test.prt 序：A01 成员 = [CAVITY(WS-01), A1-1(→WS-02)]（op 先于子组）
+            var a01 = new WorkplanNodeJson { kind = "program", name = "A01" };
+            a01.children.Add(new WorkplanNodeJson { kind = "workingstep", name = "CAVITY_MILL", @ref = "WS-01" });
+            var a11 = new WorkplanNodeJson { kind = "program", name = "A1-1" };
+            a11.children.Add(new WorkplanNodeJson { kind = "workingstep", name = "打点", @ref = "WS-02" });
+            a01.children.Add(a11);
+            root.children.Add(a01);
+            RebuildPlan r = ExecutorCore.Build(p);
+            Assert.True(r.Ok, "合法 plan 应 Ok");
+            Assert.True(r.Steps.Count == 4, "Steps 应 = [A01组, OP-001, A1-1组, OP-002]（n=" + r.Steps.Count + "）");
+            Assert.True(r.Steps[0].IsProgram && r.Steps[0].Program.Full == "A01", "Steps[0] 应 = A01 组");
+            Assert.True(!r.Steps[1].IsProgram && r.Steps[1].Operation.OpId == "OP-001",
+                "Steps[1] 应 = OP-001（op 先于子组，gt 成员序）");
+            Assert.True(r.Steps[2].IsProgram && r.Steps[2].Program.Full == "A01/A1-1", "Steps[2] 应 = A1-1 组");
+            Assert.True(!r.Steps[3].IsProgram && r.Steps[3].Operation.OpId == "OP-002", "Steps[3] 应 = OP-002");
+        }
     }
 }

@@ -42,10 +42,15 @@ I-2）同 API 面，全部已实证，零新探针；几何/刀路维度显式�
 - 对齐键：**op = Name**（gt 名 = plan 名 = prj′ 名，同一 plan 链成立；名失配 → 结构失配不猜）；
   **setup = Name**（MCS_MILL）；**tool = 采集序 i**（同 plan 链两件刀具序一致，executor 按 plan tools[]
   序建；数量不等 → 尾多/尾少失配；名差 → Notes 注记非致命）。重复名 → DUP 失配条目（INV-C1）。
-- ⚠️ **op 父组/树形层级 v1 不比对**（2026-09-04 规格修订——口径破绽实证）：exporter workplan 简化
-  "嵌套组不展开"（A1-1/A1-3 等嵌套父组归 root）而重建树真实建 PROGRAM 根组 → 两侧父名口径不可比，
-  比对必然误报。结构维度 = op 集（单侧/序）+ 顶层组序（ProgramOrder）+ 数量差；父组/层级比对待
-  workplan 树展开改进后（v1.5）补。
+- ⚠️ **op 父组/树形层级 v1 不比对**（2026-09-04 规格修订——口径破绽实证）：v1 exporter workplan 简化
+  "嵌套组不展开"（A1-1/A1-3 等嵌套父组归 root）且重建树把顶层组落到模板默认 PROGRAM 组下
+  （根语义错位一级）→ 两侧父名口径不可比，比对必然误报。结构维度 = op 集（单侧/序）+ 顶层组序
+  （ProgramOrder）+ 数量差。
+  **v1.5-① 已实现并 [I] 验证（2026-09-04）**：exporter 改 ProgramTree 真实嵌套渲染（root=NC_PROGRAM
+  镜像，ws 经 TagKey 定位，组内成员序=GetMembers 序）；executor 根语义对齐（顶层组→NX 程序根，
+  顶层同名 PROGRAM→复用默认组）+ Steps DFS 交错保序（组/工序交错创建，NX 成员序=创建序）。
+  160817 复跑：PROGRAM_ORDER_DIFF 与 ORDER_SHIFT 均归零（issues 6→5，见 §3 校准记录）。
+  树形/父链比对维度待 ② 实现（op 父链采集与 CompareCore 链比对排队）。
 - 类型键（语言无关优先）：刀 = NxType/NxSubtype 优先、TypeFamily 兜底（同 ToolFamilyMap 回退思想——
   014933 等 D-2 时代重建件 NxType 空）；op 模板对 = WhiteList.Resolve(TypeFamily) 归一后比对
   （同会话采集 → 两侧 TypeFamily 同语言，[U] 夹具不受限）。
@@ -81,6 +86,13 @@ I-2）同 API 面，全部已实证，零新探针；几何/刀路维度显式�
 - I-3 NxCollect 重构/修复回归：ExporterAdapter 重导 test.plan.json，与 U-7 版（135344）同形状同 PASS；
 - I-4 变异校准（决策④）：[U] 层变异夹具为主（POST-C1/C3/C4 已含恰 1 变异 → 恰 1 FAIL）；
   NX 侧人工变异重建件一处并重跑检出（可选项，不阻塞首跑）。
+
+> **v1.5-① 复跑（2026-09-04，comparer-run-20260904-160817 + executor-run-20260904-160639）**：
+> ①（workplan 树形展开 + executor 根语义 + DFS 交错保序）[I] 验证收官——issues 6 → **5**：
+> PROGRAM_ORDER_DIFF（顶层组根语义）与 ORDER_SHIFT（组成员序，中态 160101 实证：executor 先组后
+> op 创建致 rebuilt 成员序异序 → 修复为 Steps DFS 交错后消失）双双归零；剩余 5 项 = 下方校准清单
+> 中非结构项原样（4× PTP OP_PARAM_DIFF + 1× TOOL_TYPE_DIFF@tool#4），无新增未解释差异。
+> 树形/父链比对维度待 ② 实现（快照含 ProgramTree 顶层序，op 父链采集与 CompareCore 链比对排队）。
 
 > **首跑校准记录（2026-09-04，comparer-run-20260904-141713 首跑 + 142424 修复后复跑）**：
 > ① 采集判据修正：NxCollect 刀具入选由 depth≥1+家族串排除改为 **as Tool 下转判据**（首跑 rebuilt
