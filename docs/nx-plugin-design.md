@@ -22,8 +22,9 @@
 > 已变（见 §3 与 nxopen-research §3.1-3.3）；builder 属性取值是四形态混合（§2.1 ⚠️ 与 §6）；
 > 模板部件 `cam_general_mill.prt` 在 2406 不存在（用 `mill_contour.prt` 等，见 nx2406-install-index.md §1 与 nxopen-research 附 B）。
 >
-> 已确认决策（2026-09-03）：① 插件代码落地本仓库 `src/NXPlugins/`（.NET Framework 4.8 类库 +
-> Journal 入口；sln 见仓库根 Autocam.Plugins.sln）；② **仅支持 NX2406**，不做旧版本兼容（无版本分支）；
+> 已确认决策（2026-09-03）：① 插件代码落地本仓库 `src/NXPlugins/`（.NET Framework 4.8.1 类库 +
+> Journal 入口——2026-09-05 由 4.8 提升，理由见 src/NXPlugins/README.md 决策行；sln 见仓库根
+> Autocam.Plugins.sln）；② **仅支持 NX2406**，不做旧版本兼容（无版本分支）；
 > ③ 测试资产：NX2406 安装目录无手编 ground truth 与 STEP 样例（只有 CAM 模板部件与几何样件，
 > 见 samples/README.md），首件由 NX2406 会话手编后入库；④ PlanComparer 先按 §2.2 默认口径实现，
 > 用首批样例校准后再固化评分规格；⑤ 特征条目粒度默认「一工序 → 一条 feature(geometry_group)」，
@@ -113,7 +114,7 @@
 
 ## 3. 宿主要求与入口
 
-- **SDK**：NXOpen for .NET（C# .NET Framework 4.8；2406 样例工程目标 v4.5，兼容）
+- **SDK**：NXOpen for .NET（C# .NET Framework 4.8.1——2026-09-05 由 4.8 提升；2406 样例工程目标 v4.5，兼容）
 - **版本策略**：仅支持 NX 2406（决策②），不做旧版本兼容
 - **入口**：NXOpen `INXAddIn` 或 Journal（`run_journal.exe <journal.cs>` 无界面批处理已实证（2026-09-04：帮助无 `-nogui` 旗标；批处理 CAM 会话需先建件再 `Session.CreateCamSession()`，纪律见 nx2406-install-index.md §2.1），支持 CI 批处理三步）
 - **建模对象**：`CAM.CAMSetup`（含 `CAMGroupCollection` → `NCGroupCollection`、`CAMOperationCollection` → `OperationCollection`；**无 `CAMSetupBuilder` 类**——NX2406 实证）。初始化：空 Part 先 `Part.CreateCamSetup(templateName)`（2406 模板如 `mill_contour`，见 nxopen-research 附 B）。

@@ -106,6 +106,29 @@
     可编译可跑。
   - **§3 待验证项 6 由此划勾（详见 §3 项 6）**。
 
+**2026-09-05 v2 几何重建预检增补（源：camprobe-v2geom-{033422,033944}、camprobe-v2gt-033332、
+camprobe-v2face-A-033810/B-034035 + 探针源 CamProbeV2Geom/CamProbeV2Gt/CamProbeFaceSig）**：
+
+- **几何指派机制（G1 定案）**：CAM 几何 = `CAM.Geometry.GeometryList`(GeometrySetList) 内
+  `GeometrySet`，items 落库通道 = **模板默认集的 `GeometrySet.Selection.SetArray(TaggedObject[])`
+  + 父 builder Commit**（组级：`NCGroupCollection.CreateMillGeomBuilder(组)` 的 `.PartGeometry`
+  set0 挂 Body；op 级：`CreateCavityMillingBuilder(op)` 的 `.CutAreaGeometry` set0 挂 Face[]）。
+  **`CreateGeometrySet()` 新建集不可落库**（两轮三处负证——新集不入 list/不存 items）；
+  GeometrySet.Selection : SelectTaggedObjectList（Add/SetArray/GetArray）。
+- **带几何刀路（G2 α，033944）**：仅组级 part body 的 op 刀路 = 0（时间/长度 0）；
+  加 op 级 CutAreaGeometry 面选区后 **time=543s/length=189897** → op 级 cut area 是腔铣刀路必需
+  （gt 对照组 033332 同构：组级 1 body + op 级 13 面 + 无 blank）。
+- **区域级读回（G3 α）**：`Operation.CutRegionsData`（NumberRegions/GetAreas/GetCentroidPoints）
+  活性——gt 80 区域、回导件全选 26 面 242 区域；区域数/面积/质心对几何差异敏感 = v2 几何维通道。
+- **面身份签名对齐（F1 α，033810/034035）**：gt 腔 op 13 面签名（UFModl.AskFaceData：
+  ftype|法向轴象限|代表点 0.01mm 取整|半径 0.001）在 STEP 回导件 26 面中 **13/13 唯一命中零歧义**
+  ——跨件面匹配可经签名通道（U-5 质心/面积禁令的替代），签名值在 0.01mm 级 round-trip 稳定。
+- **批次纪律增补**：双件同会话轮换在 APP_NONE 批处理 AV（033545 首发实证；轮换纪律 = GUI
+  Execute 专属）；run_journal 不收多余命令行参数（"more than one argument"）；件路径传参走
+  OS 环境变量；CreateCamSession 必须**先开件后调用**（无部件时 AV，重申 §2.1）；SaveAs 后
+  含几何改动需原地 `Save(SaveComponents.False, CloseAfterSave.False)` 持久（SaveAs 同路径
+  抛 File exists）。
+
 **2026-09-04 收官批增补（源：samples/camprobe-finalize-20260904-010401.txt）**：
 
 - **批处理运行纪律**：`run_journal.exe` 帮助用法无 `-nogui` 旗标，空会话无界面直接执行即批处理

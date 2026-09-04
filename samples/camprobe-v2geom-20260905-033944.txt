@@ -1,0 +1,48 @@
+== CamProbeV2Geom v2（几何指派路线判别 A2/B + 带几何刀路 + 区域回读）==
+time: 2026-09-05 03:39:44
+Session: ApplicationName=APP_NONE
+
+== 阶段: P0 导入 test.step ==
+  SaveAs 目标件 = C:\Users\21505\Code\nx-vibe-v2\samples\v2geom-rebuild-20260905-033945.prt
+  Commit = ok
+  导入后: Bodies=1 solidFaces=26（期望 1/26）
+  P0 判定: 导入 α → 前提成立（body 就位）
+
+== 阶段: P1 CAM 骨架 + 两 op（A=组级指派对象 / B=op 级指派对象） ==
+  四父组 + opA/opB 创建 OK（wp 父 = mcs）
+  刀具直径=12 写入 = ok
+  P1 判定: CAM 骨架 α
+
+== 阶段: P2-A2 组级默认集 SetArray(body) ==
+  指派前 GeometryList.Length=1
+    set0 items(前)=0
+  set0.Selection.SetArray(body) = ok
+  Commit(mgb) = ok
+  回读 GeometryList.Length=1
+    set0 items(回读)=1
+  P2-A2 判定: 默认集 SetArray 落库 → α
+
+== 阶段: P2-B op 级 CutAreaGeometry 默认集 SetArray(面)（gt 对照：gt=13 面选区，033332） ==
+  CutAreaGeometry=Geometry 41540
+  指派前 GeometryList.Length=1
+    set0 items(前)=0
+  set0.Selection.SetArray(faces×26) = ok
+  Commit(cb) = ok
+  回读 CutAreaGeometry.GeometryList.Length=1
+    set0 items(回读)=26
+  P2-B 判定: op 级默认集落库 → α（与组级 A2 同机制）
+
+== 阶段: P3 带几何刀路（两 op 各生成 + 时间/长度） ==
+  GenerateToolPath(OP_V2_A) = ok
+  OP_V2_A: time=0 length=0
+  GenerateToolPath(OP_V2_B) = ok
+  OP_V2_B: time=543.395468474705 length=189896.784817304
+
+== 阶段: P4 区域级读回（op.CutRegionsData，B 路优先） ==
+  OP_V2_B: NumberRegions=242
+  areas=242 合计=7829459.64000002 centroids=242
+
+== 阶段: P5 落盘（原地 Save——P0 SaveAs 在导入前，含几何必须本步持久） ==
+  Save = ok
+  文件: C:\Users\21505\Code\nx-vibe-v2\samples\v2geom-rebuild-20260905-033945.prt 大小=716084
+== 结束 ==

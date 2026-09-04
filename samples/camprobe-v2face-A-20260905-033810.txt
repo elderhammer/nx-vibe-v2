@@ -1,0 +1,21 @@
+== CamProbeFaceSig（A=gt 腔铣 op 面签名）==
+time: 2026-09-05 03:38:10
+件: c:\Users\21505\Code\nx-vibe-v2\samples\test.prt
+Session: ApplicationName=APP_NONE
+打开 OK: test  camSession=True
+腔 op: CAVITY_MILL
+面数=13
+SIG 22|Z+|7500,-13562,10000|r0
+SIG 22|Y+|7500,-9025,9000|r0
+SIG 22|Z+|7500,-4512,8000|r0
+SIG 22|X-|8500,3900,8825|r0
+SIG 22|Z+|7500,3650,7650|r0
+SIG 22|X+|6500,3900,8825|r0
+SIG 16|Z-|8000,-3100,7825|r5
+SIG 22|Y+|7500,-3600,7825|r0
+SIG 16|Z-|7000,-3100,7825|r5
+SIG 22|Y-|5200,0,9000|r0
+SIG 22|Y-|9800,0,9000|r0
+SIG 22|Z+|5200,5450,10000|r0
+SIG 22|Z+|9800,5450,10000|r0
+== 结束 ==

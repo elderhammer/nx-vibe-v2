@@ -8,7 +8,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>NXPlugins</RootNamespace>
     <AssemblyName>NXPlugins</AssemblyName>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <!-- NX 安装根：可用环境变量 NX_DIR 覆盖；程序集引用为私有引用（copy local=false），不随工程分发 -->
@@ -34,6 +34,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>

@@ -1,0 +1,36 @@
+== CamProbeV2Gt（gt 腔铣 op 几何配置只读对照）==
+time: 2026-09-05 03:33:32
+Session: ApplicationName=APP_NONE
+  uf.SetDisplayPart = ok
+件: test
+  CreateCamSession = initialized=True
+solidBodies=1 总面=26
+
+== 程序树 op 清单（NxCollect 同口径递归）==
+op 总数=6
+  CAVITY_MILL  type='Cavity Milling'  pathT=58.3195879423042 pathL=118746.820048978
+  CAVITY_MILL_COPY  type='Cavity Milling'  pathT=0.515070116935744 pathL=928.848645162435
+  CAVITY_MILL_COPY_COPY  type='Cavity Milling'  pathT=8.03042781240917 pathL=4506.32604000845
+  CAVITY_MILL_COPY_COPY_COPY  type='Cavity Milling'  pathT=6.81636050996648 pathL=3761.57327162708
+  打点_COPY_COPY_COPY  type='Point to Point'  pathT=0.134425997601918 pathL=203.459976019181
+  钻头G83_COPY_3_COPY_COPY_COPY_1  type='Point to Point'  pathT=3.05767742617335 pathL=397.059976019181
+
+== 几何组树 dump（几何根下递归）==
++ GEOMETRY  <NCGroup>
+  + NONE  <NCGroup>
+  + MCS_MILL  <OrientGeometry>
+    + WORKPIECE  <FeatureGeometry>
+      - CavityMilling:CAVITY_MILL
+      - CavityMilling:CAVITY_MILL_COPY
+      - CavityMilling:CAVITY_MILL_COPY_COPY
+      - CavityMilling:CAVITY_MILL_COPY_COPY_COPY
+      - Operation:打点_COPY_COPY_COPY
+      - Operation:钻头G83_COPY_3_COPY_COPY_COPY_1
+
+== 腔铣 op: CAVITY_MILL ==
+几何父组: WORKPIECE
+  组级 part 几何 = sets=1 | set0 items=1(Body)
+  op 级 CutAreaGeometry = sets=1 | set0 items=13(Face)(Face)(Face)(Face)(Face)(Face)(Face)(Face)(Face)(Face)(Face)(Face)(Face)
+  op 参数（feeds/depth/stock） = rpm=2400 cut=2000 depthPerCut=0 floorStock=0 partStock=0.1
+  op CutRegionsData = NumberRegions=80 areas=80
+== 结束 ==

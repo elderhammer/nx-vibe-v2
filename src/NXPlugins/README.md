@@ -4,7 +4,9 @@
 > 需求与设计：`docs/nx-plugin-design.md`；API 事实源：`docs/nx2406-install-index.md`；
 > 合同：`schema/autocam-plan.schema.json`（v3.0）。
 > 工程决策（2026-09-03，见 nx-plugin-design.md 头部"已确认决策"）：
-> 仅支持 NX2406；.NET Framework 4.8；代码全部在本目录（sln 在仓库根 `Autocam.Plugins.sln`）。
+> 仅支持 NX2406；.NET Framework 4.8.1（2026-09-05 由 4.8 提升——本机无 v4.8 targeting pack、
+> 官方 4.8 Dev Pack 安装器在沙箱挂起、4.8.1 pack 已就位且运行时 4.8.1；语义兼容 4.8 代码）；
+> 代码全部在本目录（sln 在仓库根 `Autocam.Plugins.sln`）。
 
 ## 当前状态（2026-09-05）：实证收官——v1 三步闭环 + v1.5-①③④ 参数面扩展 + STEP 资产收口（索引 §3 全划勾）
 
@@ -59,9 +61,10 @@ PlanComparer/       ✅ [U]+[I] 闭环（spec 落档 2026-09-04；v1 终跑 comp
 - 打开仓库根 `Autocam.Plugins.sln`（Visual Studio，.NET Framework 4.8 工作负载）。
 - 换机/换 NX 目录：设环境变量 `NX_DIR` 或在 csproj 覆盖 `<NX_DIR>`。
 - 勿把 `NXOpen*.dll` 等西门子程序集提交进 git（`Private=False` 已保证引用不复制）。
-- ⚠️ 本机（2026-09-04）缺 .NET Framework 4.8 Developer Pack → MSBuild 构建报 MSB3644；
-  编译有效性由 csc 合编路径背书（scripts/compile-executor-adapter.ps1 全量同集源码通过）。
-  装 Developer Pack 后即可 sln 内一键构建。
+- ✅ **sln 构建门已过（2026-09-05，MSBuild VS2022）**：csproj 目标框架提升 v4.8.1（winget
+  Dev Pack 4.8.1 提供 v4.8.1 targeting；本机无 v4.8 pack）并补 `System.Runtime.Serialization`
+  引用（DataContractJsonSerializer 依赖——csproj 原缺，sln 首建暴露）。构建产物
+  `src/NXPlugins/bin/Debug/NXPlugins.dll`（仅既有 CS0618 弃用警告，探针代码、非阻塞）。
 
 ## 运行（验证入口，2026-09-04 实证）
 
