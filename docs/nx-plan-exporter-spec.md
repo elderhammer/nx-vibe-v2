@@ -67,7 +67,8 @@ A4 逐 op 元信息：Name/UserName、四父链 → INV-4
 A5 nx_template 白名单匹配（表：模板对，见 A3 收集的 GetNameOfType 大类 → 候选对）→ POST-6/PRE-3
 A6 分型 Builder 回读：形态注册表（成员路径+形态类）驱动 → strategy/technology 字段；回读失败 → diag
    → POST-3/POST-4；`InheritanceStatus` 语义已结案（§5 U-3：True=继承、模板默认常 False）——
-   首版不输出（字段来源标注为增强候选）
+   首版不输出（字段来源标注为增强候选）。键集实态 = 参数键集注册表（2026-09-04 落档，
+   docs/nx-param-registry-spec.md：读面 16 键 15 可读 + 写面持久性矩阵）——v1.5-③ 扩展本步骤依据
 A7 刀具组（NCGroup→Builder 读回直径/刃数等 MVP 字段）/ MCS（MillOrientGeomBuilder.Mcs 属性）/
    方法组名 → resources/setups/method_ref → [I]
 A8 workingsteps 1:1 生成；COPY 链展开为独立 operation 条目（name 保留 _COPY 后缀链），diag 记副本关系

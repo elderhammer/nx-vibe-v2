@@ -1,0 +1,46 @@
+== CamProbeParams2（v1.5-④ 收口复跑：c5/c6 负结案确认 + 邻接判别）==
+time: 2026-09-04 16:38:50
+Session: ApplicationName=APP_NONE  IsCamSessionInitialized=False
+
+== 阶段: S1 写侧环境（建件→CAM 会话→CreateCamSetup） ==
+  写侧环境 OK, camReady=True
+
+== 阶段: S2 复跑与邻接判别实验（逐键自动判定） ==
+  -- E1 锚点+: cut_pattern=Zig
+  写前 = pattern=FollowPart order=LevelFirst dir=Climb multiDepth=False stepMethod=Increment finish=0 intol=0 outtol=0
+  写入+commit OK
+  重开 = pattern=Zig order=LevelFirst dir=Climb multiDepth=False stepMethod=Increment finish=0 intol=0 outtol=0
+  判定 [E1 锚点+: cut_pattern=Zig] pattern=Zig → 持久 ✓ 
+  -- E2 复刻 c5: MultiDepthCut.Toggle=true
+  写前 = pattern=FollowPart order=LevelFirst dir=Climb multiDepth=False stepMethod=Increment finish=0 intol=0 outtol=0
+  写入+commit OK
+  重开 = pattern=FollowPart order=LevelFirst dir=Climb multiDepth=False stepMethod=Increment finish=0 intol=0 outtol=0
+  判定 [E2 复刻 c5: MultiDepthCut.Toggle=true] multiDepth=True → 还原 ✗（重开不含写入值）
+  -- E3 邻接: StepMethod=Passes + Toggle=true
+  写前 = pattern=FollowPart order=LevelFirst dir=Climb multiDepth=False stepMethod=Increment finish=0 intol=0 outtol=0
+  写入+commit OK
+  重开 = pattern=FollowPart order=LevelFirst dir=Climb multiDepth=False stepMethod=Increment finish=0 intol=0 outtol=0
+  判定 [E3 邻接: StepMethod=Passes + Toggle=true] stepMethod=Passes → 还原 ✗（重开不含写入值）
+  判定 [E3 邻接: StepMethod=Passes + Toggle=true] multiDepth=True → 还原 ✗（重开不含写入值）
+  -- E4 复刻 c6: BoundaryInTol=0.02
+  写前 = pattern=FollowPart order=LevelFirst dir=Climb multiDepth=False stepMethod=Increment finish=0 intol=0 outtol=0
+  写入+commit OK
+  重开 = pattern=FollowPart order=LevelFirst dir=Climb multiDepth=False stepMethod=Increment finish=0 intol=0 outtol=0
+  判定 [E4 复刻 c6: BoundaryInTol=0.02] intol=0.02 → 还原 ✗（重开不含写入值）
+  -- E5 邻接: BoundaryOutTol=0.03
+  写前 = pattern=FollowPart order=LevelFirst dir=Climb multiDepth=False stepMethod=Increment finish=0 intol=0 outtol=0
+  写入+commit OK
+  重开 = pattern=FollowPart order=LevelFirst dir=Climb multiDepth=False stepMethod=Increment finish=0 intol=0 outtol=0
+  判定 [E5 邻接: BoundaryOutTol=0.03] outtol=0.03 → 还原 ✗（重开不含写入值）
+  -- E6 邻接: PLANAR_MILL 上 BoundaryInTol=0.02
+  写前 = intol=0 outtol=0
+  写入+commit OK
+  重开 = intol=0 outtol=0
+  判定 [E6 邻接: PLANAR_MILL 上 BoundaryInTol=0.02] intol=0.02 → 还原 ✗（重开不含写入值）
+  -- E7 锚点+: finish_passes=2
+  写前 = pattern=FollowPart order=LevelFirst dir=Climb multiDepth=False stepMethod=Increment finish=0 intol=0 outtol=0
+  写入+commit OK
+  重开 = pattern=FollowPart order=LevelFirst dir=Climb multiDepth=False stepMethod=Increment finish=2 intol=0 outtol=0
+  判定 [E7 锚点+: finish_passes=2] finish=2 → 持久 ✓ 
+== 汇总 ok=2 fail=0 ==
+== 结束 ==

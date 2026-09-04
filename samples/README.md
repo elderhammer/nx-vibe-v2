@@ -72,6 +72,8 @@
 | `adapter-run-20260904-143344.txt` | FixtureOffset 补读后重导（plan 带出 fixture_offset=1） |
 | `executor-run-20260904-143426.txt` | **fixture 链复跑**（ok=17 fail=0）：PASS fixture=1（plan=1）真对照 → test.rebuilt-143432.prt |
 | `comparer-run-20260904-144237.txt` | **Comparer 终跑**（护栏版，干净会话）：双件正确轮换，issues=6 与校准清单逐条一致，fixture=1/1 闭环（Comparer 收口证据） |
+| `camprobe-params-20260904-155341.txt` | **v1.5-④ 键集注册表探针**（ok=3 fail=0）：读面键集 16 键实态（15 可读 + PTP cycle 1 负证，腔铣 cut_pattern 等 + PTP 面）+ 写面矩阵六键首跑（c1-c4 持久、c5 multi_depth_cut.toggle 还原、c6 boundary_intol 还原——负结论待收口三跑） |
+| `camprobe-params2-20260904-163751.txt`（-163823/-163850 同） | **v1.5-④ 收口三跑**（E1-E7 逐键自动判定，三会话一致）：锚点 E1/E7 持久 ✓；E2/E4 复刻还原 ✗；E3/E5/E6 邻接判别 → MultiDepthCut 整对象 + Boundary 容差族负结案（规格：docs/nx-param-registry-spec.md，源：src/NXPlugins/Journal/CamProbeParams2.cs） |
 
 > 注意：西门子安装目录内文件（模板/样例/程序集）受许可约束，**只引用、不复制进 git**；
 > 自建件由本仓库维护。

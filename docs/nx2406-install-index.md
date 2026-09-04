@@ -46,7 +46,7 @@
 - PTP 旧模板操作（打点/钻头G83，`GetNameOfType`="Point to Point"）的 Builder = **`PointToPointBuilder`**（工厂 `CreatePointToPointBuilder`）；`CreateHoleDrillingBuilder` 对其**强转失败**——仅新模板 `DRILLING` 家族使用 HoleDrillingBuilder（2026-09-04 适配器实证）。
 - MCS 回读（U-4 首证，源 samples/adapter-run-20260904-003906.txt）：`CreateMillOrientGeomBuilder(mcsGroup).Mcs` → `CartesianCoordinateSystem.Origin`（Point3d）+ `Orientation.Element`（Matrix3x3 行，Xx…/Zx…）；实测 test.prt origin=(75,0,100)、z=(0,0,1)。
 - 模板注册表枚举（2026-09-03 实证，源：samples/camprobe-types.txt）：`Session.CAMSession`（`IsCamSessionInitialized()`/`CreateCamSession()`）；`GetTemplateTypes()` → string[]；`GetTemplateSubtypes(typeName, CAMSession.ObjectSubtype{Setup|Tool|Method|Geometry|Operation|Program})` → string[]。17 个模板部件（mill_planar/hole_making/mill_contour/…）的完整子类型注册表 = 重建侧 Create 参数权威来源；导出侧 `Tool.GetTypeAndSubtype(out Types, out Subtypes)` 可读回刀具类型。
-- 生效值回读与两处写入未保留（2026-09-03 实测，源：samples/camprobe-op.txt）：未显式设置的 Inheritable 参数**回读生效值可行**（FloorStock → 1，设计 2.1"导出回读生效值"方案成立）；但 `BoundaryInTol` 写 0.01 回读 0、Stepover `PercentToolFlatBuilder.Value` 写 50 回读 70——写入未保留，语义待查（勿固化映射，见 §3 项 3）。
+- 生效值回读与两处写入未保留（2026-09-03 实测，源：samples/camprobe-op.txt）：未显式设置的 Inheritable 参数**回读生效值可行**（FloorStock → 1，设计 2.1"导出回读生效值"方案成立）；但 `BoundaryInTol` 写 0.01 回读 0、Stepover `PercentToolFlatBuilder.Value` 写 50 回读 70——写入未保留。**两处均已负结案收口（2026-09-04）**：Stepover 族 = camprobe-stepover 三跑（docs/nx-stepover-probe-spec.md）；BoundaryInTol/OutTol 容差族 = camprobe-params2 三跑 E4-E6（docs/nx-param-registry-spec.md，读面可读、写面还原）——均入 §2.5 不存在项清单，重建侧拒收 + diag。
 - 孔加工与刀路（2026-09-03 实测，源：samples/camprobe-drill.txt、camprobe-toolpath.txt）：模板对 `(hole_making, DRILLING)`/`(hole_making, SPOT_DRILLING)`、刀具 `(hole_making, STD_DRILL)`、方法组 `DRILL_METHOD` 均创建成功；`HoleDrillingBuilder.CuttingParameters.BottomStock` 写读一致（Inheritable 形态）；`CycleTable` 类型实证 = `NXOpen.CAM.Cycle`（§2.5"无 Cycle 属性"正向确认）；`CAMSetup.GenerateToolPath(CAMObject[])` 运行成功（当前许可覆盖刀路生成），`Operation.GetToolpathTime()/GetToolpathLength()` 回读真实数值；新建 DRILLING 的 `GetNameOfType`="Drilling"（test.prt 旧工序="Point to Point"——随模板来源变，佐证其不可作 typeName 依据）。
 - 操作创建：`OperationCollection.Create(programG, methodG, toolG, geomG, typeName, subtypeName, UseDefaultName, newName)`；第 7 参是**枚举** `OperationCollection.UseDefaultName.{False,True}` 不是 bool。**typeName/subtypeName 与组创建同族语义（2026-09-03 实证）**：模板部件名/操作子类型对，如 CAVITY_MILL=(mill_contour, CAVITY_MILL)，空 subtype 报"需要的模板不存在"（旧文献把 typeName 直接当字面量传已修正，见 nxopen-research §3.2）。
 - 操作 Builder 工厂：`OperationCollection.CreatePlanarMillingBuilder(operation)` 等约 75 个 + 通用 `CreateBuilder(CAMObject)`（**不在 CAMSetup 上**；CAMSetup 只有 18 个非操作类 Builder 工厂）。类名注意：`ZLevelMillingBuilder`（工厂 `CreateZlevelMillingBuilder`，L 大小写不一致）。
@@ -145,6 +145,20 @@ samples/camprobe-u7-20260904-115251.txt ok=3/fail=0）**：
   成员）；C++ 头 CAM_StepoverBuilder.hxx:62 同。StepoverBuilder 无 Percent 属性（既有 §2.3 注记）。
   schema $comment 与各 spec 的 U-6 注记已随 docs/nx-stepover-probe-spec.md §6 定稿。
 
+**2026-09-04 v1.5-④ 收口增补（源：samples/camprobe-params2-20260904-{163751,163823,163850}.txt
+三跑一致；规格 docs/nx-param-registry-spec.md = 参数键集注册表，v1.5-③ 参数面扩展实现依据）**：
+
+- **写面矩阵定稿（U-6 教训扩界：形态同类 ≠ 可写）**：可持久 4 键 = cut_pattern（类+嵌套枚举直赋）、
+  cut_order（直枚举）、cut_direction（.Type）、finish_passes（int 直赋，=2 → 重开 2，三跑 E7）；整链还原
+  2 键 = MultiDepthCut.Toggle（bool 直赋，True → 还原 False，E2 三跑）、MultiDepthCut.StepMethod
+  （嵌套枚举，Passes+Toggle 同写双还原 → **MultiDepthCut 整对象丢弃**，stepover 复合对象同款，E3）；
+  读面其余键（含 PTP 面）与值样例见注册表 §2（#13-15 rpm/feed 等写面未测，标注"未测"不入白名单）。
+- **BoundaryInTol 负结案（2026-09-03 旧疑点正式收口）+ 族级判别**：0.02 → CAVITY_MILL 还原 0（E4
+  三跑）、PLANAR_MILL 亦还原 0（E6——非模板特化）、BoundaryOutTol 同还原（E5——**容差族级死区**，
+  非 InTol 键级）。读面可读（0），导出可用；重建拒收 + diag。
+- 阳性锚点 E1（cut_pattern=Zig）与 E7（finish_passes=2）三跑持久 = 会话写路径健康 → 上列负结论为
+  参数族专属，非写面整体失效。机制残留（为何同族部分键可持久）与 U-6 同款未决，见注册表 §5。
+
 ### 2.2 属性取值形态（四类混合——Mapper 必须按类型分支）
 
 | 形态 | 特征 | 实例（NX2406 .NET 实测） |
@@ -185,7 +199,7 @@ samples/camprobe-u7-20260904-115251.txt ok=3/fail=0）**：
 `CAMSetupBuilder`；`CAMSetup.ProgramOrderView/MachineToolView/GeometryView/MethodView`；`camSetup.CreatePlanarMillingBuilder(...)`（应在 OperationCollection）；`MillCutParameters.DepthPerCut`（应在 `PlanarOperationBuilder/CavityMillingBuilder`）；`Stepover.Percent`；`MillCutParameters.CutOrder` 用顶层 `CutOrder` 枚举（类型是 `CutParametersCutOrderTypes`）；`HoleMachiningBuilder.Cycle`（**只有 `CycleTable`**，类型 `CAM.Cycle`）；`Operation.gougeCheck / getCuttingTime / getCuttingLength`（gouge 在 `CAMSetup.GougeCheck/CreateGougeCheckBuilder` 与 `Operation.GougeCheckStatus/Results`）；`MillingToolBuilder.holderSectionBuilder`（有 `ShankSectionBuilder`）；`setMcs/setRcs` 方法（`Mcs/Rcs` 是可写属性）；`cam_general_mill.prt`（2406 用 `mill_contour.prt` 等）；`CAMObject` 的 subtypeName/子类型读回成员（NCGroup/CAMObject 层零命中，仅有 `GetNameOfType()` 且为内部 API；
 **例外：`CAM.Tool.GetTypeAndSubtype`**（NX7.5 起、License None、工具专用——2026-09-04 实证，见 §2.1 增补））；`PartCollection.OpenReadOnly`（无只读打开重载）；`MillGeomBuilder.Blank`（**不存在**——真实成员 = `BlankGeometry`/`PartGeometry`/`CheckGeometry`，XML 实证 2026-09-04；schema/文档落点一律用 BlankGeometry）；面级质心/面积 API（**不存在**——`NXOpen.Face` 成员清单零命中 Area/Centroid/Mass/Measure，XML 实证 2026-09-04；`UF_MODL_ask_mass_props_3d` 头注记 objects 仅收 **solid/sheet body**（uf_modl.h:4324，U-5 链 NX 源码侧背书））；PTP 旧模板循环细分参数读回成员（G83/打点步距、退刀——builder 公开面/BuilderProperties JSON/用户属性三路零命中，2026-09-04）；`SpindleModeBuilder` 的模式语义（int 自由槽无枚举，2026-09-04）；`run_journal.exe -nogui`（**无此旗标**，2026-09-04）；stepover 族有效写入通道（`CutParameters.Stepover`
 复合对象全成员面 + 直属 `StepoverLimit`——.NET 写入 commit 后必还原模板默认，**2026-09-04 负结案**，
-camprobe-stepover 三跑，见 docs/nx-stepover-probe-spec.md；StepoverLimit 仅校验层可达、值域 [100,300]%）。
+camprobe-stepover 三跑，见 docs/nx-stepover-probe-spec.md；StepoverLimit 仅校验层可达、值域 [100,300]%）；`MultiDepthCut` 整对象与 Boundary 容差族可写通道（`MultiDepthCut.Toggle`(bool)/`StepMethod`(嵌套枚举) + `MillCutParameters.BoundaryInTol/OutTol`(直 double)——.NET 写入 commit 后必还原模板默认，**2026-09-04 负结案**，camprobe-params2 三跑 E2-E6 邻接判别，见 docs/nx-param-registry-spec.md；读面可读 = 导出可用，写面不可持久 = 重建侧拒收 + diag）。
 
 ---
 

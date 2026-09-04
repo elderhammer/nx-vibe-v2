@@ -288,7 +288,7 @@
                     "exclusiveMinimum": 0,
                     "description": "每刀深度 mm（NX: PlanarOperationBuilder.DepthPerCut / CavityMillingBuilder.DepthPerCut — 不在 CutParameters 下）"
                 },
-                "multi_depth_cut": { "type": "boolean", "description": "多层切削开关（NX: MultiDepthCut.Toggle）" },
+                "multi_depth_cut": { "type": "boolean", "description": "多层切削开关（NX: MultiDepthCut.Toggle）", "$comment": "2026-09-04 负结案：MultiDepthCut 整对象（Toggle/StepMethod）写入 commit 后必还原模板默认（camprobe-params2 三跑 E2/E3，docs/nx-param-registry-spec.md）——读面可读（导出可用），重建侧不可直写，拒收+diag" },
                 "finish_passes": {
                     "type": "integer",
                     "minimum": 0,
