@@ -22,8 +22,13 @@ namespace NXPlugins.PlanExecutor
     public sealed class ParamInstruction
     {
         public readonly string MemberPath;   // NX 成员路径，如 "CutParameters.PartStock"
-        public readonly double Value;
-        public ParamInstruction(string memberPath, double value) { MemberPath = memberPath; Value = value; }
+        public readonly ParamKind Kind;      // v1.5-③：写面形态（Number → .Value 直赋；Enum → 词 Parse）
+        public readonly double? N;           // Kind=Number 时有效
+        public readonly string S;            // Kind=Enum 时有效（NX 枚举原文串，词集已校验）
+        public ParamInstruction(string memberPath, double value)
+            : this(memberPath, ParamKind.Number, value, null) { }
+        public ParamInstruction(string memberPath, ParamKind kind, double? n, string s)
+        { MemberPath = memberPath; Kind = kind; N = n; S = s; }
     }
 
     /// <summary>刀具重建指令（D-2=A：模板对来自家族关键词解析 + 数值直填）。</summary>

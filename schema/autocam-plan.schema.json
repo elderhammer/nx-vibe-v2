@@ -238,32 +238,31 @@
         "strategy": {
             "type": "object",
             "additionalProperties": true,
-            "$comment": "对象级允许扩展（非切削细分/避让点等增强字段逐步入档）；NX 侧属性取值四形态混合（见 nxopen-research 附 A），Mapper 须按形态分支",
+            "$comment": "对象级允许扩展（非切削细分/避让点等增强字段逐步入档）；NX 侧属性取值四形态混合（见 nxopen-research 附 A），Mapper 须按形态分支；v1.5-③（2026-09-04）起落盘值为联合形态——DataContract KV 数组的 Value = {N:number}|{S:NX 枚举原文串} 包装（P0 DCJS 探针实证，docs/nx-params-v15-spec.md §2），kind 按键固定于参数键集注册表（docs/nx-param-registry-spec.md）",
             "properties": {
                 "cut_pattern": {
                     "type": "string",
                     "enum": [
-                        "FOLLOW_PART", "FOLLOW_PERIPHERY", "HELICAL", "SPIRAL", "HELICAL_SPIRAL",
-                        "MIXED", "PROFILE", "STANDARD_DRIVE", "TROCHOIDAL",
-                        "ZIG", "ZIGZAG", "ZIGZAG_WITH_LIFTS", "ZIG_WITH_CONTOUR", "ZIG_WITH_STEPOVER",
-                        "CONCENTRIC_ZIG", "CONCENTRIC_ZIGZAG", "CONCENTRIC_ZIG_WITH_CONTOUR", "CONCENTRIC_ZIG_WITH_STEPOVER",
-                        "RADIAL_ZIG", "RADIAL_ZIGZAG", "RADIAL_ZIGZAG_WITH_LIFTS", "RADIAL_ZIG_WITH_CONTOUR", "RADIAL_ZIG_WITH_STEPOVER",
-                        "CROSSCUT_ZIG", "CROSSCUT_ZIGZAG", "CROSSCUT_ZIGZAG_WITH_LIFTS",
-                        "ZLEVEL_ZIG", "ZLEVEL_ZIGZAG", "ZLEVEL_ZIGZAG_WITH_LIFTS",
-                        "SAME_AS_NON_STEEP", "ADAPTIVE_ZIG", "HELICAL_AROUND_PART",
-                        "ADAPTIVE_ROUGHING", "ZLEVEL_HELICAL"
+                        "AdaptiveRoughing", "AdaptiveZig", "ConcentricZig", "ConcentricZigWithContour",
+                        "ConcentricZigWithStepover", "ConcentricZigZag", "CrosscutZig", "CrosscutZigZag",
+                        "CrosscutZigZagWithLifts", "FollowPart", "FollowPeriphery", "Helical",
+                        "HelicalAroundPart", "HelicalSpiral", "Mixed", "None", "Profile", "RadialZig",
+                        "RadialZigWithContour", "RadialZigWithStepover", "RadialZigZag",
+                        "RadialZigZagWithLifts", "SameAsNonSteep", "Spiral", "StandardDrive",
+                        "Trochoidal", "Zig", "ZigWithContour", "ZigWithStepover", "ZigZag",
+                        "ZigZagWithLifts", "ZlevelHelical", "ZlevelZig", "ZlevelZigZag", "ZlevelZigZagWithLifts"
                     ],
-                    "$comment": "对齐 NX2406 CutPatternBuilder.Types（35 个非 None 值，大写规范化）；无 HILBERT/PARALLEL_LINES（旧版平面铣枚举）。NX 映射：值 → CutPatternBuilder.CutPattern = Types.<PascalCase>"
+                    "$comment": "NX2406 CutPatternBuilder.Types 原文 35 词（NXOpen.xml F: 实证，2026-09-04；v1.5-③ 词集收编 NX 原文——导出直写/重建 Enum.Parse 直用，无映射表；无 HILBERT/PARALLEL_LINES）。NX 落点：CutPattern.CutPattern = CutPatternBuilder.Types.*"
                 },
                 "cut_order": {
                     "type": "string",
-                    "enum": ["LEVEL_FIRST", "DEPTH_FIRST", "DEPTH_FIRST_ALWAYS"],
-                    "$comment": "NX 落点：MillCutParameters.CutOrder = CutParametersCutOrderTypes.*（直接枚举，无 .Value；无 AreaFirst）"
+                    "enum": ["DepthFirst", "DepthFirstAlways", "LevelFirst"],
+                    "$comment": "NX2406 CutParametersCutOrderTypes 原文 3 词（XML 实证 2026-09-04）。NX 落点：MillCutParameters.CutOrder（直接枚举，无 .Value；无 AreaFirst）"
                 },
                 "cut_direction": {
                     "type": "string",
-                    "enum": ["CLIMB", "CONVENTIONAL", "FORWARD", "REVERSE", "MIXED"],
-                    "$comment": "NX 落点：CutDirection.Type = CutDirection.Types.*；'顺铣/逆铣' = CLIMB/CONVENTIONAL（无 UP）"
+                    "enum": ["Climb", "Conventional", "Forward", "Mixed", "Reverse"],
+                    "$comment": "NX2406 CutDirection.Types 原文 5 词（XML 实证 2026-09-04）；'顺铣/逆铣' = Climb/Conventional（无 Up）。NX 落点：CutDirection.Type = CutDirection.Types.*"
                 },
                 "stepover": {
                     "type": "object",

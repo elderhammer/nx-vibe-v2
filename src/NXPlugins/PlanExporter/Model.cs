@@ -5,9 +5,35 @@
 
 using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace NXPlugins.PlanExporter
 {
+    /// <summary>参数值联合类型（v1.5-③，V15-*）：kind 按键固定于参数键集注册表（docs/nx-param-registry-spec.md）——
+    /// 数值键用 N、枚举键用 S（NX 枚举原文串，schema 词集直写先例）。本批无布尔键 → B 不入生产（S2 时加）。
+    /// P0 DCJS 探针实证（2026-09-04）：EmitDefaultValue=false 下仅设字段落盘、N=0 与缺值可区分、round-trip 无损。
+    /// implicit 转换供夹具/兼容赋值（double/string → 对应 kind 字段）。</summary>
+    [DataContract]
+    public sealed class ParamValue
+    {
+        [DataMember(EmitDefaultValue = false)] public double? N;
+        [DataMember(EmitDefaultValue = false)] public string S;
+
+        public ParamValue() { }
+        public ParamValue(double n) { N = n; }
+        public ParamValue(string s) { S = s; }
+
+        public static implicit operator ParamValue(double d) { return new ParamValue(d); }
+        public static implicit operator ParamValue(string s) { return new ParamValue(s); }
+
+        public override string ToString()
+        {
+            if (N.HasValue) return N.Value.ToString("0.####");
+            if (S != null) return S;
+            return "(null)";
+        }
+    }
+
     /// <summary>NX Tag 的纯逻辑镜像（四视图去重键，INV-5）。NX 侧把整型 Tag 包装进来。</summary>
     public sealed class TagKey : IEquatable<TagKey>
     {
@@ -66,8 +92,9 @@ namespace NXPlugins.PlanExporter
         public string GeometryParent = "";           // 几何父组名（WORKPIECE 等；缺失→warning）
         public bool HasGeometryParent = true;        // 几何父链是否存在（INV-4 判据）
         public readonly List<string> ReadbackErrors = new List<string>(); // 字段级回读失败（POST-3）
-        /// <summary>导出侧解析出的参数值（形态注册表结果）；缺失值不入此表。数值原样（POST-4）。</summary>
-        public readonly Dictionary<string, double> Params = new Dictionary<string, double>();
+        /// <summary>导出侧解析出的参数值（注册表按键定 kind，v1.5-③）；缺失值不入此表。
+        /// tech: 前缀键 → technology 段（ExporterCore 分流）。数值原样（POST-4）。</summary>
+        public readonly Dictionary<string, ParamValue> Params = new Dictionary<string, ParamValue>();
         /// <summary>同大类歧义时由 WhiteList.Resolve 给出（POST-6），否则空串。</summary>
         public string TemplateType = "";
         public string TemplateSubtype = "";

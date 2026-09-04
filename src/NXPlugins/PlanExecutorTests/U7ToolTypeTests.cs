@@ -94,7 +94,7 @@ namespace NXPlugins.PlanExporterTests
                 operation_id = "OP-001", operation_type = "milling",
                 nx_template = new NxTemplateJson { type = "mill_contour", subtype = "CAVITY_MILL" },
                 tool_ref = "T-001", method_ref = "",
-                strategy = new Dictionary<string, double>(), technology = new Dictionary<string, double>(),
+                strategy = new Dictionary<string, ParamValue>(), technology = new Dictionary<string, ParamValue>(),
             });
             plan.workingsteps.Add(new WorkingstepJson
             { workingstep_id = "WS-01", feature_ref = "", operation_ref = "OP-001", setup_ref = "S-01" });

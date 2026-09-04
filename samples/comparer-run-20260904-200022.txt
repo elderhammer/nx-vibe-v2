@@ -1,0 +1,5 @@
+== ComparerAdapter ==
+time: 2026-09-04 20:00:22
+A="C:\Users\21505\Code\nx-vibe-v2\samples\test.prt" "C:\Users\21505\Code\nx-vibe-v2\samples\test.rebuilt-195208.prt"  B=C:\Users\21505\Code\nx-vibe-v2\samples\test.rebuilt.prt
+!! 顶层异常: 路径中具有非法字符。
+== 结束 ==

@@ -49,16 +49,16 @@ namespace NXPlugins.PlanExporterTests
                 operation_id = "OP-001", operation_type = "milling",
                 nx_template = new NxTemplateJson { type = "mill_contour", subtype = "CAVITY_MILL" },
                 tool_ref = "T-001", method_ref = "MILL_ROUGH",
-                strategy = new Dictionary<string, double> { { "part_stock", 0.3 }, { "floor_stock", 0.1 } },
-                technology = new Dictionary<string, double>(),
+                strategy = new Dictionary<string, ParamValue> { { "part_stock", 0.3 }, { "floor_stock", 0.1 } },
+                technology = new Dictionary<string, ParamValue>(),
             });
             plan.operations.Add(new OperationJson
             {
                 operation_id = "OP-002", operation_type = "drilling",
                 nx_template = new NxTemplateJson { type = "hole_making", subtype = "DRILLING" },
                 tool_ref = "T-002", method_ref = "METHOD",
-                strategy = new Dictionary<string, double> { { "hole_depth", 20 } },
-                technology = new Dictionary<string, double>(),
+                strategy = new Dictionary<string, ParamValue> { { "hole_depth", 20 } },
+                technology = new Dictionary<string, ParamValue>(),
             });
 
             plan.workingsteps.Add(new WorkingstepJson
@@ -155,16 +155,27 @@ namespace NXPlugins.PlanExporterTests
             Assert.True(r.Operations.Count == 1, "其余 op 正常入指令");
         }
 
-        // PRE-4：白名单非空且排除已知不可写键（stepover 家族 U-6）。
+        // PRE-4/V15-PRE-2：白名单非空、排除负结案键、含注册表 4 持久键（v1.5-③ 修订）。
         public static void test_PRE4_whitelist_nonempty_excludes_stepover()
         {
             Assert.True(ParamWhiteList.IsReady, "白名单应就绪");
             Assert.False(ParamWhiteList.StrategyWritable.ContainsKey("stepover"),
                 "stepover 不得在白名单（U-6 整链写无效）");
+            Assert.False(ParamWhiteList.StrategyWritable.ContainsKey("multi_depth_cut"),
+                "multi_depth_cut 不得在白名单（注册表 #5 负结案）");
+            Assert.False(ParamWhiteList.StrategyWritable.ContainsKey("boundary_intol"),
+                "boundary_intol 不得在白名单（注册表 #7 负结案）");
             Assert.True(ParamWhiteList.StrategyWritable.ContainsKey("part_stock"),
                 "part_stock 应可写（E4 实证）");
-            Assert.False(ParamWhiteList.StrategyWritable.ContainsKey("cut_pattern"),
-                "枚举面 v1 不在白名单（写入需形态分派，[I] 增强前不固话）");
+            // V15-PRE-2：4 持久键入表（E1/E7 锚定三跑；v1.5-③ S1 写面扩展）
+            foreach (string k in new[] { "cut_pattern", "cut_order", "cut_direction", "finish_passes" })
+            {
+                ParamTarget t;
+                Assert.True(ParamWhiteList.StrategyWritable.TryGetValue(k, out t),
+                    k + " 应可写（注册表 #1-4 持久键）");
+                Assert.True(t.Kind == (k == "finish_passes" ? ParamKind.Number : ParamKind.Enum),
+                    k + " kind 应与注册表形态一致");
+            }
         }
 
         // ---------- POST ----------
@@ -270,9 +281,9 @@ namespace NXPlugins.PlanExporterTests
             Assert.NotNull(cav, "OP-001 应在指令中");
             Assert.True(cav.Params.Count == 2, "OP-001 应有 part_stock+floor_stock 两条");
             foreach (ParamInstruction pi in cav.Params)
-                Assert.True(pi.MemberPath == "CutParameters.PartStock" && pi.Value == 0.3
-                    || pi.MemberPath == "CutParameters.FloorStock" && pi.Value == 0.1,
-                    "OP-001 参数指令内容不符: " + pi.MemberPath + "=" + pi.Value);
+                Assert.True(pi.MemberPath == "CutParameters.PartStock" && pi.N == 0.3
+                    || pi.MemberPath == "CutParameters.FloorStock" && pi.N == 0.1,
+                    "OP-001 参数指令内容不符: " + pi.MemberPath + "=" + pi.N);
             Assert.NotNull(drill, "OP-002 应在指令中");
             Assert.True(drill.Params.Count == 1 && drill.Params[0].MemberPath == "HoleDepth",
                 "OP-002 应有 hole_depth→HoleDepth 一条");
@@ -451,6 +462,98 @@ namespace NXPlugins.PlanExporterTests
                 "Steps[1] 应 = OP-001（op 先于子组，gt 成员序）");
             Assert.True(r.Steps[2].IsProgram && r.Steps[2].Program.Full == "A01/A1-1", "Steps[2] 应 = A1-1 组");
             Assert.True(!r.Steps[3].IsProgram && r.Steps[3].Operation.OpId == "OP-002", "Steps[3] 应 = OP-002");
+        }
+
+        // ---------- v1.5-③（V15-*，docs/nx-params-v15-spec.md §3） ----------
+
+        // V15-POST-2：写面命中（注册表 4 持久键）→ 指令含 kind 与值（枚举词 S / 数值 N）。
+        public static void test_V15POST2_persist_keys_become_instructions()
+        {
+            PlanDocument p = SamplePlan();
+            OperationJson o = p.operations[0];   // OP-001 CAVITY_MILL
+            o.strategy["cut_pattern"] = "FollowPeriphery";
+            o.strategy["cut_order"] = "DepthFirst";
+            o.strategy["cut_direction"] = "Climb";
+            o.strategy["finish_passes"] = 2.0;
+            RebuildPlan r = ExecutorCore.Build(p);
+            Assert.True(r.Ok, "应 Ok");
+            OpCommand cav = null;
+            foreach (OpCommand c in r.Operations) if (c.OpId == "OP-001") cav = c;
+            Assert.NotNull(cav, "OP-001 应在指令中");
+            Assert.True(cav.Params.Count == 6, "应含 4 持久键 + part_stock + floor_stock（6 条）");
+            ParamInstruction pat = null, ord = null, dir = null, fin = null;
+            foreach (ParamInstruction pi in cav.Params)
+                if (pi.MemberPath == "CutPattern.CutPattern") pat = pi;
+                else if (pi.MemberPath == "CutParameters.CutOrder") ord = pi;
+                else if (pi.MemberPath == "CutParameters.CutDirection.Type") dir = pi;
+                else if (pi.MemberPath == "CutParameters.FinishPasses.NumberOfFinishPasses") fin = pi;
+            Assert.True(pat != null && pat.Kind == ParamKind.Enum && pat.S == "FollowPeriphery" && pat.N == null,
+                "cut_pattern 指令应为 Enum + NX 原文词");
+            Assert.True(ord != null && ord.S == "DepthFirst", "cut_order 指令词错");
+            Assert.True(dir != null && dir.S == "Climb", "cut_direction 指令词错");
+            Assert.True(fin != null && fin.Kind == ParamKind.Number && fin.N == 2.0 && fin.S == null,
+                "finish_passes 指令应为 Number + N=2");
+        }
+
+        // V15-POST-2：technology rpm（白名单既有）→ 数值指令（I-2 写侧 [I] 亮点的 [U] 前镜像）。
+        public static void test_V15POST2_rpm_becomes_instruction()
+        {
+            PlanDocument p = SamplePlan();
+            p.operations[0].technology["spindle_rpm"] = 2400.0;
+            RebuildPlan r = ExecutorCore.Build(p);
+            Assert.True(r.Ok, "应 Ok");
+            OpCommand cav = null;
+            foreach (OpCommand c in r.Operations) if (c.OpId == "OP-001") cav = c;
+            bool hasRpm = false;
+            foreach (ParamInstruction pi in cav.Params)
+                if (pi.MemberPath == "FeedsBuilder.SpindleRpmBuilder" && pi.Kind == ParamKind.Number && pi.N == 2400.0)
+                    hasRpm = true;
+            Assert.True(hasRpm, "spindle_rpm → FeedsBuilder.SpindleRpmBuilder Number 指令");
+        }
+
+        // V15-POST-2：枚举词 ∉ NxParamWords → PARAM_ENUM_UNKNOWN error diag，该键不入指令（不静默）。
+        public static void test_V15POST2_enum_word_unknown_rejected()
+        {
+            PlanDocument p = SamplePlan();
+            p.operations[0].strategy["cut_pattern"] = "BogusWord";
+            RebuildPlan r = ExecutorCore.Build(p);
+            Assert.True(r.Ok, "非致命应 Ok");
+            Assert.True(HasDiag(r, "PARAM_ENUM_UNKNOWN", "OP-001"), "应含 PARAM_ENUM_UNKNOWN diag");
+            OpCommand cav = null;
+            foreach (OpCommand c in r.Operations) if (c.OpId == "OP-001") cav = c;
+            foreach (ParamInstruction pi in cav.Params)
+                Assert.False(pi.MemberPath == "CutPattern.CutPattern", "未知词不得入指令");
+        }
+
+        // V15-PRE-1：值 kind 与写面 kind 不符 → PARAM_KIND_MISMATCH error（数值键给串 / 枚举键给数）。
+        public static void test_V15PRE1_kind_mismatch_error()
+        {
+            PlanDocument p = SamplePlan();
+            p.operations[0].strategy["finish_passes"] = "Zig";   // 数值键收到枚举串
+            p.operations[0].strategy["cut_pattern"] = 0.5;       // 枚举键收到数值
+            RebuildPlan r = ExecutorCore.Build(p);
+            Assert.True(r.Ok, "非致命应 Ok");
+            Assert.True(HasDiag(r, "PARAM_KIND_MISMATCH", "OP-001"), "应含 PARAM_KIND_MISMATCH diag");
+            OpCommand cav = null;
+            foreach (OpCommand c in r.Operations) if (c.OpId == "OP-001") cav = c;
+            foreach (ParamInstruction pi in cav.Params)
+                Assert.False(pi.MemberPath == "CutPattern.CutPattern" || pi.MemberPath == "CutParameters.FinishPasses.NumberOfFinishPasses",
+                    "kind 冲突键不得入指令");
+        }
+
+        // V15-POST-2：负结案键（Boundary 容差族，注册表 #7/#8）表外 → PARAM_UNSUPPORTED warning（不静默）。
+        public static void test_V15POST2_negative_key_warned()
+        {
+            PlanDocument p = SamplePlan();
+            p.operations[0].strategy["boundary_intol"] = 0.02;
+            p.operations[0].strategy["boundary_outtol"] = 0.03;
+            RebuildPlan r = ExecutorCore.Build(p);
+            Assert.True(r.Ok, "非致命应 Ok");
+            Assert.True(HasDiag(r, "PARAM_UNSUPPORTED", "OP-001"), "boundary 族应 PARAM_UNSUPPORTED warning");
+            OpCommand cav = null;
+            foreach (OpCommand c in r.Operations) if (c.OpId == "OP-001") cav = c;
+            foreach (ParamInstruction pi in cav.Params)
+                Assert.False(pi.MemberPath == "CutParameters.BoundaryInTol", "拒收键不得入指令");
         }
     }
 }

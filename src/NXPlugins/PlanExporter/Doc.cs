@@ -75,8 +75,9 @@ namespace NXPlugins.PlanExporter
         public NxTemplateJson nx_template = new NxTemplateJson();
         public string tool_ref = "";
         public string method_ref = "";
-        public Dictionary<string, double> strategy = new Dictionary<string, double>();
-        public Dictionary<string, double> technology = new Dictionary<string, double>();
+        // v1.5-③：参数值 = ParamValue 联合（数值 N / 枚举串 S），KV 数组 Value = {"N":..}|{"S":..} 包装（P0 实证）
+        public Dictionary<string, ParamValue> strategy = new Dictionary<string, ParamValue>();
+        public Dictionary<string, ParamValue> technology = new Dictionary<string, ParamValue>();
     }
 
     public sealed class NxTemplateJson

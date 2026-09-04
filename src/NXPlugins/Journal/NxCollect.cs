@@ -209,6 +209,14 @@ public static class NxCollect
                 CavityMillingBuilder b = cam.CAMOperationCollection.CreateCavityMillingBuilder(op);
                 try
                 {
+                    // v1.5-③ S1（注册表 #1-8）：3 枚举直读 NX ToString 原文 + 3 数值 + rpm
+                    TryParamS(b, o, "cut_pattern", () => b.CutPattern.CutPattern.ToString());
+                    TryParamS(b, o, "cut_order", () => b.CutParameters.CutOrder.ToString());
+                    TryParamS(b, o, "cut_direction", () => b.CutParameters.CutDirection.Type.ToString());
+                    TryParam(b, o, "finish_passes", () => (double)b.CutParameters.FinishPasses.NumberOfFinishPasses);
+                    TryParam(b, o, "boundary_intol", () => b.CutParameters.BoundaryInTol);
+                    TryParam(b, o, "boundary_outtol", () => b.CutParameters.BoundaryOutTol);
+                    TryParam(b, o, "tech:spindle_rpm", () => b.FeedsBuilder.SpindleRpmBuilder.Value);
                     TryParam(b, o, "part_stock", () => b.CutParameters.PartStock.Value);
                     TryParam(b, o, "floor_stock", () => b.CutParameters.FloorStock.Value);
                     TryParam(b, o, "depth_per_cut", () => b.DepthPerCut.Value);
@@ -219,11 +227,16 @@ public static class NxCollect
         }
         else if (o.TypeFamily == "Drilling")
         {
-            // 新模板 DRILLING 家族 → HoleDrillingBuilder（camprobe-drill 实证 BottomStock 可读）
+            // 新模板 DRILLING 家族 → HoleDrillingBuilder（camprobe-drill 实证 BottomStock 可读；
+            // FeedsBuilder 经 HoleMachiningBuilder 基类可达，rpm 读回 [I] I-3 点亮）
             try
             {
                 HoleDrillingBuilder b = cam.CAMOperationCollection.CreateHoleDrillingBuilder(op);
-                try { TryParam(b, o, "bottom_stock", () => b.CuttingParameters.BottomStock.Value); }
+                try
+                {
+                    TryParam(b, o, "bottom_stock", () => b.CuttingParameters.BottomStock.Value);
+                    TryParam(b, o, "tech:spindle_rpm", () => b.FeedsBuilder.SpindleRpmBuilder.Value);
+                }
                 finally { b.Destroy(); }
             }
             catch (Exception e) { o.ReadbackErrors.Add("hole builder 打不开: " + e.Message); }
@@ -238,7 +251,9 @@ public static class NxCollect
                 try
                 {
                     TryParam(b, o, "hole_depth", () => b.HoleDepth.Value);
-                    log("  PTP op " + o.Name + " 参数面待 #3 细化（builder 已开验证，当前仅读 hole_depth）");
+                    // v1.5-③ S1：rpm 读（探针实证打点 3000 / G83 500）→ plan 供给重建近似 DRILLING 写 rpm
+                    TryParam(b, o, "tech:spindle_rpm", () => b.FeedsBuilder.SpindleRpmBuilder.Value);
+                    log("  PTP op " + o.Name + " 参数面细分待后续批（cycle/细分 U-1 负证；rpm 已扩读）");
                 }
                 finally { b.Destroy(); }
             }
@@ -250,7 +265,14 @@ public static class NxCollect
 
     private static void TryParam(object builder, OperationItem o, string key, Func<double> getter)
     {
-        try { o.Params[key] = getter(); }
+        try { o.Params[key] = new ParamValue(getter()); }
+        catch (Exception e) { o.ReadbackErrors.Add("参数 " + key + " 回读失败: " + e.Message); }
+    }
+
+    // v1.5-③：枚举键读 NX 枚举 ToString 原文（词 = schema 词集，语言无关）
+    private static void TryParamS(object builder, OperationItem o, string key, Func<string> getter)
+    {
+        try { o.Params[key] = new ParamValue(getter()); }
         catch (Exception e) { o.ReadbackErrors.Add("参数 " + key + " 回读失败: " + e.Message); }
     }
 

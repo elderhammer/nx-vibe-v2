@@ -177,10 +177,10 @@ namespace NXPlugins.PlanExporterTests
             PlanDocument doc = ExporterCore.Build(snap, WhiteList.Resolve);
             string json = PlanWriter.Serializer.Serialize(doc);
             PlanDocument back = PlanWriter.Serializer.Deserialize(json);
-            double v;
-            Assert.True(back.operations[0].strategy.TryGetValue("depth_per_cut", out v),
-                "POST-4 strategy 应含 depth_per_cut");
-            Assert.Equal(0.30000000000000004, v, "POST-4 double 应原样往返");
+            ParamValue v;
+            Assert.True(back.operations[0].strategy.TryGetValue("depth_per_cut", out v) && v.N.HasValue,
+                "POST-4 strategy 应含 depth_per_cut(N)");
+            Assert.Equal(0.30000000000000004, v.N.Value, "POST-4 double 应原样往返");
         }
 
         // POST-5：结构级失败（PRE-1/2/3 不满足）→ 中止且不落盘。
@@ -413,6 +413,60 @@ namespace NXPlugins.PlanExporterTests
             Assert.NotNull(topOp, "顶层 op（ProgramParent 空）应兜底挂 root");
             Assert.NotNull(orphan, "父组不在树中的 op 应兜底挂 root（不静默丢失）");
             AssertValid(doc, "v1.5-① 兜底挂 root 后校验通过");
+        }
+
+        // ---------- v1.5-③（V15-*，docs/nx-params-v15-spec.md §3） ----------
+
+        // V15-POST-1：S1 键落盘 strategy/technology——枚举值 = NX 原文串（S）、数值 = N（tech: 前缀分流）。
+        public static void test_V15POST1_export_enum_and_number_params()
+        {
+            ExportSnapshot snap = SampleSnapshot();
+            OperationItem cav = snap.Operations[0];   // CAVITY_MILL
+            cav.Params["cut_pattern"] = "FollowPeriphery";
+            cav.Params["cut_order"] = "DepthFirst";
+            cav.Params["cut_direction"] = "Climb";
+            cav.Params["finish_passes"] = 0.0;
+            cav.Params["boundary_intol"] = 0.0;
+            cav.Params["tech:spindle_rpm"] = 2400.0;
+            PlanDocument doc = ExporterCore.Build(snap, WhiteList.Resolve);
+            OperationJson oj = doc.operations[0];
+            ParamValue cp = oj.strategy["cut_pattern"];
+            Assert.True(cp.S == "FollowPeriphery" && cp.N == null, "cut_pattern 应为枚举串（NX 原文直写）");
+            Assert.True(oj.strategy["cut_order"].S == "DepthFirst", "cut_order 应为 NX 原文串");
+            Assert.True(oj.strategy["cut_direction"].S == "Climb", "cut_direction 应为 NX 原文串");
+            Assert.True(oj.strategy["finish_passes"].N == 0.0 && oj.strategy["finish_passes"].S == null,
+                "finish_passes 应为数值");
+            Assert.True(oj.strategy["boundary_intol"].N == 0.0, "boundary_intol 应为数值");
+            Assert.False(oj.strategy.ContainsKey("spindle_rpm"), "tech: 前缀应分流（不进 strategy）");
+            Assert.True(oj.technology["spindle_rpm"].N == 2400.0, "tech:spindle_rpm → technology.spindle_rpm");
+        }
+
+        // V15-INV-1：旧形状（KV Value 裸 number）经归一 shim 解析后值等价（P0 ②b 锚定）；新形状 shim 幂等。
+        public static void test_V15INV1_legacy_shape_normalized()
+        {
+            string legacy = "{\"contract_version\":\"3.0\",\"operations\":[{\"operation_id\":\"OP-001\","
+                + "\"strategy\":[{\"Key\":\"part_stock\",\"Value\":0.1},{\"Key\":\"hole_depth\",\"Value\":0}]}]}";
+            PlanDocument d = new PlanJsonSerializer().Deserialize(legacy);
+            ParamValue ps = d.operations[0].strategy["part_stock"];
+            ParamValue ph = d.operations[0].strategy["hole_depth"];
+            Assert.True(ps.N.HasValue && ps.N.Value == 0.1, "旧形状数值应归一为 N=0.1");
+            Assert.True(ph.N.HasValue && ph.N.Value == 0.0, "旧形状零值应归一为 N=0（与缺键可区分）");
+            Assert.Equal(2, d.operations[0].strategy.Count, "归一后键集不变（part_stock + hole_depth 两键）");
+            string normed = PlanJsonSerializer.NormalizeLegacyValues(PlanWriter.Serializer.Serialize(d));
+            Assert.Equal(PlanWriter.Serializer.Serialize(d), normed, "新形状经 shim 幂等（无变形）");
+        }
+
+        // V15-INV-2：union 值形状序列化幂等——新形状 序列化→解析→再序列化 文本稳定。
+        public static void test_V15INV2_serializer_idempotent_union()
+        {
+            ExportSnapshot snap = SampleSnapshot();
+            snap.Operations[0].Params["cut_pattern"] = "Zig";
+            snap.Operations[0].Params["depth_per_cut"] = 0.30000000000000004;   // 非"干净"double
+            PlanDocument doc = ExporterCore.Build(snap, WhiteList.Resolve);
+            string j1 = PlanWriter.Serializer.Serialize(doc);
+            PlanDocument back = PlanWriter.Serializer.Deserialize(j1);
+            string j2 = PlanWriter.Serializer.Serialize(back);
+            Assert.Equal(j1, j2, "union 值形状序列化幂等（含非干净 double 与枚举串）");
         }
     }
 }

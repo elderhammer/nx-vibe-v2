@@ -232,18 +232,51 @@ namespace NXPlugins.PlanExecutor
             return methodRef;
         }
 
-        private static void AppendParams(OpCommand opCmd, Dictionary<string, double> kv, bool inTechnology, RebuildPlan r)
+        /// <summary>v1.5-③（V15-POST-2）：union 值按写面目标 kind 分派——Kind=Number 且值含 N → 指令；
+        /// Kind=Enum 且值含 S → 词集校验（NxParamWords，∉ → PARAM_ENUM_UNKNOWN error 该键不入指令）；
+        /// 值 kind 与写面 kind 不符（V15-PRE-1）→ error；表外键 → PARAM_UNSUPPORTED warning（含注册表指针）。</summary>
+        private static void AppendParams(OpCommand opCmd, Dictionary<string, ParamValue> kv, bool inTechnology, RebuildPlan r)
         {
             if (kv == null) return;
-            foreach (KeyValuePair<string, double> e in kv)
+            foreach (KeyValuePair<string, ParamValue> e in kv)
             {
-                string path;
-                if (ParamWhiteList.TryGetPath(e.Key, inTechnology, out path))
-                    opCmd.Params.Add(new ParamInstruction(path, e.Value));
+                ParamTarget target;
+                ParamValue v = e.Value;
+                bool hasN = v != null && v.N.HasValue;
+                bool hasS = v != null && v.S != null;
+                if (ParamWhiteList.TryGetTarget(e.Key, inTechnology, out target))
+                {
+                    if (target.Kind == ParamKind.Number && hasN)
+                    {
+                        opCmd.Params.Add(new ParamInstruction(target.MemberPath, target.Kind, v.N, null));
+                    }
+                    else if (target.Kind == ParamKind.Enum && hasS)
+                    {
+                        if (!NxParamWords.IsWord(e.Key, v.S))
+                        {
+                            AddDiag(r, RebuildDiagLevel.Error, "PARAM_ENUM_UNKNOWN", opCmd.OpId,
+                                "枚举词不在词集（schema/NxParamWords 镜像）: " + e.Key + "=" + v.S);
+                        }
+                        else
+                        {
+                            opCmd.Params.Add(new ParamInstruction(target.MemberPath, target.Kind, null, v.S));
+                        }
+                    }
+                    else
+                    {
+                        AddDiag(r, RebuildDiagLevel.Error, "PARAM_KIND_MISMATCH", opCmd.OpId,
+                            "值形态与写面 kind 不符（注册表按键定 kind）: " + e.Key
+                            + " 期望 " + target.Kind + " 实为 " + (hasN ? "N" : hasS ? "S" : "(空)"));
+                    }
+                }
                 else
+                {
                     AddDiag(r, RebuildDiagLevel.Warning, "PARAM_UNSUPPORTED", opCmd.OpId,
-                        "参数字段不在写入面白名单（v1 不写）: " + e.Key
-                        + (e.Key == "stepover" ? "（U-6：Stepover 整链写无效）" : ""));
+                        "参数字段不在写入面白名单（重建不写，读面可导出）: " + e.Key
+                        + (e.Key == "stepover" ? "（U-6：Stepover 整链写无效）"
+                           : e.Key.StartsWith("boundary_") ? "（Boundary 容差族负结案，注册表 #7/#8）"
+                           : "（见 docs/nx-param-registry-spec.md）"));
+                }
             }
         }
 

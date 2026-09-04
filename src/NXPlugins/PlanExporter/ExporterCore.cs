@@ -107,10 +107,10 @@ namespace NXPlugins.PlanExporter
                 foreach (string err in o.ReadbackErrors)
                     AddDiag(diags, DiagLevel.Error, "READBACK_FAIL", err, o.Name);
 
-                // 参数回填：MVP 字段进 strategy/technology 占位（形态注册表后续按字段细化）
-                var strategy = new Dictionary<string, double>();
-                var technology = new Dictionary<string, double>();
-                foreach (KeyValuePair<string, double> kv in o.Params)
+                // 参数回填：注册表键集进 strategy/technology（v1.5-③：值 = ParamValue 联合，tech: 前缀分流）
+                var strategy = new Dictionary<string, ParamValue>();
+                var technology = new Dictionary<string, ParamValue>();
+                foreach (KeyValuePair<string, ParamValue> kv in o.Params)
                 {
                     if (kv.Key.StartsWith("tech:", StringComparison.Ordinal)) technology[kv.Key.Substring(5)] = kv.Value;
                     else strategy[kv.Key] = kv.Value;

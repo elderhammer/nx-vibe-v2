@@ -295,16 +295,28 @@ public class ExecutorAdapter
                 {
                     switch (pi.MemberPath)
                     {
-                        case "CutParameters.PartStock": b.CutParameters.PartStock.Value = pi.Value; break;
-                        case "CutParameters.FloorStock": b.CutParameters.FloorStock.Value = pi.Value; break;
-                        case "CutParameters.WallStock": b.CutParameters.WallStock.Value = pi.Value; break;
-                        case "DepthPerCut": b.DepthPerCut.Value = pi.Value; break;
-                        case "HoleDepth": b.HoleDepth.Value = pi.Value; break;
-                        case "FeedsBuilder.SpindleRpmBuilder": b.FeedsBuilder.SpindleRpmBuilder.Value = pi.Value; break;
+                        case "CutParameters.PartStock": b.CutParameters.PartStock.Value = pi.N.Value; break;
+                        case "CutParameters.FloorStock": b.CutParameters.FloorStock.Value = pi.N.Value; break;
+                        case "CutParameters.WallStock": b.CutParameters.WallStock.Value = pi.N.Value; break;
+                        case "DepthPerCut": b.DepthPerCut.Value = pi.N.Value; break;
+                        case "HoleDepth": b.HoleDepth.Value = pi.N.Value; break;
+                        case "FeedsBuilder.SpindleRpmBuilder": b.FeedsBuilder.SpindleRpmBuilder.Value = pi.N.Value; break;
+                        // v1.5-③ S1：4 持久键（注册表 #1-4）；Enum 词已由 ExecutorCore NxParamWords 校验 → Parse 安全
+                        case "CutPattern.CutPattern":
+                            b.CutPattern.CutPattern = (CutPatternBuilder.Types)Enum.Parse(
+                                typeof(CutPatternBuilder.Types), pi.S); break;
+                        case "CutParameters.CutOrder":
+                            b.CutParameters.CutOrder = (CutParametersCutOrderTypes)Enum.Parse(
+                                typeof(CutParametersCutOrderTypes), pi.S); break;
+                        case "CutParameters.CutDirection.Type":
+                            b.CutParameters.CutDirection.Type = (CutDirection.Types)Enum.Parse(
+                                typeof(CutDirection.Types), pi.S); break;
+                        case "CutParameters.FinishPasses.NumberOfFinishPasses":
+                            b.CutParameters.FinishPasses.NumberOfFinishPasses = (int)pi.N.Value; break;
                         default: Log("    " + op.Name + " 参数路径无写实现: " + pi.MemberPath); return;
                     }
                     b.Commit();
-                    Log("    " + op.Name + " 写 " + pi.MemberPath + "=" + pi.Value.ToString("0.####"));
+                    Log("    " + op.Name + " 写 " + pi.MemberPath + "=" + (pi.Kind == ParamKind.Enum ? pi.S : pi.N.Value.ToString("0.####")));
                 }
                 finally { b.Destroy(); }
                 return;
@@ -318,12 +330,12 @@ public class ExecutorAdapter
                 {
                     switch (pi.MemberPath)
                     {
-                        case "HoleDepth": b.HoleDepth.Value = pi.Value; break;
-                        case "FeedsBuilder.SpindleRpmBuilder": b.FeedsBuilder.SpindleRpmBuilder.Value = pi.Value; break;
+                        case "HoleDepth": b.HoleDepth.Value = pi.N.Value; break;
+                        case "FeedsBuilder.SpindleRpmBuilder": b.FeedsBuilder.SpindleRpmBuilder.Value = pi.N.Value; break;
                         default: Log("    " + op.Name + " 参数路径对孔族无写实现: " + pi.MemberPath); return;
                     }
                     b.Commit();
-                    Log("    " + op.Name + " 写 " + pi.MemberPath + "=" + pi.Value.ToString("0.####"));
+                    Log("    " + op.Name + " 写 " + pi.MemberPath + "=" + pi.N.Value.ToString("0.####"));
                 }
                 finally { b.Destroy(); }
                 return;

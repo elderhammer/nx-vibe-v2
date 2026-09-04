@@ -115,10 +115,11 @@ namespace NXPlugins.PlanComparer
                     "模板对失配（家族 " + a.TypeFamily + " vs " + b.TypeFamily + "）: " + pairA + " vs " + pairB);
             else r.TemplatePass++;
 
-            // POST-C1：Params 键并集逐键双判据
+            // POST-C1 / V15-POST-3：Params 键并集逐键按 kind 判据——双侧同形（N/N → 双判据回归；S/S →
+            // ordinal equality）；形异/单侧缺失 → FAIL 不静默。kind 由采集侧按键固定（同采集面两侧同形）。
             var keys = new HashSet<string>();
-            foreach (KeyValuePair<string, double> kv in a.Params) keys.Add(kv.Key);
-            foreach (KeyValuePair<string, double> kv in b.Params) keys.Add(kv.Key);
+            foreach (KeyValuePair<string, ParamValue> kv in a.Params) keys.Add(kv.Key);
+            foreach (KeyValuePair<string, ParamValue> kv in b.Params) keys.Add(kv.Key);
             foreach (string k in keys)
             {
                 bool aHas = a.Params.ContainsKey(k), bHas = b.Params.ContainsKey(k);
@@ -129,14 +130,32 @@ namespace NXPlugins.PlanComparer
                         "参数 " + k + " 单侧缺失: A=" + (aHas ? Fmt(a.Params[k]) : "(无)") + " B=" + (bHas ? Fmt(b.Params[k]) : "(无)"));
                     continue;
                 }
-                double va = a.Params[k], vb = b.Params[k];
-                double abs = Math.Abs(va - vb);
+                ParamValue pva = a.Params[k], pvb = b.Params[k];
+                bool aN = pva.N.HasValue, bN = pvb.N.HasValue;
+                bool aS = pva.S != null, bS = pvb.S != null;
+                if (aN && bN)
+                {
+                    double abs = Math.Abs(pva.N.Value - pvb.N.Value);
+                    r.ParamChecks++;
+                    if (Passes(abs, pva.N.Value, pvb.N.Value, opt)) { r.ParamPass++; continue; }
+                    AddIssue(r, a.Name, "OP_PARAM_DIFF",
+                        "参数 " + k + ": A=" + Fmt(pva.N.Value) + " B=" + Fmt(pvb.N.Value) + " |差|=" + Fmt(abs)
+                        + (abs > opt.EpsLen ? "（超绝对容差 " + opt.EpsLen + "）" : "（超相对容差 " + opt.RelTol + "）"),
+                        abs);
+                    continue;
+                }
+                if (aS && bS)
+                {
+                    r.ParamChecks++;
+                    if (pva.S == pvb.S) { r.ParamPass++; continue; }
+                    AddIssue(r, a.Name, "OP_PARAM_DIFF",
+                        "参数 " + k + "（枚举）: A=" + pva.S + " B=" + pvb.S, 1.0);
+                    continue;
+                }
+                // 形异（N vs S 等）→ 显式 FAIL
                 r.ParamChecks++;
-                if (Passes(abs, va, vb, opt)) { r.ParamPass++; continue; }
                 AddIssue(r, a.Name, "OP_PARAM_DIFF",
-                    "参数 " + k + ": A=" + Fmt(va) + " B=" + Fmt(vb) + " |差|=" + Fmt(abs)
-                    + (abs > opt.EpsLen ? "（超绝对容差 " + opt.EpsLen + "）" : "（超相对容差 " + opt.RelTol + "）"),
-                    abs);
+                    "参数 " + k + " 值形不一致: A=" + Fmt(pva) + " B=" + Fmt(pvb), 1.0);
             }
         }
 
@@ -268,6 +287,15 @@ namespace NXPlugins.PlanComparer
         }
 
         private static string Fmt(double d) { return d.ToString("0.###"); }
+
+        /// <summary>v1.5-③：联合值展示（数值 0.### / 枚举原文串）。</summary>
+        private static string Fmt(ParamValue v)
+        {
+            if (v == null) return "(空)";
+            if (v.N.HasValue) return Fmt(v.N.Value);
+            if (v.S != null) return v.S;
+            return "(空)";
+        }
 
         private static void AddIssue(ComparerResult r, string key, string code, string detail, double? abs = null)
         {

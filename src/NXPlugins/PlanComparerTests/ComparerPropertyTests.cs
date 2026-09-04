@@ -55,7 +55,7 @@ namespace NXPlugins.PlanExporterTests
                     ToolParent = o.ToolParent, GeometryParent = o.GeometryParent, HasGeometryParent = o.HasGeometryParent,
                     Key = o.Key,
                 };
-                foreach (KeyValuePair<string, double> kv in o.Params) n.Params[kv.Key] = kv.Value;
+                foreach (KeyValuePair<string, ParamValue> kv in o.Params) n.Params[kv.Key] = kv.Value;
                 c.Operations.Add(n);
             }
             return c;
@@ -340,8 +340,8 @@ namespace NXPlugins.PlanExporterTests
             Assert.Equal(a0.Tools.Count, a.Tools.Count, "A tools 数不变");
             Assert.Equal(a0.Setups.Count, a.Setups.Count, "A setups 数不变");
             Assert.Equal(a0.ProgramOrder.Count, a.ProgramOrder.Count, "A 组序不变");
-            Assert.Equal(3.0, b.Operations[0].Params["part_stock"], "B 变异键值未被回写");
-            Assert.Equal(a0.Operations[0].Params["part_stock"], a.Operations[0].Params["part_stock"], "A 参数键值不变");
+            Assert.Equal(3.0, b.Operations[0].Params["part_stock"].N.Value, "B 变异键值未被回写");
+            Assert.Equal(a0.Operations[0].Params["part_stock"].N.Value, a.Operations[0].Params["part_stock"].N.Value, "A 参数键值不变");
             Assert.Equal(a0.Tools[0].Diameter, a.Tools[0].Diameter, "A 刀值不变");
             Assert.Equal(a0.Setups[0].McsOrigin[0], a.Setups[0].McsOrigin[0], "A MCS 不变");
         }
@@ -373,6 +373,46 @@ namespace NXPlugins.PlanExporterTests
             foreach (ComparerIssue i in r.Issues) if (i.Code == "DUP_NAME") dupCount++;
             Assert.Equal(1, dupCount, "同名 → DUP_NAME 单条聚合: " + Describe(r));
             Assert.Equal(2, r.OpsMatched, "非 dup op 仍正常配对（CAVITY_1/打点1）");
+        }
+
+        // ---------- v1.5-③（V15-*，docs/nx-params-v15-spec.md §3） ----------
+
+        // V15-POST-3：枚举键 ordinal equality——同值 PASS；恰 1 变异 → 恰 1 FAIL；单侧缺失 → FAIL。
+        public static void test_V15POST3_enum_param_variance()
+        {
+            ExportSnapshot a = Sample();
+            a.Operations[0].Params["cut_pattern"] = "FollowPeriphery";
+            a.Operations[0].Params["cut_order"] = "DepthFirst";
+            ExportSnapshot b = Sample();
+            b.Operations[0].Params["cut_pattern"] = "FollowPeriphery";
+            b.Operations[0].Params["cut_order"] = "LevelFirst";   // 恰 1 变异
+            ComparerResult same = CompareCore.Compare(a, CloneOf(a));
+            Assert.Equal(0, CountParamDiff(same, "cut_pattern"), "同值枚举 → 无 FAIL: " + Describe(same));
+            Assert.Equal(0, CountParamDiff(same, "cut_order"), "同值枚举 → 无 FAIL: " + Describe(same));
+            ComparerResult r = CompareCore.Compare(a, b);
+            Assert.Equal(0, CountParamDiff(r, "cut_pattern"), "同值枚举键 → PASS: " + Describe(r));
+            Assert.Equal(1, CountParamDiff(r, "cut_order"), "枚举恰 1 变异 → 恰 1 FAIL: " + Describe(r));
+            // 单侧缺失（b 侧无 cut_pattern）→ FAIL 不静默
+            ExportSnapshot c = CloneOf(a);
+            c.Operations[0].Params.Remove("cut_pattern");
+            ComparerResult rc = CompareCore.Compare(a, c);
+            Assert.Equal(1, CountParamDiff(rc, "cut_pattern"), "枚举键单侧缺失 → FAIL: " + Describe(rc));
+        }
+
+        // V15-POST-3：数值双判据回归在 union 通道下不变（Sample 参数 4 键全 N 全过）。
+        public static void test_V15POST3_number_regression_on_union()
+        {
+            ComparerResult r = CompareCore.Compare(Sample(), Sample());
+            Assert.Equal(4, r.ParamChecks, "union 数值键检查数不变");
+            Assert.Equal(4, r.ParamPass, "union 数值键全过");
+        }
+
+        private static int CountParamDiff(ComparerResult r, string keyHint)
+        {
+            int n = 0;
+            foreach (ComparerIssue i in r.Issues)
+                if (i.Code == "OP_PARAM_DIFF" && i.Detail.IndexOf(keyHint, StringComparison.Ordinal) >= 0) n++;
+            return n;
         }
     }
 }

@@ -27,8 +27,13 @@ public class ComparerAdapter
 
     public static void Main(string[] args)
     {
-        string partAPath = (args.Length > 0 && !string.IsNullOrEmpty(args[0])) ? args[0] : DefaultPartA;
-        string partBPath = (args.Length > 1 && !string.IsNullOrEmpty(args[1])) ? args[1] : DefaultPartB;
+        // NX Execute 对话框实况（2026-09-04 实证）：多参整体入 args[0]（引号含入，Path 非法字符异常）
+        // → 单参形态 = args[0] 作 B（rebuilt）覆盖；A（gt）恒默认 test.prt。args[1]/args[2] 保留兼容旧多参。
+        string partAPath = DefaultPartA;
+        string partBPath = DefaultPartB;
+        string b0 = TrimQuotes(args.Length > 0 ? args[0] : "");
+        if (b0.Length > 0) partBPath = b0;
+        else if (args.Length > 1 && !string.IsNullOrEmpty(args[1])) partBPath = TrimQuotes(args[1]);
         if (args.Length > 2 && !string.IsNullOrEmpty(args[2])) _outPath = args[2];
         _outPath = Path.Combine(Path.GetDirectoryName(Path.GetFullPath(_outPath)),
             "comparer-run-" + DateTime.Now.ToString("yyyyMMdd-HHmmss") + ".txt");
@@ -174,5 +179,12 @@ public class ComparerAdapter
             try { File.AppendAllText(_outPath, s + Environment.NewLine); }
             catch { /* 忽略日志写失败 */ }
         }
+    }
+
+    // 双引号清洗（Execute 对话框可能保留引号，2026-09-04 200022 实证）
+    private static string TrimQuotes(string s)
+    {
+        if (s == null) return "";
+        return s.Trim().Trim('"').Trim();
     }
 }

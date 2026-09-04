@@ -23,7 +23,7 @@
 | `test.rebuilt-132130.prt`（**已入库**，2026-09-04） | D-4 后按新形状 plan 重建的 prj′（PlanExecutor [I] 产物） | 重建闭环回归基准/对比件（Comparer 输入） |
 | `test.rebuilt.prt`（**已入库**，2026-09-04，141K） | U-7 词集 plan 重建的 prj′（ExecutorAdapter [I] 产物，13:55） | U-7 重建回归基准/对比件 |
 | `test.rebuilt-143432.prt`（**已入库**，2026-09-04） | fixture 补读链重建件（plan 带 fixture_offset=1 后 ExecutorAdapter 复跑产物，14:34） | fixture 对照闭环回归件 |
-| `test.plan.json`（**已入库**，2026-09-04，U-7 重导 13:53） | 由 test.prt 导出的 plan（ExporterAdapter v11 产物，schema 落盘复验 PASS；U-7 形状：tools type/subtype = NX Tool.Types/Subtypes 原文，六刀 (Mill,Mill5)×3/(Mill,MillChamfer)/(Drill,DrillStandard)×2；D-4 形状：无 machines/geometry_ref，features={id,type,params}） | 合同冒烟/导出回归基线 |
+| `test.plan.json`（**已入库**，2026-09-04，v1.5-③ S1 重导 19:49） | 由 test.prt 导出的 plan（ExporterAdapter-v15 产物，schema 落盘复验 PASS；U-7 形状：tools type/subtype = NX Tool.Types/Subtypes 原文；D-4 形状：无 machines/geometry_ref；**v1.5-③ 形状**：strategy KV Value 为 {N}/{S} 包装——腔 op 9 键（cut_pattern/cut_order/cut_direction NX 原文串 + finish/boundary×2/part/floor/depth）、六 op technology.spindle_rpm） | 合同冒烟/导出回归基线 |
 
 ## test.prt 盘点记录（2026-09-03，NX2406 会话 + dump journal 实证）
 
@@ -74,6 +74,9 @@
 | `comparer-run-20260904-144237.txt` | **Comparer 终跑**（护栏版，干净会话）：双件正确轮换，issues=6 与校准清单逐条一致，fixture=1/1 闭环（Comparer 收口证据） |
 | `camprobe-params-20260904-155341.txt` | **v1.5-④ 键集注册表探针**（ok=3 fail=0）：读面键集 16 键实态（15 可读 + PTP cycle 1 负证，腔铣 cut_pattern 等 + PTP 面）+ 写面矩阵六键首跑（c1-c4 持久、c5 multi_depth_cut.toggle 还原、c6 boundary_intol 还原——负结论待收口三跑） |
 | `camprobe-params2-20260904-163751.txt`（-163823/-163850 同） | **v1.5-④ 收口三跑**（E1-E7 逐键自动判定，三会话一致）：锚点 E1/E7 持久 ✓；E2/E4 复刻还原 ✗；E3/E5/E6 邻接判别 → MultiDepthCut 整对象 + Boundary 容差族负结案（规格：docs/nx-param-registry-spec.md，源：src/NXPlugins/Journal/CamProbeParams2.cs） |
+| `adapter-run-20260904-194935.txt` | **v1.5-③ S1 重导**（ExporterAdapter-v15）：test.plan.json 新形状——腔 op 6 新键（cut_pattern/cut_order/cut_direction NX 原文串 + finish/boundary×2 N）+ 六 op rpm 全到，schema 内存+落盘复验 PASS（I-1） |
+| `executor-run-20260904-195159.txt` | **v1.5-③ 复跑**（ok=17 fail=0）：4 持久键 + rpm 真实写入无异常（FollowPeriphery/Profile/DepthFirst/Climb 复刻），boundary 拒收 diag ×4 → test.rebuilt-195208.prt（I-2） |
+| `comparer-run-20260904-200339.txt` | **v1.5-③ 终跑**（B=-195208.prt 正确件；issues=5 全校准可解释）：腔对腔 cut_*/finish/boundary/rpm 由"键缺席"转全 PASS = 写入持久终判 + technology 维首亮；残余 = PTP 键错位 4 + tool#4 类型 1（I-3/I-4）。注：195504 首跑为错 B 件（旧主名）→ ComparerAdapter 参数语义改单参 B 覆盖（200022 实证） |
 
 > 注意：西门子安装目录内文件（模板/样例/程序集）受许可约束，**只引用、不复制进 git**；
 > 自建件由本仓库维护。

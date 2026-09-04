@@ -159,6 +159,18 @@ samples/camprobe-u7-20260904-115251.txt ok=3/fail=0）**：
 - 阳性锚点 E1（cut_pattern=Zig）与 E7（finish_passes=2）三跑持久 = 会话写路径健康 → 上列负结论为
   参数族专属，非写面整体失效。机制残留（为何同族部分键可持久）与 U-6 同款未决，见注册表 §5。
 
+**2026-09-04 v1.5-③ 实现收官增补（源：comparer-run-20260904-200339.txt / executor-run-20260904-195159.txt /
+adapter-run-20260904-194935.txt；规格 docs/nx-params-v15-spec.md = S1 参数面扩展）**：
+
+- **DRILLING 族 rpm 读回 [I] 点亮**：新建 DRILLING 近似 op 经 HoleDrillingBuilder.FeedsBuilder（HoleMachiningBuilder
+  基类面）读 rpm 可行（rebuilt 侧采集对照真值一致，200339 param=42/46 含此面）——此前 rpm 读仅腔/PTP 实证。
+- **写侧持久键真实链终判**：cut_pattern/cut_order/cut_direction/finish_passes（注册表 #1-4）经
+  ExecutorAdapter 写入 → 落盘重开 → Comparer 采集逐键比对全 PASS（腔对腔 4×9=36 键含 rpm 全过；
+  4 持久键 = plan 真值复刻，非默认值）。technology 维（spindle_rpm）首次全链点亮（六 op 2400/3000/
+  1800/1800/3000/500 复刻）。
+- **ComparerAdapter 参数语义定稿**：NX Execute 对话框为**单参整体传递**（多参引号整体入 args[0] →
+  Path 非法字符，200022 实证）→ args[0] = B（rebuilt）覆盖 + 引号清洗，A 恒默认 test.prt。
+
 ### 2.2 属性取值形态（四类混合——Mapper 必须按类型分支）
 
 | 形态 | 特征 | 实例（NX2406 .NET 实测） |
