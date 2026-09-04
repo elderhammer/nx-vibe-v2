@@ -4,6 +4,9 @@
 > 2026-09-04 更新：设计 §7 步骤 0/1/2/3/4 已实现收官（spec/代码/集成证据见 PlanExporter、PlanExecutor
 > 与 PlanComparer spec、samples/），模块表状态列已同步；**初始版本三步闭环 v1 完成**
 > （导出 test.plan.json → 重建 test.rebuilt.prt → 对比偏差报告 comparer-run-144237）。
+> 2026-09-05 更新：**STEP 导入公开 API 确认**（早前"STEP 无导入 API"定案系检索假负结案，证伪
+> 三关协议入 nx-api-verify SKILL §1.5）→ §1 步骤②"打开原始 STEP 文件"维持 v2 目标路径；
+> 运行时落地批处理未通待 GUI 复验（详情见 §7 尾注 + 索引 §2.1/§3 项 6）。
 > 几何面级通道受 U-5 负结案限制（2026-09-04），见 FaceResolver 行注。
 > 定位转变：**初始版本不再直接消费云端 CAPP 计划**，而是以**工程师手编的 NX 工程
 > 为 ground truth**，跑通「导出 plan.json → 按 plan 自动重建工程 → 对比偏差」三步闭环。
@@ -180,7 +183,7 @@ diagnostics[]   (info/warning/error)
 > （2026-09-04，camprobe-stepover 三跑 + docs/nx-stepover-probe-spec.md：公开 .NET 面无 stepover
 > 有效写入通道，重建侧维持拒收+diag）；残余仅 v2 项（STEP 路径/几何面级，U-5 负结案）。
 >
-> 2026-09-05 注：**STEP 导入公开 API 确认存在**（`DexManager.CreateStep203/214/242Importer`，
+> 2026-09-05 更新：**STEP 导入公开 API 确认存在**（`DexManager.CreateStep203/214/242Importer`，
 > License None / NX6 起；C++ 头 Step214Importer.hxx + 官方样例
 > CAMSetupImport\GeometryImporter.cs 双背书）——早前"STEP 无导入 API"系检索假负结案（证伪三关
 > 协议入 .claude/skills/nx-api-verify §1.5）。§1 步骤②"打开原始 STEP 文件"**维持为 v2 目标路径**；

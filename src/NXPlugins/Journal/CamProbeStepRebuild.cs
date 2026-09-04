@@ -24,8 +24,8 @@
 //
 // 判死（两段）：
 //   P1 导入（核心）：NewDisplay 空件 → Step214Importer 照样例 → Commit → 验 Body/Faces > 0
-//   P2 CAM 共存：导入件上 CreateCamSession + CreateCamSetup + 组 + CAVITY op
-//   结论：P1 = 批处理未产几何（资产级卡点，见 ②）；P2 = α（空件上 CAM 全套可建——CAM 侧不受影响）
+//   P2 CAM 共存：目标件上 CreateCamSession + CreateCamSetup + 组 + CAVITY op（不依赖导入几何）
+//   结论：P1 = 批处理未产几何（资产级卡点，见 ②）；P2 = α（CAM 全套可建，CAM 侧不受导入影响）
 //
 // 输出：samples\camprobe-steprebuild-<ts>.txt（args[0] 可覆盖）。
 
@@ -118,7 +118,7 @@ public class CamProbeStepRebuild
                 }
 
                 // 变体 C：坏路径判别——Commit 是否真正处理输入（stub 判别）
-                R("变体B 坏路径判别", () =>
+                R("变体C 坏路径判别", () =>
                 {
                     Step214Importer imp2 = s.DexManager.CreateStep214Importer();
                     try
@@ -145,13 +145,13 @@ public class CamProbeStepRebuild
                 }
                 Log("  全会话 solidFaces=" + totalFaces);
                 if (totalFaces == 0)
-                    throw new Exception("导入无几何 → P1 γ（见变体B stub 判别 + syslog）");
+                    throw new Exception("导入无几何 → P1 未过（见变体C stub 判别 + translator *_1.log 资产级错误）");
                 Log("  P1 判定: 含体导入成功 → α");
             });
 
             if (work != null)
             {
-                Step("P2 CAM 共存（导入含体件上建 CAMSetup + 组 + op）", () =>
+                Step("P2 CAM 共存（目标件上建 CAMSetup + 组 + op；当前导入 0 几何=空 CAM 件）", () =>
                 {
                     if (!s.IsCamSessionInitialized()) s.CreateCamSession();
                     CAMSetup cam = work.CreateCamSetup("mill_contour");
@@ -164,7 +164,7 @@ public class CamProbeStepRebuild
                     Operation op = cam.CAMOperationCollection.Create(pr, mt, tl, ge,
                         "mill_contour", "CAVITY_MILL", OperationCollection.UseDefaultName.False, "OP_CAV1");
                     Log("  op=" + op.Name + "; faces 保持 = " + CountSolidFaces(work));
-                    Log("  P2 判定: STEP 导入件上 CAM 全套可建 → α");
+                    Log("  P2 判定: 目标件上 CAM 全套可建 → α（与导入几何解耦）");
                 });
             }
         }

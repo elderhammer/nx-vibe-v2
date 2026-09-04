@@ -1,10 +1,12 @@
 # NX2406 安装目录资料索引与 API 核对记录
 
-> 更新时间：2026-09-04（本机 NX2406：`C:\Program Files\Siemens\NX2406`）
+> 更新时间：2026-09-05（本机 NX2406：`C:\Program Files\Siemens\NX2406`）
 > 用途：作为 [nxopen-research.md](./nxopen-research.md)（NX Open API 调研）与
 > [nx-plugin-design.md](./nx-plugin-design.md)（插件设计）的**本地事实源索引**。
 > 两份设计文档已按本文记录核对修正（2026-09-03；2026-09-04 收官批探针回填 §2.1/§2.3/§2.5/§3，
-> 源：samples/camprobe-finalize-20260904-010401.txt、samples/smoke-open-20260904-005304.txt）。
+> 源：samples/camprobe-finalize-20260904-010401.txt、samples/smoke-open-20260904-005304.txt；
+> 2026-09-05 STEP 导入通道确认回填 §2.1/§3 项 6——"STEP 无导入 API"假负结案修正，
+> 源：camprobe-steprebuild 系列 + probe-box-214.step + CamProbeStepRebuild.cs）。
 >
 > 核对方法三路交叉：① `NXBIN\managed\NXOpen.xml`（.NET XML 文档注释）成员清单；
 > ② PowerShell 反射 `NXOpen.dll` 真实签名；③ `UGOPEN\NXOpen\*.hxx`（C++ 头文件）声明。

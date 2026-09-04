@@ -1,6 +1,6 @@
 ---
 name: nx-api-verify
-description: 在本机 NX2406 安装资料中实证 NXOpen API（类型/成员/枚举取值/签名/许可/版本注记），三路交叉：NXBIN\managed\NXOpen.xml 成员清单、PowerShell 反射 NXOpen.dll、UGOPEN\NXOpen C++ 头文件。当任务涉及 NXOpen API 且 docs/nx2406-install-index.md 或 nxopen-research.md 附 A 未覆盖、或与旧文献冲突、或需要精确签名/枚举值时，先运行本 skill 再写代码或文档。
+description: 在本机 NX2406 安装资料中实证 NXOpen API（类型/成员/枚举取值/签名/许可/版本注记），四路交叉：NXBIN\managed\NXOpen.xml 成员清单、PowerShell 反射 NXOpen.dll、UGOPEN\NXOpen C++ 头文件、UGOPEN 官方样例库。当任务涉及 NXOpen API 且 docs/nx2406-install-index.md 或 nxopen-research.md 附 A 未覆盖、或与旧文献冲突、或需要精确签名/枚举值，或需要判定"不存在"时，先运行本 skill 再写代码或文档。
 ---
 
 # NX API 查证协议（NX2406 本机实证）
