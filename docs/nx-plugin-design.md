@@ -1,8 +1,10 @@
 # NX 插件设计 (v3) — Plan 双向验证闭环
 
 > 更新时间：2026-09-03（NX2406 安装资料核对修正；API 事实索引见 [nx2406-install-index.md](./nx2406-install-index.md)）
-> 2026-09-04 更新：设计 §7 步骤 0/1/2/4 已实现收官（spec/代码/集成证据见 PlanExporter 与 PlanExecutor spec、samples/），
-> 模块表状态列已同步；剩余实现 = 步骤 3 PlanComparer。几何面级通道受 U-5 负结案限制（2026-09-04），见 FaceResolver 行注。
+> 2026-09-04 更新：设计 §7 步骤 0/1/2/3/4 已实现收官（spec/代码/集成证据见 PlanExporter、PlanExecutor
+> 与 PlanComparer spec、samples/），模块表状态列已同步；**初始版本三步闭环 v1 完成**
+> （导出 test.plan.json → 重建 test.rebuilt.prt → 对比偏差报告 comparer-run-144237）。
+> 几何面级通道受 U-5 负结案限制（2026-09-04），见 FaceResolver 行注。
 > 定位转变：**初始版本不再直接消费云端 CAPP 计划**，而是以**工程师手编的 NX 工程
 > 为 ground truth**，跑通「导出 plan.json → 按 plan 自动重建工程 → 对比偏差」三步闭环。
 > 该闭环既验证 plan.json 合同是否无歧义，也为后续 CAPP 自动生成的工序提供校准基准。
@@ -57,7 +59,7 @@
 | `PlanParser` | plan.json → 强类型模型（对齐 schema v3） | ⛔ 未独立实现——复用 PlanExporter 的 PlanDocument/PlanJsonSerializer（executor spec §1/§6） |
 | `PlanExecutor` | 重建：按 plan 建 CAMSetup/四组/逐工序创建 → prj′（v1 空件、无几何无刀路，D-1；STEP 打开归 v2） | ✅（spec+[U] 33/33+[I] 三连跑，2026-09-04） |
 | `FaceResolver` | OCCT face_id → NX Tag（质心+面积+曲面类型+法向匹配；⚠️ U-5 实证负结案：导出侧面级锚点无生产源 → v1 不进对比维度，面匹配退 v2/区域级候选） | 🔧 |
-| `PlanComparer` | prj′ vs prj 偏差计算：逐工序/刀具/参数/MCS/几何/刀路，输出报告 | 🔧 新增 |
+| `PlanComparer` | prj′ vs prj 偏差计算：逐工序/刀具/参数/MCS，输出报告 | ✅（spec+[U] 78/78+[I] 终跑 144237，2026-09-04——设计 §7 步骤 3，三步闭环 v1 收官；几何/刀路/策略全参数面 v1.5，见 nx-plan-comparer-spec.md） |
 
 ### 2.1 PlanExporter（已实现，导出侧核心）
 
