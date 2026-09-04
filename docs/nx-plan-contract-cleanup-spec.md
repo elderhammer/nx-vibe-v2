@@ -78,5 +78,5 @@ feature 条目保留 {feature_id, feature_type, params}（ws.feature_ref 闭合�
 
 ## 6. 不在本批范围
 
-U-7 实现批（tool.type A′ 词集，待指令）；Comparer（设计 §7 步骤 3，宜在本批后按其 spec 落维度）；
-PlanValidator 枚举收紧（统一在 A′ 实现批收尾开启）；research §4 对接建议正文逐行修订（横幅兜底已立）。
+Comparer（设计 §7 步骤 3，宜在其 spec 落维度）；research §4 对接建议正文逐行修订（横幅兜底已立）。
+（2026-09-04 跟进：U-7 A′ 实现批与 PlanValidator 枚举收紧已在本批后完成收官，见 nx-tool-type-enum-spec.md 头部。）

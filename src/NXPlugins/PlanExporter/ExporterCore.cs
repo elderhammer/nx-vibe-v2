@@ -42,19 +42,30 @@ namespace NXPlugins.PlanExporter
                 doc.setups.Add(sj);
             }
 
-            // tools（INV-2 的 tool_ref 目标）
+            // tools（INV-2 的 tool_ref 目标；U-7 INV-U7-4：类型读回失败 → 不入 plan + error diag）
+            // type/subtype = NX Tool.Types/Subtypes 原文直写（INV-U7-1，无归类表）；编号 = 入选连续序
+            var toolSeqByName = new Dictionary<string, string>();   // 刀组名 → 输出 tool_id（op tool_ref 解析源）
             for (int i = 0; i < snap.Tools.Count; i++)
             {
                 ToolItem t = snap.Tools[i];
+                if (t.TypeReadbackError.Length > 0)
+                {
+                    AddDiag(diags, DiagLevel.Error, "TOOL_TYPE_UNREADABLE",
+                        "刀具类型读回失败（不入 plan）: " + t.Name + " — " + t.TypeReadbackError, t.Name);
+                    continue;
+                }
+                string tid = "T-" + (doc.resources.tools.Count + 1).ToString("D3");
                 doc.resources.tools.Add(new ToolJson
                 {
-                    tool_id = "T-" + (i + 1).ToString("D3"),
-                    type = t.TypeFamily,
+                    tool_id = tid,
+                    type = t.NxType,
+                    subtype = t.NxSubtype.Length > 0 ? t.NxSubtype : null,   // 空 → null（不填）
                     diameter = t.Diameter,
                     num_flutes = t.NumFlutes,
                     flute_length = t.FluteLength,
                     lower_corner_radius = t.LowerCornerRadius,
                 });
+                toolSeqByName[t.Name] = tid;
             }
 
             // operations / workingsteps / features（1:1）与 workplan 节点
@@ -108,11 +119,19 @@ namespace NXPlugins.PlanExporter
 
                 opIdx++;
                 string opId = "OP-" + opIdx.ToString("D3");
+                // U-7：tool_ref 解析源 = 入选刀具集（被剔除刀的引用 op → error diag，不静默）
+                string toolId;
+                if (!toolSeqByName.TryGetValue(o.ToolParent, out toolId))
+                {
+                    AddDiag(diags, DiagLevel.Error, "TOOL_REF_DANGLING",
+                        "工序引用的刀具不在入选集（类型读回失败/组名不匹配）: " + o.ToolParent + " / " + o.Name, o.Name);
+                    toolId = "";
+                }
                 var oj = new OperationJson
                 {
                     operation_id = opId,
                     operation_type = FamilyToOperationType(o.TypeFamily),
-                    tool_ref = "T-" + (IndexByName(snap.Tools, o.ToolParent) + 1).ToString("D3"),
+                    tool_ref = toolId,
                     method_ref = o.MethodParent,
                     strategy = strategy,
                     technology = technology,
@@ -158,13 +177,6 @@ namespace NXPlugins.PlanExporter
             if (f.Contains("cavity") || f.Contains("milling")) return "milling";
             if (f.Contains("drill") || f.Contains("point to point") || f.Contains("hole")) return "drilling";
             return "other";
-        }
-
-        private static int IndexByName(List<ToolItem> tools, string name)
-        {
-            for (int i = 0; i < tools.Count; i++)
-                if (tools[i].Name == name) return i;
-            return -1;
         }
 
         private static void AddDiag(List<Diagnostic> diags, DiagLevel level, string code, string message, string opName)

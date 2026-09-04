@@ -86,7 +86,8 @@ A8 [I] 回读对照报告（I-1..I-4）
 - **tool.type 违反 schema 枚举**：v1 简化 → D-2（§7）；挂 **U-7**（导出侧 CutterSubtype→schema 枚举
   映射，需先实测库刀具 CutterSubtype 读回，[T]）。**【收口 2026-09-04】：定案通道 = `NXOpen.CAM.Tool.GetTypeAndSubtype`
   （全家族、语言无关、钻族可读，camprobe-u7 六刀全实证）；schema 词集 A′（NX Types/Subtypes 原文收编）
-  设计落 docs/nx-tool-type-enum-spec.md；实现待指令。**
+  设计落 docs/nx-tool-type-enum-spec.md；实现待指令。**【实现收官 2026-09-04】：schema 词集 + 导出直写 +
+  重建注册对表 + PlanValidator 收紧完成（[U] 54/54 + [I] 重导/复跑 PASS，见 nx-tool-type-enum-spec.md 头部）**
 - **stepover 不可写**（U-6）：重建侧步距字段拒收 + diag；有效写入通道未明。
 - **几何/刀路缺席**：D-1 决策；对比范围声明见 §0，Comparer 落地时须显式限定维度。
 - **method_ref 语义**：导出写父组名；重建侧"复用模板默认组/挂根"兜底与 ground truth 的组名一致性
@@ -128,4 +129,5 @@ A8 [I] 回读对照报告（I-1..I-4）
 - **D-2 刀具类型策略 = A**：NX 家族关键词表（含中英文键——GetNameOfType 语言敏感，§5b）+ 未知默认
   (mill_planar,MILL)+warning；数值字段直填（P2 实证）。**U-7 挂出**：导出侧补 CutterSubtype→schema type
   枚举（P1 证无技术障碍；C 选项可随时切）。**【U-7 已收口 2026-09-04，A′ 定案：schema type 词集换 NX
-  Tool.Types/Subtypes 原文（docs/nx-tool-type-enum-spec.md），本决策键源随之替换，实现待指令。】**
+  Tool.Types/Subtypes 原文（docs/nx-tool-type-enum-spec.md），本决策键源随之替换，实现待指令。】
+  **【实现收官 2026-09-04】：键源已切换为 (type, subtype) NX 词注册对表 + 家族关键词回退（§5b）**

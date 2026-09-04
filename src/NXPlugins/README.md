@@ -6,7 +6,7 @@
 > 工程决策（2026-09-03，见 nx-plugin-design.md 头部"已确认决策"）：
 > 仅支持 NX2406；.NET Framework 4.8；代码全部在本目录（sln 在仓库根 `Autocam.Plugins.sln`）。
 
-## 当前状态（2026-09-04）：实证收官 + PlanExporter 完成
+## 当前状态（2026-09-04）：实证收官 + PlanExporter/PlanExecutor 完成 + U-7 A′ 收官
 
 - `NXPlugins.csproj`：类库工程，已引用 NXOpen / NXOpen.UF / NXOpen.Utilities
   （HintPath 指向 `$(NX_DIR)\NXBIN\managed\`，默认
@@ -17,8 +17,11 @@
 - `Journal/`：探针 ×14（步骤 0 实证收官 + 收官批 `CamProbeFinalize` + `CamProbeExecutor` 全通，
   结论回填 docs/nx2406-install-index.md §2.1/§3）；`ExporterAdapter.cs` / `ExecutorAdapter.cs` =
   导出/重建 [I] 层适配器（test.prt → test.plan.json → test.rebuilt-*.prt 闭环跑通）。
-- `PlanExporter/` + `PlanExecutor/`：纯逻辑核心（spec 各落档；导出 17 回归 + Executor 16 条
-  [U] 测试 = 33/33 全绿）；`PlanExporterTests/`/`PlanExecutorTests/` 测试目录不入库编译。
+- `PlanExporter/` + `PlanExecutor/`：纯逻辑核心（spec 各落档；[U] 红线 54/54 全绿——含 U-7 A′
+  词集：Tool.GetTypeAndSubtype 原文直写 + 重建注册对表 + 家族关键词回退 + PlanValidator 词集收紧，
+  见 docs/nx-tool-type-enum-spec.md）；`PlanExporterTests/`/`PlanExecutorTests/` 测试目录不入库编译。
+- 合编脚本：`scripts/compile-executor-adapter.ps1`（重建 exe）与 `scripts/compile-exporter-adapter.ps1`
+  （导出 exe，U-7 新增，镜像前者）→ .claude/tmp/*.exe 供 NX File → Execute。
 
 ## 规划目录（按 nx-plugin-design.md §7 步骤 0-4 进度）
 
@@ -29,8 +32,8 @@ PlanExecutor/       ✅ [U] 33/33 + [I] 集成闭环（spec 落档；参考官�
                     %NX_DIR%\UGOPEN\SampleNXOpenApplications\DotNet\CAMSetupImport）
 PlanParser/         未开工（导入侧）
 FaceResolver/       未开工（U-5/U-5c 结案：面级锚点无生产源，待区域级增强）
-PlanComparer/       未开工（步骤 3；两端素材已齐：test.prt ↔ test.rebuilt-132130.prt，D-4 后最新重建件；
-                    014933 保留为历史重建基准）
+PlanComparer/       未开工（步骤 3；两端素材已齐：test.prt ↔ test.rebuilt.prt（U-7 最新）；历史
+                    重建件 132130/014933 保留为基准）
 ```
 
 ## 实证收官注记（2026-09-04）

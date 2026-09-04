@@ -137,12 +137,30 @@
                 "type": {
                     "type": "string",
                     "enum": [
-                        "end_mill", "ball_end_mill", "bull_nose_end_mill",
-                        "face_mill", "slot_mill", "chamfer_mill",
-                        "drill", "center_drill", "tap", "thread_mill",
-                        "reamer", "boring_bar", "countersink", "counterbore"
+                        "Mill", "Drill", "Turn", "Groove", "Thread", "Wedm",
+                        "Barrel", "Tcutter", "Form", "DrillSpcGroove", "Solid",
+                        "MillForm", "Laser", "Soft"
                     ],
-                    "$comment": "铣+孔 MVP 集合；与 NX 侧 MillToolBuilder.CutterSubtypes 的映射由 Mapper 完成"
+                    "$comment": "NX2406 Tool.Types 枚举原文（14 值，出处：NXOpen.CAM.Tool.GetTypeAndSubtype，2026-09-04 U-7 实证，见 docs/nx-tool-type-enum-spec.md；原 14 CAPP 词零出处已替换，D-3）。执行侧重建 = (type,subtype)→注册对，未命中回退旧家族关键词表（旧 plan 兼容）"
+                },
+                "subtype": {
+                    "type": "string",
+                    "enum": [
+                        "Undefined", "Mill5", "Mill7", "Mill10", "MillBall",
+                        "DrillStandard", "DrillCenterBell", "DrillCountersink",
+                        "DrillSpotFace", "DrillSpotDrill", "DrillBore", "DrillReam",
+                        "DrillCounterbore", "DrillTap", "DrillBurnishing", "DrillThreadMill",
+                        "DrillBackSpotFace", "DrillStep", "TurnStandard", "TurnButton",
+                        "TurnBoringBar", "GrooveStandard", "GrooveRing", "GrooveFullNoseRadius",
+                        "GrooveUserDefined", "ThreadStandard", "ThreadButress", "ThreadAcme",
+                        "ThreadTrapezoidal", "Generic", "Probe", "MillChamfer",
+                        "MillSpherical", "DrillCore", "StdLaser", "Laser",
+                        "DrillBackCountersink", "CoaxialLaser", "DrillBoringBar",
+                        "DrillChamferBoringBar", "DrillBackBore", "ThreadTriangularStandard",
+                        "ThreadTriangularTrapezoidal", "BarrelStandard", "BarrelTangent",
+                        "BarrelTaper", "BarrelLens", "MillDovetail", "TurnPrime"
+                    ],
+                    "description": "刀具子类型，可选。NX2406 Tool.Subtypes 枚举原文（49 值，含 Undefined——真刀读回恒为具体值）"
                 },
                 "diameter": { "type": "number", "exclusiveMinimum": 0, "description": "刀具直径 mm（NX: TlDiameterBuilder）" },
                 "num_flutes": { "type": "integer", "minimum": 0, "description": "刃数（NX: TlNumFlutesBuilder）" },

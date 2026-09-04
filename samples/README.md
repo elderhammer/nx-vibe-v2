@@ -21,7 +21,8 @@
 | `test.step`（计划） | 同件 STEP 导出 | 步骤②"打开原始 STEP"重建路径（v2 范围） |
 | `test.rebuilt-014933.prt`（**已入库**，2026-09-04） | 按旧形状 plan 重建的 prj′（schema v3 时代，136K） | 历史重建基准（对比件参考） |
 | `test.rebuilt-132130.prt`（**已入库**，2026-09-04） | D-4 后按新形状 plan 重建的 prj′（PlanExecutor [I] 产物） | 重建闭环回归基准/对比件（Comparer 输入） |
-| `test.plan.json`（**已入库**，2026-09-04，D-4 重导 13:20） | 由 test.prt 导出的 plan（ExporterAdapter 产物，schema 落盘复验 PASS；D-4 形状：无 machines/geometry_ref，features={id,type,params}） | 合同冒烟/导出回归基线 |
+| `test.rebuilt.prt`（**已入库**，2026-09-04，141K） | U-7 词集 plan 重建的 prj′（ExecutorAdapter [I] 产物，13:55） | U-7 重建回归基准/对比件 |
+| `test.plan.json`（**已入库**，2026-09-04，U-7 重导 13:53） | 由 test.prt 导出的 plan（ExporterAdapter v11 产物，schema 落盘复验 PASS；U-7 形状：tools type/subtype = NX Tool.Types/Subtypes 原文，六刀 (Mill,Mill5)×3/(Mill,MillChamfer)/(Drill,DrillStandard)×2；D-4 形状：无 machines/geometry_ref，features={id,type,params}） | 合同冒烟/导出回归基线 |
 
 ## test.prt 盘点记录（2026-09-03，NX2406 会话 + dump journal 实证）
 
@@ -61,6 +62,8 @@
 | `camprobe-u7-20260904-115251.txt` | U-7 探针（ok=3 fail=0）：六把库刀具 `as Tool`+GetTypeAndSubtype 全实证（6/6 下转；(Mill,Mill5)×3/(Mill,MillChamfer)/(Drill,DrillStandard)×2）+ 新建注册对读回校准（MILL↔Mill5、STD_DRILL↔DrillStandard），结论入索引 §2.1 与 docs/nx-tool-type-enum-spec.md |
 | `adapter-run-20260904-132025.txt` | D-4 重导（ExporterAdapter v10，ok 全过）：test.prt → test.plan.json 新形状（无 machines/geometry_ref、features 瘦身），schema 校验（内存）+ 落盘复验 **PASS** |
 | `executor-run-20260904-132124.txt` | D-4 最终 I-2 复跑（ok=16 fail=0）：对新 plan 全链重建 → test.rebuilt-132130.prt，回读对照全 PASS |
+| `adapter-run-20260904-135344.txt` | **U-7 词集重导**（ExporterAdapter v11）：六刀 GetTypeAndSubtype 直写 NX 原文（Mill/Mill5×3、Mill/MillChamfer、Drill/DrillStandard×2），schema 内存+落盘复验 PASS，无 TOOL_TYPE_UNREADABLE |
+| `executor-run-20260904-135456.txt` | **U-7 复跑**（ok=16 fail=0）：新词集 plan 全链重建 → test.rebuilt.prt，回读对照全 PASS；T-004 (Mill,MillChamfer) 注册对表未覆盖 → 分诊 diag + 铣注册对重建 |
 
 > 注意：西门子安装目录内文件（模板/样例/程序集）受许可约束，**只引用、不复制进 git**；
 > 自建件由本仓库维护。

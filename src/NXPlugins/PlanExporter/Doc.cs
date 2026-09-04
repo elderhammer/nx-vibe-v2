@@ -53,7 +53,8 @@ namespace NXPlugins.PlanExporter
     public sealed class ToolJson
     {
         public string tool_id = "";
-        public string type = "";
+        public string type = "";          // U-7：NX Tool.Types 原文（schema enum）
+        public string subtype = null;     // U-7：NX Tool.Subtypes 原文（可选；null=不填，DCJS 输出 "subtype":null 同 fixture_offset 先例）
         public double? diameter = null;
         public int? num_flutes = null;
         public double? flute_length = null;

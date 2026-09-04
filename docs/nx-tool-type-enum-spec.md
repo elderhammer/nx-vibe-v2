@@ -1,8 +1,13 @@
 # plan tools[].type 词集实证化规格（U-7 收口，spec-before-code 纪要落档，2026-09-04）
 
-> 状态：**纪要落档（2026-09-04）**；范围决策 D-3 = A′（NX 词集收编）；残留清理分两批（本批仅 tool
-> 词集 + 注释校准）。探针 CamProbeU7 收官（ok=3/fail=0，源 camprobe-u7-20260904-115251.txt）：P1/P2/P3
-> 全点亮——[T] 清空（§5）。**实现待用户指令**。
+> 状态：**已实现收官（2026-09-04）**。纪要落档 2026-09-04、探针 CamProbeU7 收官（ok=3/fail=0，
+> 源 camprobe-u7-20260904-115251.txt）后实现完成：schema tool.type→NX Tool.Types 14 词 + 新增可选
+> tool.subtype（Subtypes 49 词，XML 实证抽取）；导出侧 ToolItem.NxType/NxSubtype 经 GetTypeAndSubtype
+> 原文直写（读回失败刀不入 plan + TOOL_TYPE_UNREADABLE，INV-U7-4）；执行侧注册对表 + 家族关键词回退
+> （INV-U7-2/3）；PlanValidator 词集收紧（cleanup spec §6 收尾项开启）。[U] 全量 54/54 全绿；
+> [I] 重导（adapter-run-20260904-135344：六刀 (Mill,Mill5)×3/(Mill,MillChamfer)/(Drill,DrillStandard)×2，
+> 落盘复验 PASS）+ Executor 复跑（executor-run-20260904-135456：ok=16 fail=0，T-004 中心钻注册对表
+> 未覆盖 → 分诊 diag + 铣注册对重建）。产物：samples/test.plan.json（U-7 词集形状）、test.rebuilt.prt。
 > 需求源：docs/nx-plan-executor-spec.md §5b U-7（导出侧补 CutterSubtype→schema type 枚举；
 > GetNameOfType 语言漂移一并解决）+ §7 D-2 挂出；上游事实：docs/nx2406-install-index.md §2.1（刀具读回）
 > / §2.5（不存在项清单）。

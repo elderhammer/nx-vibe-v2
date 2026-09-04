@@ -57,7 +57,10 @@ namespace NXPlugins.PlanExporter
     public sealed class ToolItem
     {
         public string Name = "";
-        public string TypeFamily = "";               // 组 GetNameOfType（铣刀-5 参数 等，U-4 后参数可空）
+        public string TypeFamily = "";               // 组 GetNameOfType（铣刀-5 参数 等，语言敏感——容器判定/回退用）
+        public string NxType = "";                   // U-7：Tool.GetTypeAndSubtype 的 Types 原文（schema type 词）
+        public string NxSubtype = "";                // U-7：Subtypes 原文（可空；空 → 落盘不填）
+        public string TypeReadbackError = "";        // U-7：as Tool/读回失败原因（非空 → 该刀不入 plan，INV-U7-4）
         public double? Diameter = null;
         public int? NumFlutes = null;
         public double? FluteLength = null;

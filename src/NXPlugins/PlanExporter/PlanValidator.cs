@@ -81,6 +81,13 @@ namespace NXPlugins.PlanExporter
                     if (string.IsNullOrEmpty(t.tool_id)) errors.Add("tool_id 缺失");
                     else if (toolIds.ContainsKey(t.tool_id)) errors.Add("tool_id 重复: " + t.tool_id);
                     else toolIds[t.tool_id] = true;
+                    // U-7 收紧（cleanup spec §6：A′ 批收尾开启）：type/subtype 须命中 NX 词集（schema enum 镜像）
+                    if (!NxToolWords.IsTypeWord(t.type))
+                        errors.Add("tool " + (string.IsNullOrEmpty(t.tool_id) ? "?" : t.tool_id)
+                            + " type 不在 NX Tool.Types 词集: " + t.type);
+                    if (t.subtype != null && !NxToolWords.IsSubtypeWord(t.subtype))
+                        errors.Add("tool " + (string.IsNullOrEmpty(t.tool_id) ? "?" : t.tool_id)
+                            + " subtype 不在 NX Tool.Subtypes 词集: " + t.subtype);
                 }
             var setupIds = new Dictionary<string, bool>();
             foreach (SetupJson s in doc.setups)

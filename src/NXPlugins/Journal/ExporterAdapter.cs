@@ -37,7 +37,7 @@ public class ExporterAdapter
         // 即时追加写盘：每行立即落文件（时间戳命名，避免旧文件/锁/缓存歧义；硬崩也保留阶段痕迹）
         _outPath = Path.Combine(Path.GetDirectoryName(Path.GetFullPath(_outPath)),
             "adapter-run-" + DateTime.Now.ToString("yyyyMMdd-HHmmss") + ".txt");
-        Log("== ExporterAdapter v10 ==");
+        Log("== ExporterAdapter v11 ==");
         Session theSession = null;
         Part part = null;
         try
@@ -201,6 +201,24 @@ public class ExporterAdapter
             if (depth >= 1 && !container)
             {
                 var t = new ToolItem { Name = sub.Name, TypeFamily = fam };
+                // U-7（PRE-U7-1）：真刀 as Tool + GetTypeAndSubtype 直写 NX 枚举原文（语言无关；
+                // 容器组 as Tool 应为 null——入选判定已按家族串排除，双保险）；失败 → 剔除此刀（INV-U7-4）
+                NXOpen.CAM.Tool tt = sub as NXOpen.CAM.Tool;
+                if (tt == null)
+                    t.TypeReadbackError = "NCGroup 非 Tool 子类（as Tool 失败）";
+                else
+                {
+                    try
+                    {
+                        NXOpen.CAM.Tool.Types ty;
+                        NXOpen.CAM.Tool.Subtypes st;
+                        tt.GetTypeAndSubtype(out ty, out st);
+                        t.NxType = ty.ToString();
+                        t.NxSubtype = st.ToString();
+                        Log("  tool " + sub.Name + " → type=" + t.NxType + " subtype=" + t.NxSubtype);
+                    }
+                    catch (Exception e) { t.TypeReadbackError = "GetTypeAndSubtype 异常: " + e.Message; }
+                }
                 ReadToolParams(cam, sub, t);
                 snap.Tools.Add(t);
             }

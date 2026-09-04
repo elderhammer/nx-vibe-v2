@@ -62,7 +62,9 @@ namespace NXPlugins.PlanExporterTests
                 SafePlaneZ = 50,
                 FixtureOffset = 1,
             });
-            snap.Tools.Add(new ToolItem { Name = "PROBE_T1", TypeFamily = "铣刀-5 参数", Diameter = 10, NumFlutes = 4 });
+            // U-7 产物形态：type/subtype = NX 枚举原文（TypeFamily 家族串不再写入 type）
+            snap.Tools.Add(new ToolItem
+            { Name = "PROBE_T1", TypeFamily = "铣刀-5 参数", NxType = "Mill", NxSubtype = "Mill5", Diameter = 10, NumFlutes = 4 });
             snap.Operations.Add(Op("CAVITY_MILL", "Cavity Milling", "1", "A01", "MILL_ROUGH", "PROBE_T1", true));
             snap.Operations.Add(Op("打点_COPY_COPY_COPY", "Point to Point", "2", "A01", "DRILL_METHOD", "PROBE_T1", true));
             return snap;

@@ -124,7 +124,8 @@ namespace NXPlugins.PlanExecutor
             // ---- 指令组装（Tools / Setups 全量；Ops 按 DFS 叶序）----
             foreach (ToolJson t in plan.resources.tools)
             {
-                ToolFamilyMap.Resolution res = ToolFamilyMap.Resolve(t.type);
+                // U-7：键源 = (type, subtype) NX 词注册对表 → 家族关键词回退 → 默认铣（INV-U7-3 链）
+                ToolFamilyMap.Resolution res = ToolFamilyMap.Resolve(t.type, t.subtype);
                 r.Tools.Add(new ToolCommand(t.tool_id, res.Pair, res.Inferred)
                 {
                     Diameter = t.diameter,
@@ -134,7 +135,9 @@ namespace NXPlugins.PlanExecutor
                 });
                 if (res.Inferred)
                     AddDiag(r, RebuildDiagLevel.Warning, "TOOL_TYPE_INFERRED", t.tool_id,
-                        "刀具家族未命中关键词（type=" + t.type + "），默认铣 (mill_planar,MILL)");
+                        NxToolWords.IsTypeWord(t.type)
+                            ? "NX 注册对表未覆盖 (" + t.type + ", " + (t.subtype ?? "") + ")，按默认铣 (mill_planar,MILL) 重建（v1 表，见 U-7 spec §5b）"
+                            : "刀具家族未命中关键词（type=" + t.type + "），默认铣 (mill_planar,MILL)");
             }
             foreach (SetupJson s in plan.setups)
             {
