@@ -88,7 +88,9 @@ A8 [I] 回读对照报告（I-1..I-4）
   （全家族、语言无关、钻族可读，camprobe-u7 六刀全实证）；schema 词集 A′（NX Types/Subtypes 原文收编）
   设计落 docs/nx-tool-type-enum-spec.md；实现待指令。**【实现收官 2026-09-04】：schema 词集 + 导出直写 +
   重建注册对表 + PlanValidator 收紧完成（[U] 54/54 + [I] 重导/复跑 PASS，见 nx-tool-type-enum-spec.md 头部）**
-- **stepover 不可写**（U-6）：重建侧步距字段拒收 + diag；有效写入通道未明。
+- **stepover 不可写**（U-6，**负结案** 2026-09-04）：重建侧步距字段拒收 + diag（ParamWhiteList 不变，
+  PRE-4 断言维持）；有效写入通道经 camprobe-stepover 三跑 8 通道形态全负后定案为**不存在**
+  （含直属 StepoverLimit 值域 [100,300]% 仅校验层可达）；规格见 docs/nx-stepover-probe-spec.md。
 - **几何/刀路缺席**：D-1 决策；对比范围声明见 §0，Comparer 落地时须显式限定维度。
 - **method_ref 语义**：导出写父组名；重建侧"复用模板默认组/挂根"兜底与 ground truth 的组名一致性
   以回读对照（I-2）为判据，偏差入 diag。

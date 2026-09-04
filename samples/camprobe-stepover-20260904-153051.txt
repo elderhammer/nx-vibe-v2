@@ -1,0 +1,80 @@
+== CamProbeStepover v1（U-6 收口探针）==
+time: 2026-09-04 15:30:51
+Session: ApplicationName=APP_NONE  IsCamSessionInitialized=False
+
+== 阶段: S1 空 Part 写环境（建件→CAM 会话→CreateCamSetup） ==
+  NewDisplay+CreateCamSession+CreateCamSetup OK, camReady=True
+
+== 阶段: S2 实验树 P0-P8 ==
+  -- P0 复刻 E1（环境基线）：PercentToolFlat.Value=50 → commit → 重开，预期回 70
+  写前 StepoverType = PercentToolFlat
+  写前 PercentToolFlat.Value = 70
+  OK   写 StepoverType=PercentToolFlat + Value=50
+  写后(未Commit) PercentToolFlat.Value = 50
+  Commit = ok
+  重开 StepoverType = PercentToolFlat
+  重开 PercentToolFlat.Value = 70
+  -- P1 BuilderProperties 快照语义：A 写（不 commit）→ JSON 扫 Value（对照自证）
+  写前 PartStock.Value = 0
+  写前 PercentToolFlat.Value = 70
+  OK   写 PartStock.Value=0.3
+  OK   写 StepoverType=PercentToolFlat + Value=50
+  写后(同 builder A) PercentToolFlat.Value = 50
+  JSON 中 PartStock 对象 Value 命中（写 0.3 后） = 0
+  JSON 中 PercentToolFlatBuilder Value 命中（写 50 后） = 70 | 70
+    P1 语义：若对照 PartStock JSON 亦不变 → JSON=已提交态快照，本实验无传播判别力（改由 P2/P8 承担）
+  -- P2 dirty 记账：同 builder 写 PartStock=0.3 + Stepover 50 → commit → 重开
+  OK   写 PartStock.Value=0.3
+  OK   写 StepoverType=PercentToolFlat + Value=50
+  Commit = ok
+  重开 PartStock.Value = 0.3
+  重开 StepoverType = PercentToolFlat
+  重开 PercentToolFlat.Value = 70
+  重开 PercentToolFlat.InheritanceStatus = False
+  P2 判定 = PartStock 持久 + stepover 还原 → stepover 叶子从不入 dirty 集（stub 定论）
+  -- P3 StepoverLimit 通道：Value=200（默认 150；v2 越界 75 被 Commit 校验拒绝）→ commit → 重开
+  写前 StepoverLimit.Value = 150
+  写前 StepoverLimit.InheritanceStatus = False
+  OK   写 StepoverLimit.Value=200
+  写后(未Commit) StepoverLimit.Value = 200
+  Commit = ok
+  重开 StepoverLimit.Value = 150
+  重开 StepoverLimit.InheritanceStatus = False
+  -- P4 Distance+Intent：Constant + .Intent=PartUnits + Value=1.5 → commit → 重开
+  写前 StepoverType = PercentToolFlat
+  写前 DistanceBuilder.Intent = PartUnits
+  写前 DistanceBuilder.Value = 15
+  OK   写 type=Constant + Intent=PartUnits + Value=1.5
+  写后(未Commit) DistanceBuilder.Value = 1.5
+  Commit = ok
+  重开 StepoverType = PercentToolFlat
+  重开 DistanceBuilder.Value = 15
+  重开 DistanceBuilder.Intent = PartUnits
+  -- P5 Planar 对照：PLANAR_MILL 同写 → commit → 重开
+  OK   Create (mill_planar, PLANAR_MILL)
+  写前 StepoverType = PercentToolFlat
+  写前 PercentToolFlat.Value = 40
+  OK   写 PartStock=0.3 + type=PercentToolFlat + Value=50
+  Commit = ok
+  重开 PartStock.Value = 0.3
+  重开 StepoverType = PercentToolFlat
+  重开 PercentToolFlat.Value = 40
+  -- P6 方法组级通道：CreateMillMethodBuilder(组) 写同链 → commit → 重开
+  CutParameters 运行时类型 = NXOpen.CAM.CutParameters
+  方法组 CutParameters 非 MillCutParameters（无 Stepover 成员面）→ P6 无通道，记录即止
+  -- P7 直接 int 成员：type=Number + NumberOfStepovers=4 → commit → 重开
+  写前 StepoverType = PercentToolFlat
+  写前 NumberOfStepovers = 0
+  OK   写 type=Number + NumberOfStepovers=4
+  写后(未Commit) NumberOfStepovers = 4
+  Commit = ok
+  重开 StepoverType = PercentToolFlat
+  重开 NumberOfStepovers = 0
+  -- P8 暂存 flush：A 写 Stepover 50（不 commit，destroy）→ B 空 Commit → 重开
+  OK   A 写 type=PercentToolFlat + Value=50
+  A 读(同实例) PercentToolFlat.Value = 50
+  B 空 Commit = ok
+  C 重开 PercentToolFlat.Value = 70
+  P8 判定 = 暂存 flush 不成立
+== 汇总 ok=2 fail=0 ==
+== 结束 ==

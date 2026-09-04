@@ -102,10 +102,14 @@ A12 `.tmp` 写入 + rename；diagnostics 汇总写回 → POST-2/POST-5/INV-6
   ClearanceType=Automatic/SafeDistance=30/PlaneXform=null/Radius=0（无显式平面 → 导出应输出
   clearance 类型而非 null，见 §6 差异提示）；GetLowerLimitMode=None、LowerLimitPlane=null。
   显式 Plane 型件几何可经 NcmClearanceBuilder.PlaneXform（Plane.Origin/Normal）读。
-- **U-6 新增**（[T] 残余）：Stepover **有效写入通道未明**——.NET `CutParameters.Stepover` 整链
-  commit 写入静默还原模板默认（E1-E6：写 50→70、Constant+1.5→PercentToolFlat/15；普通参数
-  PartStock 写入可靠），源 camprobe-finalize-010401。Executor 重建步距字段前需另寻通道
-  （BuilderProperties 解析/内部参数名/UI 录制对照等）或降级 diag。
+- **U-6 结案**（[T] 关闭，**负结案** 2026-09-04）：Stepover 有效写入通道**不存在**——camprobe-stepover
+  三跑（152830/153003/153051，源 samples/ + src/NXPlugins/Journal/CamProbeStepover.cs）8 通道形态
+  全负：整链（含直接 int/枚举成员）commit 后必静默还原模板默认，同 commit 对照 PartStock 持久；
+  直属 `StepoverLimit`（官方样例同款）仅校验层可达（越界 75 → NXException "must be between 100
+  and 300 percent"，值域实证）仍回填默认 150；方法组 CutParameters=基类无 stepover 面。
+  规格与机制残留注记见 docs/nx-stepover-probe-spec.md。Executor 重建步距字段维持拒收 + diag
+  （ParamWhiteList 不变）；BuilderProperties/UI 录制等通道已探尽（P1 另证 BuilderProperties 为
+  已提交态快照，非未提交写入实时视图）。
 - **决策②**：COPY 链展开为独立条目 + diag（不引入 schema 副本字段）。
 - **决策③**：导出生效值（实测可读）；显式/继承打标按 U-3 结案语义处理。
 - **决策⑤ 冲突已决**：几何首版砍至组级（CONFLICT-2，理由见 U-5 结案）。

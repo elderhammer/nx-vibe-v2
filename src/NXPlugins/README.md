@@ -14,9 +14,9 @@
   ✅ **生产代码已全部纳入 csproj**（Journal\*、PlanExporter\*、PlanExecutor\*；测试目录不入库，
   走 scripts/run-unittests.ps1 红线回归）——sln 构建 = 设计 §7 步骤 4 完成。
 - `Properties/AssemblyInfo.cs`：装配元数据（初始骨架，v0.1.0）。
-- `Journal/`：探针 ×14（步骤 0 实证收官 + 收官批 `CamProbeFinalize` + `CamProbeExecutor` 全通，
-  结论回填 docs/nx2406-install-index.md §2.1/§3）；`ExporterAdapter.cs` / `ExecutorAdapter.cs` =
-  导出/重建 [I] 层适配器（test.prt → test.plan.json → test.rebuilt-*.prt 闭环跑通）。
+- `Journal/`：探针 ×15（步骤 0 实证收官 + 收官批 `CamProbeFinalize` + `CamProbeExecutor` + U-6 收口
+  `CamProbeStepover` 全通，结论回填 docs/nx2406-install-index.md §2.1/§3）；`ExporterAdapter.cs` /
+  `ExecutorAdapter.cs` = 导出/重建 [I] 层适配器（test.prt → test.plan.json → test.rebuilt-*.prt 闭环跑通）。
 - `PlanExporter/` + `PlanExecutor/` + `PlanComparer/`：纯逻辑核心（spec 各落档；[U] 红线 78/78 全绿
   ——含 U-7 A′ 词集与 Comparer 全维比对：CompareCore 双快照 diff，见 docs/nx-plan-comparer-spec.md）；
   `PlanExporterTests/`/`PlanExecutorTests/`/`PlanComparerTests/` 测试目录不入库编译。
@@ -38,9 +38,11 @@ PlanComparer/       ✅ [U]+[I] 闭环（spec 落档 2026-09-04；终跑 compare
 
 ## 实证收官注记（2026-09-04）
 
-- 索引 §3 待验证清单全部 ★ 结案（收官批探针 CamProbeFinalize 源文件 + 证据档
-  samples/camprobe-finalize-20260904-010401.txt）。
-- 剩余 [T]：spec U-6（Stepover 有效写入通道）、U-1 维持（白名单 + diag 决议）。
+- 索引 §3 待验证清单全部 ★ 结案（收官批探针 CamProbeFinalize + U-6 收口 CamProbeStepover 源文件 +
+  证据档 samples/camprobe-finalize-20260904-010401.txt + camprobe-stepover-20260904-{152830,153003,153051}.txt）。
+- U-6 已负结案收口（2026-09-04，docs/nx-stepover-probe-spec.md：8 通道形态全负，公开 .NET 面无
+  stepover 有效写入通道 → 索引 §3 唯一 [T] 清零，重建侧维持拒收 + diag）。
+- U-1 维持（白名单 + diag 决议）。
 - 运行纪律（含批处理 CAM 会话初始化顺序）见 docs/nx2406-install-index.md §2.1。
 
 ## 构建

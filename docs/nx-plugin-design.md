@@ -176,5 +176,6 @@ diagnostics[]   (info/warning/error)
 4. 并入 `Autocam.Plugins.sln` 发布
 
 > 运行时前置验证项已分批实测收官（typeName 字面量、Stepover 链路、模板初始化、run_journal 无界面
-> 批处理等，2026-09-03/04；索引 §3 全部划勾，见 nxopen-research 附 B）；残余仅 U-6（Stepover 有效
-> 写入通道，spec 挂出）与 v2 项（STEP 路径/几何面级，U-5 负结案）。
+> 批处理等，2026-09-03/04；索引 §3 全部划勾，见 nxopen-research 附 B）。U-6 已负结案收口
+> （2026-09-04，camprobe-stepover 三跑 + docs/nx-stepover-probe-spec.md：公开 .NET 面无 stepover
+> 有效写入通道，重建侧维持拒收+diag）；残余仅 v2 项（STEP 路径/几何面级，U-5 负结案）。

@@ -277,7 +277,7 @@
                                 "number", "maximum", "variable_average", "variable_maximum",
                                 "degression", "percent_remaining", "user_defined"
                             ],
-                            "$comment": "percent = 刀具直径百分比（NX 常量百分比链路：StepoverBuilder.StepoverType=PercentToolFlat + PercentToolFlatBuilder.Value）。链路实测负结案（2026-09-04，camprobe-finalize）：整链 commit 写入静默还原模板默认 → 重建侧步距直写不可行，有效通道未明（spec U-6）；见 nx2406-install-index.md §2.1/§2.3"
+                            "$comment": "percent = 刀具直径百分比（NX 落点：StepoverBuilder.StepoverType=PercentToolFlat + PercentToolFlatBuilder.Value）。写入链路负结案定稿（2026-09-04，camprobe-finalize + camprobe-stepover 三跑）：整链及全部形态（含直接 int/枚举、直属 StepoverLimit）commit 后必还原模板默认，公开 .NET 面无有效写入通道 → 重建侧拒收 + diag；StepoverLimit 仅校验层可达（值域 [100,300]%，越界抛 NXException）。规格见 docs/nx-stepover-probe-spec.md；见 nx2406-install-index.md §2.1/§2.5"
                         },
                         "value": { "type": "number" }
                     },

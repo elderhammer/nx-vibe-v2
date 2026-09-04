@@ -63,7 +63,8 @@
   `StepoverType=PercentToolFlat`+`Value=50` → 重开 70/PercentToolFlat；`Constant`+`DistanceBuilder=1.5`
   → 重开 PercentToolFlat/15；未 commit 前同 builder 读=写入值（内存态）。同一 builder 的
   `PartStock.Value=0.3` → 持久 ✓ → 非子级通用问题，**Stepover 链专属**。BuilderProperties JSON 内
-  Stepover 存储即模板默认。重建侧步距直写不可行（另寻通道或降级 diag，spec U-6）。
+  Stepover 存储即模板默认。重建侧步距直写不可行（降级 diag 定局——有效写入通道经
+  camprobe-stepover 三跑负结案不存在，2026-09-04，见 docs/nx-stepover-probe-spec.md）。
 - **InheritanceStatus 语义（U-3 结案）**：`InheritableBuilder.InheritanceStatus : bool`；True=当前读值
   来自继承链（未显式写）；写 `.Value` 后变 False 且值持久。**模板默认值参数也常为 False**
   （模板新建 CAVITY_MILL 的 FloorStock=1、PercentToolFlat=70 均 False——False 仅表"有本地值"，
@@ -122,6 +123,28 @@ samples/camprobe-u7-20260904-115251.txt ok=3/fail=0）**：
 - **方法父两形态**：op 直接挂方法根 METHOD 与挂模板默认 MILL_ROUGH 组均创建成功。
 - **CreateCamSetup("hole_making") 字面量可用**：默认方法组 DRILL_METHOD/MILL_METHOD、MachineTool 树仅 NONE。
 
+**2026-09-04 U-6 收口增补（源：samples/camprobe-stepover-20260904-{152830,153003,153051}.txt，
+三跑复现一致；规格 docs/nx-stepover-probe-spec.md，结论 = γ 负结案）**：
+
+- **Stepover 主链（`CutParameters.Stepover` 复合对象）写通道负结案**：StepoverType（枚举）、
+  PercentToolFlatBuilder/DistanceBuilder（Inheritable 叶子，含显式 .Intent=PartUnits）、
+  NumberOfStepovers（直接 int）——CAVITY_MILL 与 PLANAR_MILL 上 commit 后**必静默还原模板默认**
+  （写 50 → 70 / Constant+1.5 → PercentToolFlat/15 / Number+4 → 0）；首/二次 builder、同 commit
+  双写（对照 PartStock=0.3 持久）均无效。同父对象直属 Inheritable 叶子（PartStock/FloorStock）
+  可持久 → 死区为该参数族本身，机制未决（可能 NX 内部模板默认回填，公开面无开关）。
+- **StepoverLimit 亦不可持久，但可达校验层**：`MillCutParameters.StepoverLimit`（直属叶子、官方
+  样例 CornerSetRadiusAndLimitCycleAll.vb 同款写法）写越界值 75 → **Commit 抛 NXException
+  "Stepover Limit must be between 100 and 300 percent."（取值域 [100,300]% 实证）**；界内 200 →
+  Commit OK 但重开仍回填模板默认 150 → 不可作持久通道。与主链的差异仅在"写入可达 NX 校验层"。
+- **BuilderProperties 快照语义修正**：未提交的 builder 写入（含可持久参数 PartStock）在 JSON 中
+  不可见 → BuilderProperties 只反映**已提交态**，不作未提交写入的实时视图（camprobe-stepover P1
+  对照自证；此前"BuilderProperties = 全参数 JSON 树序列化"表述补此限定）。
+- **方法组无 stepover 面**：`MillMethodBuilder.CutParameters` 运行时类型 = 基类 `CutParameters`
+  （非 MillCutParameters，无 Stepover 成员）→ 铣族方法组级步距默认通道不存在（P6）。
+- **StepoverBuilder 类面**：`.NET 反射 = TaggedObject 子类（非 Builder、无 Commit/无 MakeLocal 类
+  成员）；C++ 头 CAM_StepoverBuilder.hxx:62 同。StepoverBuilder 无 Percent 属性（既有 §2.3 注记）。
+  schema $comment 与各 spec 的 U-6 注记已随 docs/nx-stepover-probe-spec.md §6 定稿。
+
 ### 2.2 属性取值形态（四类混合——Mapper 必须按类型分支）
 
 | 形态 | 特征 | 实例（NX2406 .NET 实测） |
@@ -160,7 +183,9 @@ samples/camprobe-u7-20260904-115251.txt ok=3/fail=0）**：
 ### 2.5 易错"不存在项"清单（NX2406）
 
 `CAMSetupBuilder`；`CAMSetup.ProgramOrderView/MachineToolView/GeometryView/MethodView`；`camSetup.CreatePlanarMillingBuilder(...)`（应在 OperationCollection）；`MillCutParameters.DepthPerCut`（应在 `PlanarOperationBuilder/CavityMillingBuilder`）；`Stepover.Percent`；`MillCutParameters.CutOrder` 用顶层 `CutOrder` 枚举（类型是 `CutParametersCutOrderTypes`）；`HoleMachiningBuilder.Cycle`（**只有 `CycleTable`**，类型 `CAM.Cycle`）；`Operation.gougeCheck / getCuttingTime / getCuttingLength`（gouge 在 `CAMSetup.GougeCheck/CreateGougeCheckBuilder` 与 `Operation.GougeCheckStatus/Results`）；`MillingToolBuilder.holderSectionBuilder`（有 `ShankSectionBuilder`）；`setMcs/setRcs` 方法（`Mcs/Rcs` 是可写属性）；`cam_general_mill.prt`（2406 用 `mill_contour.prt` 等）；`CAMObject` 的 subtypeName/子类型读回成员（NCGroup/CAMObject 层零命中，仅有 `GetNameOfType()` 且为内部 API；
-**例外：`CAM.Tool.GetTypeAndSubtype`**（NX7.5 起、License None、工具专用——2026-09-04 实证，见 §2.1 增补））；`PartCollection.OpenReadOnly`（无只读打开重载）；`MillGeomBuilder.Blank`（**不存在**——真实成员 = `BlankGeometry`/`PartGeometry`/`CheckGeometry`，XML 实证 2026-09-04；schema/文档落点一律用 BlankGeometry）；面级质心/面积 API（**不存在**——`NXOpen.Face` 成员清单零命中 Area/Centroid/Mass/Measure，XML 实证 2026-09-04；`UF_MODL_ask_mass_props_3d` 头注记 objects 仅收 **solid/sheet body**（uf_modl.h:4324，U-5 链 NX 源码侧背书））；PTP 旧模板循环细分参数读回成员（G83/打点步距、退刀——builder 公开面/BuilderProperties JSON/用户属性三路零命中，2026-09-04）；`SpindleModeBuilder` 的模式语义（int 自由槽无枚举，2026-09-04）；`run_journal.exe -nogui`（**无此旗标**，2026-09-04）。
+**例外：`CAM.Tool.GetTypeAndSubtype`**（NX7.5 起、License None、工具专用——2026-09-04 实证，见 §2.1 增补））；`PartCollection.OpenReadOnly`（无只读打开重载）；`MillGeomBuilder.Blank`（**不存在**——真实成员 = `BlankGeometry`/`PartGeometry`/`CheckGeometry`，XML 实证 2026-09-04；schema/文档落点一律用 BlankGeometry）；面级质心/面积 API（**不存在**——`NXOpen.Face` 成员清单零命中 Area/Centroid/Mass/Measure，XML 实证 2026-09-04；`UF_MODL_ask_mass_props_3d` 头注记 objects 仅收 **solid/sheet body**（uf_modl.h:4324，U-5 链 NX 源码侧背书））；PTP 旧模板循环细分参数读回成员（G83/打点步距、退刀——builder 公开面/BuilderProperties JSON/用户属性三路零命中，2026-09-04）；`SpindleModeBuilder` 的模式语义（int 自由槽无枚举，2026-09-04）；`run_journal.exe -nogui`（**无此旗标**，2026-09-04）；stepover 族有效写入通道（`CutParameters.Stepover`
+复合对象全成员面 + 直属 `StepoverLimit`——.NET 写入 commit 后必还原模板默认，**2026-09-04 负结案**，
+camprobe-stepover 三跑，见 docs/nx-stepover-probe-spec.md；StepoverLimit 仅校验层可达、值域 [100,300]%）。
 
 ---
 
@@ -168,7 +193,7 @@ samples/camprobe-u7-20260904-115251.txt ok=3/fail=0）**：
 
 1. ~~`OperationCollection.Create` 的 typeName 字面量~~ ★ 已实证：typeName=模板部件名 + subtypeName=子类型（如 `(mill_contour, CAVITY_MILL)` 创建成功，§2.1）；`GetNameOfType()` 返回模板大类描述串、不能替代字面量（§2.1）。
 2. ~~组创建 `typeName/subtypeName` 实际取值~~ ★ 已实证：配对见 §2.1（组与操作同族语义）；完整注册表 = CAMSession 枚举（samples/camprobe-types.txt）。
-3. ~~`StepoverBuilder` 常量百分比链路 / `ToolDrivePoint` string 取值集合 / `SpindleModeBuilder` 数值编码~~ ★ 已实证（2026-09-04，camprobe-finalize-010401，结论入 §2.1）：Stepover 整链 commit 写入无效（静默还原模板默认）；ToolDrivePoint 默认 "SYS_CL_TIP"、setter 无校验；SpindleMode=int 自由槽无模式语义。残余：Stepover **有效写入通道**（UI 能改而 .NET 直写无效的内部机制）未明 → spec U-6。
+3. ~~`StepoverBuilder` 常量百分比链路 / `ToolDrivePoint` string 取值集合 / `SpindleModeBuilder` 数值编码~~ ★ 已实证（2026-09-04，camprobe-finalize-010401，结论入 §2.1）：Stepover 整链 commit 写入无效（静默还原模板默认）；ToolDrivePoint 默认 "SYS_CL_TIP"、setter 无校验；SpindleMode=int 自由槽无模式语义。~~残余：Stepover **有效写入通道**（UI 能改而 .NET 直写无效的内部机制）未明 → spec U-6。~~ ★ 负结案（2026-09-04，camprobe-stepover 三跑 + docs/nx-stepover-probe-spec.md）：8 通道形态全负、commit 后必还原模板默认（含直属 StepoverLimit）→ 公开 .NET 面无有效写入通道，入 §2.5 不存在项清单；机制残留注记见 spec §6。
 4. ~~`CreateCamSetup("mill_contour")` 空 Part 初始化流程~~ ★ 已实证（§2.1）；~~`run_journal.exe -nogui` 批处理参数~~ ★ 已实证（2026-09-04，smoke-open-005304）：帮助用法**无 `-nogui` 旗标**，`run_journal.exe <journal.cs> [-args …]` 本身即无界面批处理；批处理 CAM 会话按 §2.1 纪律显式初始化。
 5. ~~`CAMSetup.View.MachineMethod` 与 UI"加工方法视图"标签的对应关系~~ ★ 已实证（2026-09-03 test.prt dump：四根组与 UI 四导航标签一一对应，见 §2.1）。
 
