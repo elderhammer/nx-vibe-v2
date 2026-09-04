@@ -1,0 +1,53 @@
+== CamProbeU7 ==
+time: 2026-09-04 11:52:51
+
+== 阶段: S1 空 Part 写环境（建件→CAM 会话→CreateCamSetup） ==
+  CreateCamSession OK
+  CAMSetup=True
+
+== 阶段: S2 test.prt 库刀具 GetTypeAndSubtype 读回（P1/P3） ==
+  -- 六把库刀具：as Tool + GetTypeAndSubtype（U-7 通道 A）
+  -- 刀具组: 17.0  家族(GetNameOfType)=Milling Tool-5 Parameters
+  OK     as NXOpen.CAM.Tool
+    GetTypeAndSubtype = Mill / Mill5
+     对照-builder 运行时类型 = NXOpen.CAM.MillToolBuilder
+     对照-as MillToolBuilder = 有
+     对照-CutterSubtype = Mill5
+  -- 刀具组: 13.94  家族(GetNameOfType)=Milling Tool-5 Parameters
+  OK     as NXOpen.CAM.Tool
+    GetTypeAndSubtype = Mill / Mill5
+     对照-builder 运行时类型 = NXOpen.CAM.MillToolBuilder
+     对照-as MillToolBuilder = 有
+     对照-CutterSubtype = Mill5
+  -- 刀具组: 9.96  家族(GetNameOfType)=Milling Tool-5 Parameters
+  OK     as NXOpen.CAM.Tool
+    GetTypeAndSubtype = Mill / Mill5
+     对照-builder 运行时类型 = NXOpen.CAM.MillToolBuilder
+     对照-as MillToolBuilder = 有
+     对照-CutterSubtype = Mill5
+  -- 刀具组: D6.0X90中心钻  家族(GetNameOfType)=Chamfer Mill
+  OK     as NXOpen.CAM.Tool
+    GetTypeAndSubtype = Mill / MillChamfer
+     对照-builder 运行时类型 = NXOpen.CAM.MillToolBuilder
+     对照-as MillToolBuilder = 有
+     对照-CutterSubtype = ChamferTool
+  -- 刀具组: 8.5  家族(GetNameOfType)=Drilling Tool
+  OK     as NXOpen.CAM.Tool
+    GetTypeAndSubtype = Drill / DrillStandard
+     对照-builder 运行时类型 = NXOpen.CAM.DrillStdToolBuilder
+     对照-as MillToolBuilder = (null)
+  -- 刀具组: 17.5  家族(GetNameOfType)=Drilling Tool
+  OK     as NXOpen.CAM.Tool
+    GetTypeAndSubtype = Drill / DrillStandard
+     对照-builder 运行时类型 = NXOpen.CAM.DrillStdToolBuilder
+     对照-as MillToolBuilder = (null)
+
+== 阶段: S3 新建注册对读回校准（P2） ==
+  -- (mill_planar, MILL) 新建 组: U7_MILL_NEW
+  OK     as NXOpen.CAM.Tool
+    GetTypeAndSubtype = Mill / Mill5
+  -- (hole_making, STD_DRILL) 新建 组: U7_DRL_NEW
+  OK     as NXOpen.CAM.Tool
+    GetTypeAndSubtype = Drill / DrillStandard
+== 汇总 ok=3 fail=0 ==
+== 结束 ==

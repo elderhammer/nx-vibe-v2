@@ -94,12 +94,21 @@
   clearance 类型（Automatic）而非 null；GetLowerLimitMode=None、LowerLimitPlane=null。显式 Plane 型件的
   平面几何经 `NcmClearanceBuilder.PlaneXform`（NXOpen.Plane.Origin/Normal）可读（成员实证，见 §3.10）。
 
-**2026-09-04 Executor 预检增补（源：samples/camprobe-executor-20260904-012518.txt，ok=6/fail=0）**：
+**2026-09-04 Executor 预检增补 + U-7 探针（源：samples/camprobe-executor-20260904-012518.txt ok=6/fail=0、
+samples/camprobe-u7-20260904-115251.txt ok=3/fail=0）**：
 
-- **CutterSubtype 读回可用（U-7 无技术障碍）**：库刀具经 `CreateMillToolBuilder`（运行时类型 MillToolBuilder）
+- **CutterSubtype 读回可用（U-7 前奏）**：库刀具经 `CreateMillToolBuilder`（运行时类型 MillToolBuilder）
   读 `CutterSubtype` —— test.prt 铣刀 ×3（直径 17/13.94/9.96）= **Mill5**、中心钻（D6.0X90，家族=Chamfer Mill）=
-  **ChamferTool**；新建 (mill_planar, MILL) 组默认 Mill5。钻具运行时类型 = DrillStdToolBuilder（非 MillToolBuilder）。
-  枚举与语言无关 → U-7（导出侧补 schema type 枚举）建议走 CutterSubtype。
+  **ChamferTool**；新建 (mill_planar, MILL) 组默认 Mill5。钻具运行时类型 = DrillStdToolBuilder（非 MillToolBuilder，
+  CutterSubtype 不可读——旧通道缺口）。
+- **GetTypeAndSubtype 全家族读回实证（U-7 通道 A 定案，2026-09-04，源：samples/camprobe-u7-20260904-115251.txt，
+  ok=3/fail=0）**：`NXOpen.CAM.Tool`（**Tool : NCGroup 子类**，反射实证）`GetTypeAndSubtype(out Tool.Types, out
+  Tool.Subtypes)` —— 六把库刀具 NCGroup `as Tool` **6/6 下转成功**：铣刀 ×3=(Mill, **Mill5**)、中心钻（Chamfer Mill
+  家族）=(Mill, **MillChamfer**)、钻刀 ×2（DrillStdToolBuilder）=(Drill, **DrillStandard**）——语言无关（会话家族串
+  为英文时枚举值不变），钻族旧通道盲区由本通道补齐。新建注册对读回校准：`(mill_planar,MILL)`→(Mill,Mill5)、
+  `(hole_making,STD_DRILL)`→(Drill,DrillStandard)（模板 subtype 串与 NX 枚举为两个词汇表，对应以此表为准）。
+  **同型双命名观察**：Chamfer 中心钻 CutterSubtype=`ChamferTool` vs Subtypes=`MillChamfer` → 映射一律以
+  `Tool.Types/Subtypes` 为基准。schema tool.type 词集替换设计见 docs/nx-tool-type-enum-spec.md（U-7 收口，D-3=A′）。
 - **GetNameOfType 语言敏感**：同批 test.prt 刀具组家族名本次会话为**英文**（"Milling Tool-5 Parameters"/
   "Chamfer Mill"/"Drilling Tool"），与此前 dump/adapter 会话的中文模板名（"铣刀-5 参数"等）不同——该串随
   会话语言变化；op 级白名单匹配（Cavity Milling/Point to Point…英文模板描述）不受影响，刀具 TypeFamily
@@ -150,7 +159,8 @@
 
 ### 2.5 易错"不存在项"清单（NX2406）
 
-`CAMSetupBuilder`；`CAMSetup.ProgramOrderView/MachineToolView/GeometryView/MethodView`；`camSetup.CreatePlanarMillingBuilder(...)`（应在 OperationCollection）；`MillCutParameters.DepthPerCut`（应在 `PlanarOperationBuilder/CavityMillingBuilder`）；`Stepover.Percent`；`MillCutParameters.CutOrder` 用顶层 `CutOrder` 枚举（类型是 `CutParametersCutOrderTypes`）；`HoleMachiningBuilder.Cycle`（**只有 `CycleTable`**，类型 `CAM.Cycle`）；`Operation.gougeCheck / getCuttingTime / getCuttingLength`（gouge 在 `CAMSetup.GougeCheck/CreateGougeCheckBuilder` 与 `Operation.GougeCheckStatus/Results`）；`MillingToolBuilder.holderSectionBuilder`（有 `ShankSectionBuilder`）；`setMcs/setRcs` 方法（`Mcs/Rcs` 是可写属性）；`cam_general_mill.prt`（2406 用 `mill_contour.prt` 等）；`CAMObject` 的 subtypeName/子类型读回成员（XML/反射零命中，仅有 `GetNameOfType()` 且为内部 API）；`PartCollection.OpenReadOnly`（无只读打开重载）；PTP 旧模板循环细分参数读回成员（G83/打点步距、退刀——builder 公开面/BuilderProperties JSON/用户属性三路零命中，2026-09-04）；`SpindleModeBuilder` 的模式语义（int 自由槽无枚举，2026-09-04）；`run_journal.exe -nogui`（**无此旗标**，2026-09-04）。
+`CAMSetupBuilder`；`CAMSetup.ProgramOrderView/MachineToolView/GeometryView/MethodView`；`camSetup.CreatePlanarMillingBuilder(...)`（应在 OperationCollection）；`MillCutParameters.DepthPerCut`（应在 `PlanarOperationBuilder/CavityMillingBuilder`）；`Stepover.Percent`；`MillCutParameters.CutOrder` 用顶层 `CutOrder` 枚举（类型是 `CutParametersCutOrderTypes`）；`HoleMachiningBuilder.Cycle`（**只有 `CycleTable`**，类型 `CAM.Cycle`）；`Operation.gougeCheck / getCuttingTime / getCuttingLength`（gouge 在 `CAMSetup.GougeCheck/CreateGougeCheckBuilder` 与 `Operation.GougeCheckStatus/Results`）；`MillingToolBuilder.holderSectionBuilder`（有 `ShankSectionBuilder`）；`setMcs/setRcs` 方法（`Mcs/Rcs` 是可写属性）；`cam_general_mill.prt`（2406 用 `mill_contour.prt` 等）；`CAMObject` 的 subtypeName/子类型读回成员（NCGroup/CAMObject 层零命中，仅有 `GetNameOfType()` 且为内部 API；
+**例外：`CAM.Tool.GetTypeAndSubtype`**（NX7.5 起、License None、工具专用——2026-09-04 实证，见 §2.1 增补））；`PartCollection.OpenReadOnly`（无只读打开重载）；PTP 旧模板循环细分参数读回成员（G83/打点步距、退刀——builder 公开面/BuilderProperties JSON/用户属性三路零命中，2026-09-04）；`SpindleModeBuilder` 的模式语义（int 自由槽无枚举，2026-09-04）；`run_journal.exe -nogui`（**无此旗标**，2026-09-04）。
 
 ---
 

@@ -42,7 +42,7 @@
 ### 实证结论（2026-09-03，均入库索引 §2.1/§2.5）
 
 1. `CAMObject.GetNameOfType()` 返回**模板大类描述串**（`Cavity Milling` / `Point to Point` / `Generic PARAM object`…），**不是** `OperationCollection.Create()` 的 typeName 字面量；打点与钻头G83 均返回 `Point to Point`——**细分模板类型（定心钻 vs G83）无公开读回**。导出侧 `operation_type` 的来源须另找（候选：模板属性/UI 类型名，未实测）。
-2. 刀具组 `GetNameOfType` 为中文模板名（铣刀-5 参数 / 倒斜铣刀 / 钻刀），**组名即规格值**（直径）→ 与 CAPP 刀具选型字段的对应靠后续 Builder 回读验证。
+2. 刀具组 `GetNameOfType` 为中文模板名（铣刀-5 参数 / 倒斜铣刀 / 钻刀），**组名即规格值**（直径）→ 与刀具选型字段的对应已由 Builder 回读实证闭环（camprobe-executor/camprobe-u7：铣族 CutterSubtype 可读、全家族 `Tool.GetTypeAndSubtype` 可读且语言无关；通道与 schema 词集见 docs/nx-tool-type-enum-spec.md）。
 3. COPY 链呈现为**独立 Operation 对象**（名带 _COPY 后缀链）→ plan 合同/重建侧"副本"表述口径待决策（schema v3 无副本字段）。
 4. 四视图 UI 与四根组（`GetRoot(View)`）一一对应实证通过（含 `MachineMethod` ↔ 加工方法视图）。
 
@@ -57,6 +57,7 @@
 | `camprobe-executor-20260904-012518.txt` | Executor 预检探针（ok=6 fail=0）：CutterSubtype 读回/新刀具写链/非零 MCS 往返/FixtureOffset/方法父/hole_making 模板 |
 | `executor-run-20260904-014930.txt` | ExecutorAdapter [I] 终版跑（ok=16 fail=0）：test.plan.json → test.rebuilt-014933.prt，回读对照全 PASS（6 工序/6 刀具/MCS） |
 | `reopen-20260904-015129.txt` | I-3 自证：run_journal 新会话重开 prj′（ops=6） |
+| `camprobe-u7-20260904-115251.txt` | U-7 探针（ok=3 fail=0）：六把库刀具 `as Tool`+GetTypeAndSubtype 全实证（6/6 下转；(Mill,Mill5)×3/(Mill,MillChamfer)/(Drill,DrillStandard)×2）+ 新建注册对读回校准（MILL↔Mill5、STD_DRILL↔DrillStandard），结论入索引 §2.1 与 docs/nx-tool-type-enum-spec.md |
 
 > 注意：西门子安装目录内文件（模板/样例/程序集）受许可约束，**只引用、不复制进 git**；
 > 自建件由本仓库维护。
