@@ -179,3 +179,10 @@ diagnostics[]   (info/warning/error)
 > 批处理等，2026-09-03/04；索引 §3 全部划勾，见 nxopen-research 附 B）。U-6 已负结案收口
 > （2026-09-04，camprobe-stepover 三跑 + docs/nx-stepover-probe-spec.md：公开 .NET 面无 stepover
 > 有效写入通道，重建侧维持拒收+diag）；残余仅 v2 项（STEP 路径/几何面级，U-5 负结案）。
+>
+> 2026-09-05 注：**STEP 导入公开 API 确认存在**（`DexManager.CreateStep203/214/242Importer`，
+> License None / NX6 起；C++ 头 Step214Importer.hxx + 官方样例
+> CAMSetupImport\GeometryImporter.cs 双背书）——早前"STEP 无导入 API"系检索假负结案（证伪三关
+> 协议入 .claude/skills/nx-api-verify §1.5）。§1 步骤②"打开原始 STEP 文件"**维持为 v2 目标路径**；
+> 其运行时落地在 APP_NONE 批处理下未通（导入链 API 正常但 0 几何，camprobe-steprebuild 2026-09-05，
+> 索引 §2.1/§3 项 6）→ 待 GUI Execute 复验后实施。

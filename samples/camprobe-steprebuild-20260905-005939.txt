@@ -1,0 +1,27 @@
+== CamProbeStepRebuild（STEP 导入重建链，手写资产路线）==
+time: 2026-09-05 00:59:39
+Session: ApplicationName=APP_NONE
+资产: C:\Users\21505\Code\nx-vibe-v2\samples\probe-box-214.step (5727 B)
+
+== 阶段: P1 导入判死（Step214Importer → 空件） ==
+  SaveAs 目标件 = C:\Users\21505\Code\nx-vibe-v2\samples\camprobe-steprebuild-20260905-005939.prt  FullPath=C:\Users\21505\Code\nx-vibe-v2\samples\camprobe-steprebuild-20260905-005939.prt
+  目标: camprobe-steprebuild-20260905-005939 初始 Bodies=0
+  设置 ObjectTypes.Solids = ok
+  设置 InputFile = ok
+  设置 OutputFile = ok
+  设置 SettingsFile = ok: C:\Program Files\Siemens\NX2406\step214ug\step214ug.def
+  设置 FileOpenFlag=false = ok
+  Commit(FileOpenFlag=false, 有 def) = ok
+  变体A 导入后(目标件): Bodies=0 solidFaces=0
+  变体B: 无 def 隔离试跑
+  Commit(FileOpenFlag=false, 无 def) = ok
+  变体B 导入后: Bodies=0 solidFaces=0
+  变体B 坏路径判别 = 坏路径 Commit 抛异常(NXException): Part Import Error: Unable to import selected file to work part. → Commit 处理输入
+  全会话 solidFaces=0
+  !! 阶段异常: 导入无几何 → P1 γ（见变体B stub 判别 + syslog）
+
+== 阶段: P2 CAM 共存（导入含体件上建 CAMSetup + 组 + op） ==
+  CreateCamSetup OK
+  op=OP_CAV1; faces 保持 = 0
+  P2 判定: STEP 导入件上 CAM 全套可建 → α
+== 结束 ==

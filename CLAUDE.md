@@ -79,6 +79,9 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
    现成命令/脚本：① `NXBIN\managed\NXOpen.xml` 成员清单与 remarks ② PowerShell 反射 `NXOpen.dll`
    ③ `UGOPEN\NXOpen\*.hxx` C++ 声明；不确定时直接运行，不要自行凭记忆拼 API 名）；
    核实后再写代码，并把结论回填索引/附 A（含"不存在项"与"待运行时验证"归位）。
+   **负结论纪律**：任何"不存在/零命中/无公开通道"定案须过 skill §1.5 证伪三关（XML/.NET 全语料 +
+   C++ 头文件 + 官方样例库，含数字宽容形态与大小写不敏感子串检索）并在结论附证伪检索清单；
+   grep/head 截断输出不得当作零命中（STEP 导入、U-5 面积两起假负结案先例）。
 3. **待运行时验证项不得固化**：索引 §3 清单（typeName 字面量、Stepover 链路、
    `CreateCamSetup` 模板名、`run_journal.exe -nogui` 等）未在 NX 会话/批处理实测前，
    代码与文档只可标注"待实测"，不得当作最终接口使用。

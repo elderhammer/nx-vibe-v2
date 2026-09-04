@@ -37,6 +37,39 @@ grep -oE 'name="[TF]:NXOpen\.CAM\.[^"]*\.(<取值>)"' NXOpen.xml | sort -u
 ```
 注意事项：① `<类名>` 大小写敏感（如 `ZLevelMillingBuilder`）；② 成员常为**嵌套枚举**（宿主类 `.Types` 或类内嵌套），先按 `T:` 搜宿主再取 `F:` 取值；③ XML 不给属性/返回类型——下一步反射。
 
+**检索纪律（防假负结案，2026-09-04 STEP 导入教训——Step203/214/242Importer 曾因检索缺陷被误判"不存在"）**：
+
+- **类名可能含版本数字**（203/214/242/AP242…）：纯字母 pattern（如 `[Ss]tep[A-Za-z]*`）**必然漏检**。存在性检索一律先跑大小写不敏感子串 + 数字宽容形态：
+  ```bash
+  grep -oiE 'name="[TMP]:NXOpen\.[^"]*<关键子串>[^"]*"' NXOpen.xml | sort -u          # -i 子串含数字
+  grep -oiE 'name="[TMP]:NXOpen\.[^"]*<关键子串>[^"]*"' NXOpen.xml | grep -c '<匹配'    # 先知量级
+  ```
+- **head 截断 ≠ 零命中**：`sort -u` 后 `T:`（类型）按字节序排在 `M:`（方法）之后——`head -N` 截断会先切掉全部类型条目。存在性问题：先 `grep -c` 知总量，输出落文件再 `tail` 复核，或直接不截断。
+- **单形态检索不足为凭**：同一结论至少两种检索形态交叉（精确名 / -i 子串 / 宽松 pattern）。
+
+### 1.5 负结论证伪协议（"不存在"定案前三关，全过才可入索引 §2.5/文档）
+
+任何"X 不存在/零命中/无公开通道"结论，定案前必过三关并在结论附**证伪检索清单**（pattern/语料/计数）：
+
+1. **XML/.NET 关**：NXOpen.xml 全语料 `-i` 子串 + 数字宽容形态零命中，且反射 `NXOpen*.dll` 全程序集类型级零命中（防 XML 收录不全）：
+   ```bash
+   grep -rli '<关键子串>' NXOpen*.xml 2>/dev/null    # 全 XML 文件
+   # 反射：foreach asm in NXOpen*.dll → GetTypes() 过滤 FullName 含关键子串
+   ```
+2. **C++ 头文件关**：文件名级 + 内容级零命中：
+   ```bash
+   ls "%NX_ROOT%\UGOPEN\NXOpen" | grep -i '<关键子串>'            # 文件名（含 Step203Importer.hxx 这类）
+   grep -rliE '<关键子串>' "%NX_ROOT%\UGOPEN\NXOpen\*.hxx" 2>/dev/null
+   grep -rniE '<关键子串>' "%NX_ROOT%\UGOPEN\uf_*.h" 2>/dev/null
+   ```
+3. **官方样例关**（全库递归，.cs/.vb/.cpp/.py/.java/.hxx）：
+   ```bash
+   grep -rliE '<关键子串>|Import<X>|Create<X>Importer' "%NX_ROOT%\UGOPEN\SampleNXOpenApplications" "%NX_ROOT%\UGOPEN\NXOpenExamples" 2>/dev/null
+   ```
+   样例命中即推翻"不存在"（即使 XML 零命中）；已知参考样例（如索引 §1 资源 5 `CAMSetupImport`）内部文件须实际读过才算查过。
+
+索引 §2.5 负条目标注证伪日期与形态；后续出现反例即**负结论撤回 + 索引修订**（U-5 面积、STEP 导入两先例同款）。
+
 ### 2. PowerShell 反射（拿精确类型/枚举值/方法签名）
 写临时脚本后执行（不要 `-ExecutionPolicy Bypass`，环境会拦截；用 `powershell -NoProfile -File <脚本>`），用毕删除：
 ```powershell

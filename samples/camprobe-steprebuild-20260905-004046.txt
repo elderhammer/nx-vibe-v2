@@ -1,0 +1,11 @@
+== CamProbeStepRebuild（STEP 导入重建链，正确事实重开）==
+time: 2026-09-05 00:40:46
+Session: ApplicationName=APP_NONE
+
+== 阶段: P0 资产（StepCreator 导出 test.prt 主 solid） ==
+  InputFile = set
+  FileSaveFlag = set true
+  Commit = ok
+  期待产物: C:\Users\21505\Code\nx-vibe-v2\samples\camprobe-steprebuild-20260905-004051.step
+  !! 阶段异常: 无 .step 产物（StepCreator 语义未明 → 资产转手写/GUI）
+== 结束 ==

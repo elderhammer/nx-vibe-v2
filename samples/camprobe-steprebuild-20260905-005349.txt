@@ -1,0 +1,21 @@
+== CamProbeStepRebuild（STEP 导入重建链，手写资产路线）==
+time: 2026-09-05 00:53:49
+Session: ApplicationName=APP_NONE
+资产: C:\Users\21505\Code\nx-vibe-v2\samples\probe-box-214.step (5523 B)
+
+== 阶段: P1 导入判死（Step214Importer → 空件） ==
+  NewDisplay: CamProbeStepRebuild 初始 Bodies=0
+  设置 ObjectTypes.Solids = ok
+  设置 InputFile = ok
+  设置 OutputFile = ok
+  设置 SettingsFile = ok: C:\Program Files\Siemens\NX2406\step214ug\step214ug.def
+  设置 FileOpenFlag=false = ok
+  Commit = ok
+  导入后: Bodies=0 solidFaces=0
+  !! 阶段异常: 导入无几何 → P1 γ（检查 translator stdout 报错）
+
+== 阶段: P2 CAM 共存（导入含体件上建 CAMSetup + 组 + op） ==
+  CreateCamSetup OK
+  op=OP_CAV1; faces 保持 = 0
+  P2 判定: STEP 导入件上 CAM 全套可建 → α
+== 结束 ==
