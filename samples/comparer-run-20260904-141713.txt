@@ -1,0 +1,34 @@
+== ComparerAdapter ==
+time: 2026-09-04 14:17:13
+A=C:\Users\21505\Code\nx-vibe-v2\samples\test.prt  B=C:\Users\21505\Code\nx-vibe-v2\samples\test.rebuilt.prt
+OpenDisplay 失败(文件已存在)——尝试 UF 已载枚举复用
+复用已装载: test
+SetDisplayPart: test
+SetWork: test
+== 采集 A: test ==
+  tool 17.0 → type=Mill subtype=Mill5
+  tool 13.94 → type=Mill subtype=Mill5
+  tool 9.96 → type=Mill subtype=Mill5
+  tool D6.0X90中心钻 → type=Mill subtype=MillChamfer
+  tool 8.5 → type=Drill subtype=DrillStandard
+  tool 17.5 → type=Drill subtype=DrillStandard
+MCS 回读: origin=(75,0,100) z=(0,0,1)
+  PTP op 打点_COPY_COPY_COPY 参数面待 #3 细化（builder 已开验证，当前仅读 hole_depth）
+  PTP op 钻头G83_COPY_3_COPY_COPY_COPY_1 参数面待 #3 细化（builder 已开验证，当前仅读 hole_depth）
+OpenDisplay: test.rebuilt
+SetDisplayPart: test.rebuilt
+SetWork: test.rebuilt
+== 采集 B: test.rebuilt ==
+MCS 回读: origin=(75,0,100) z=(0,0,1)
+快照 A: ops=6 tools=6 setups=1  快照 B: ops=6 tools=0 setups=1
+== 结构 ==
+  op 配对=6 仅A(重建缺)=0 仅B(重建多)=0  刀具 A=6 B=0  setup A=1 B=1
+== 逐项（非 PASS） ==
+  [FAIL] OP_PARAM_DIFF@打点_COPY_COPY_COPY 参数 hole_depth 单侧缺失: A=0 B=(无)
+  [FAIL] OP_PARAM_DIFF@打点_COPY_COPY_COPY 参数 bottom_stock 单侧缺失: A=(无) B=0
+  [FAIL] OP_PARAM_DIFF@钻头G83_COPY_3_COPY_COPY_COPY_1 参数 hole_depth 单侧缺失: A=0 B=(无)
+  [FAIL] OP_PARAM_DIFF@钻头G83_COPY_3_COPY_COPY_COPY_1 参数 bottom_stock 单侧缺失: A=(无) B=0
+  [FAIL] TOOL_STRUCT@tools 刀具数差: A=6 B=0（重建缺 6）
+  [FAIL] PROGRAM_ORDER_DIFF@ 顶层程序组序差: A=[PROGRAM/A01] B=[PROGRAM]
+== 汇总: issues=6 op=6/6 param=12/16 tool=0/0 mcs=1/1 fixture=0/0 template=6/6 ==
+== 结束 ==

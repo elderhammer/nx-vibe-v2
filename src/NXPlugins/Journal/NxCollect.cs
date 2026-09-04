@@ -1,0 +1,243 @@
+﻿// NxCollect.cs — ExportSnapshot 采集共享层（NX 会话内只读遍历 → 快照）
+// 语义：PlanComparer 可信前提 = 导出（ExporterAdapter）与对比（ComparerAdapter）对同一件的
+// 采集口径一致（docs/nx-plan-comparer-spec.md §5 D-3：单一事实源）。原为 ExporterAdapter 私有
+// 方法（v11 前），2026-09-04 提取共享；刀具入选判据 2026-09-04 首跑修正为 as Tool 下转（原
+// depth>=1+家族串排除漏采重建件机根直挂刀组，见 ComparerAdapter 首跑 comparer-run-141713）。
+// 只读纪律：不 Commit/不修改；Builder 用毕 Destroy。日志经注入 Action<string>（适配器各自通道）。
+
+using System;
+using System.Collections.Generic;
+using NXOpen;
+using NXOpen.CAM;
+using NXOpen.UF;
+using NXPlugins.PlanExporter;
+using Operation = NXOpen.CAM.Operation;
+
+public static class NxCollect
+{
+    // ---- 采集：机床树刀具（含 U-7 GetTypeAndSubtype 直写；失败 → TypeReadbackError 不入 plan） ----
+
+    public static void CollectTools(CAMSetup cam, ExportSnapshot snap, Action<string> log)
+    {
+        NCGroup root = cam.GetRoot(CAMSetup.View.MachineTool);
+        WalkTools(root, snap, cam, log);
+    }
+
+    // 入选判据 = as NXOpen.CAM.Tool 成败（2026-09-04 首跑实证修正：重建件刀组挂在机床根直接层，
+    // 原 depth>=1+家族串排除判据漏采 → 改为语言无关、深度无关的 Tool 下转判据；容器组
+    // （Machine/Carrier/Head/机床根）as Tool 恒 null → 递归其子，真刀不再递归）
+    private static void WalkTools(NCGroup g, ExportSnapshot snap, CAMSetup cam, Action<string> log)
+    {
+        foreach (CAMObject m in SafeMembers(g, log))
+        {
+            NCGroup sub = m as NCGroup;
+            if (sub == null) continue;
+            NXOpen.CAM.Tool tt = sub as NXOpen.CAM.Tool;
+            if (tt == null) { WalkTools(sub, snap, cam, log); continue; }   // 容器 → 递归
+            // 真刀：GetTypeAndSubtype 直写 NX 枚举原文（PRE-U7-1）；失败 → 剔除此刀（INV-U7-4）
+            var t = new ToolItem { Name = sub.Name, TypeFamily = NameOfTypeSafe(sub) };
+            try
+            {
+                NXOpen.CAM.Tool.Types ty;
+                NXOpen.CAM.Tool.Subtypes st;
+                tt.GetTypeAndSubtype(out ty, out st);
+                t.NxType = ty.ToString();
+                t.NxSubtype = st.ToString();
+                log("  tool " + sub.Name + " → type=" + t.NxType + " subtype=" + t.NxSubtype);
+            }
+            catch (Exception e) { t.TypeReadbackError = "GetTypeAndSubtype 异常: " + e.Message; }
+            ReadToolParams(cam, sub, t, log);
+            snap.Tools.Add(t);
+        }
+    }
+
+    private static void ReadToolParams(CAMSetup cam, NCGroup toolGroup, ToolItem t, Action<string> log)
+    {
+        try
+        {
+            MillingToolBuilder b = null;
+            try { b = cam.CAMGroupCollection.CreateMillToolBuilder(toolGroup) as MillingToolBuilder; }
+            catch { b = null; }
+            if (b == null)
+            {
+                try { b = cam.CAMGroupCollection.CreateDrillStdToolBuilder(toolGroup) as MillingToolBuilder; }
+                catch { b = null; }
+            }
+            if (b == null) { t.TypeFamily += " (参数未读: builder 不匹配)"; return; }
+            try { t.Diameter = b.TlDiameterBuilder.Value; } catch { }
+            try { t.NumFlutes = b.TlNumFlutesBuilder.Value; } catch { }
+            try { t.FluteLength = b.TlFluteLnBuilder.Value; } catch { }
+            try { t.LowerCornerRadius = b.TlLowCorRadBuilder.Value; } catch { }
+            b.Destroy();
+        }
+        catch (Exception e) { t.TypeFamily += " (参数异常: " + e.Message + ")"; }
+    }
+
+    // ---- 采集：MCS（几何树中名字含 MCS 的组） ----
+
+    public static void CollectSetups(CAMSetup cam, ExportSnapshot snap, Action<string> log)
+    {
+        NCGroup root = cam.GetRoot(CAMSetup.View.Geometry);
+        NCGroup mcs = FindMcs(root, log);
+        var s = new SetupItem { Name = mcs == null ? "UNKNOWN" : mcs.Name, MissingMcs = mcs == null };
+        if (mcs != null)
+        {
+            try
+            {
+                MillOrientGeomBuilder ob = cam.CAMGroupCollection.CreateMillOrientGeomBuilder(mcs);
+                try
+                {
+                    CartesianCoordinateSystem cs = ob.Mcs;
+                    if (cs != null)
+                    {
+                        s.McsOrigin = new[] { cs.Origin.X, cs.Origin.Y, cs.Origin.Z };
+                        Matrix3x3 el = cs.Orientation.Element;
+                        s.McsXAxis = new[] { el.Xx, el.Xy, el.Xz };
+                        s.McsZAxis = new[] { el.Zx, el.Zy, el.Zz };
+                        log(string.Format("MCS 回读: origin=({0:0.###},{1:0.###},{2:0.###}) z=({3:0.###},{4:0.###},{5:0.###})",
+                            cs.Origin.X, cs.Origin.Y, cs.Origin.Z, el.Zx, el.Zy, el.Zz));
+                    }
+                }
+                finally { ob.Destroy(); }
+            }
+            catch (Exception e) { log("MCS 回读异常: " + e.Message); }
+        }
+        // FixtureOffset（P4 实证可读：MillOrientGeomBuilder.FixtureOffsetBuilder.Value；2026-09-04
+        // comparer 首跑补——plan 的 fixture_offset null 缺口同源，导出随之带出）
+        if (mcs != null && !s.MissingMcs)
+        {
+            try
+            {
+                MillOrientGeomBuilder ob = cam.CAMGroupCollection.CreateMillOrientGeomBuilder(mcs);
+                try { s.FixtureOffset = ob.FixtureOffsetBuilder.Value; }
+                finally { ob.Destroy(); }
+            }
+            catch (Exception e) { log("FixtureOffset 回读异常: " + e.Message); }
+        }
+        snap.Setups.Add(s);
+    }
+
+    private static NCGroup FindMcs(NCGroup g, Action<string> log)
+    {
+        foreach (CAMObject m in SafeMembers(g, log))
+        {
+            NCGroup sub = m as NCGroup;
+            if (sub == null) continue;
+            if (sub.Name.StartsWith("MCS", StringComparison.Ordinal)) return sub;
+            NCGroup hit = FindMcs(sub, log);
+            if (hit != null) return hit;
+        }
+        return null;
+    }
+
+    // ---- 采集：操作（程序顺序树，单视图；Tag 即唯一键） ----
+
+    public static void CollectOperations(CAMSetup cam, ExportSnapshot snap, Action<string> log)
+    {
+        NCGroup root = cam.GetRoot(CAMSetup.View.ProgramOrder);
+        foreach (NCGroup top in TopProgramGroups(root))
+            snap.ProgramOrder.Add(top.Name);
+        WalkOps(root, snap, cam, log);
+    }
+
+    private static void WalkOps(NCGroup g, ExportSnapshot snap, CAMSetup cam, Action<string> log)
+    {
+        foreach (CAMObject m in SafeMembers(g, log))
+        {
+            if (m is NCGroup) { WalkOps((NCGroup)m, snap, cam, log); continue; }
+            Operation op = m as Operation;
+            if (op == null) continue;
+            var o = new OperationItem
+            {
+                Name = op.Name,
+                UserName = op.UserName ?? "",
+                Key = new TagKey((ulong)(long)(int)op.Tag),
+                TypeFamily = NameOfTypeSafe(op),
+                ProgramParent = ParentName(op.ParentProgramOrder),
+                MethodParent = ParentName(op.ParentMachineMethod),
+                ToolParent = ParentName(op.ParentMachineTool),
+                GeometryParent = ParentName(op.ParentGeometry),
+                HasGeometryParent = op.ParentGeometry != null,
+            };
+            if (o.TypeFamily == "Cavity Milling")
+            {
+                try
+                {
+                    CavityMillingBuilder b = cam.CAMOperationCollection.CreateCavityMillingBuilder(op);
+                    try
+                    {
+                        TryParam(b, o, "part_stock", () => b.CutParameters.PartStock.Value);
+                        TryParam(b, o, "floor_stock", () => b.CutParameters.FloorStock.Value);
+                        TryParam(b, o, "depth_per_cut", () => b.DepthPerCut.Value);
+                    }
+                    finally { b.Destroy(); }
+                }
+                catch (Exception e) { o.ReadbackErrors.Add("cavity builder 打不开: " + e.Message); }
+            }
+            else if (o.TypeFamily == "Drilling")
+            {
+                // 新模板 DRILLING 家族 → HoleDrillingBuilder（camprobe-drill 实证 BottomStock 可读）
+                try
+                {
+                    HoleDrillingBuilder b = cam.CAMOperationCollection.CreateHoleDrillingBuilder(op);
+                    try { TryParam(b, o, "bottom_stock", () => b.CuttingParameters.BottomStock.Value); }
+                    finally { b.Destroy(); }
+                }
+                catch (Exception e) { o.ReadbackErrors.Add("hole builder 打不开: " + e.Message); }
+            }
+            else if (o.TypeFamily == "Point to Point")
+            {
+                // PTP 旧模板（打点/钻头G83）→ PointToPointBuilder（2406 实证：CreateHoleDrillingBuilder
+                // 会类型转换失败）；参数面仅 HoleDepth/Retract 等（孔细分参数面属 #3 范围，不扩读）
+                try
+                {
+                    PointToPointBuilder b = cam.CAMOperationCollection.CreatePointToPointBuilder(op);
+                    try
+                    {
+                        TryParam(b, o, "hole_depth", () => b.HoleDepth.Value);
+                        log("  PTP op " + o.Name + " 参数面待 #3 细化（builder 已开验证，当前仅读 hole_depth）");
+                    }
+                    finally { b.Destroy(); }
+                }
+                catch (Exception e) { o.ReadbackErrors.Add("ptp builder 打不开: " + e.Message); }
+            }
+            snap.Operations.Add(o);
+        }
+    }
+
+    private static void TryParam(object builder, OperationItem o, string key, Func<double> getter)
+    {
+        try { o.Params[key] = getter(); }
+        catch (Exception e) { o.ReadbackErrors.Add("参数 " + key + " 回读失败: " + e.Message); }
+    }
+
+    private static List<NCGroup> TopProgramGroups(NCGroup root)
+    {
+        var list = new List<NCGroup>();
+        foreach (CAMObject m in SafeMembers(root, null))
+        {
+            NCGroup sub = m as NCGroup;
+            if (sub == null || sub.Name == "NONE") continue;
+            string fam = NameOfTypeSafe(sub);
+            if (fam == "Generic PARAM object") list.Add(sub);   // 程序组大类；机床/方法等树同名大类不在此调用
+        }
+        return list;
+    }
+
+    // ---- 工具 ----
+
+    private static CAMObject[] SafeMembers(NCGroup g, Action<string> log)
+    {
+        try { return g.GetMembers(); }
+        catch (Exception e) { if (log != null) log("GetMembers 失败(" + g.Name + "): " + e.Message); return new CAMObject[0]; }
+    }
+
+
+    private static string NameOfTypeSafe(CAMObject o)
+    {
+        try { string t = o.GetNameOfType(); return string.IsNullOrEmpty(t) ? "(empty)" : t; }
+        catch { return "(unknown)"; }
+    }
+
+    private static string ParentName(NCGroup g) { return g == null ? "" : g.Name; }
+}

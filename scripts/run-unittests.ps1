@@ -5,7 +5,7 @@
 $ErrorActionPreference = 'Stop'
 $root = Split-Path -Parent $PSScriptRoot
 $src = @()
-foreach ($d in @('PlanExporter','PlanExecutor','PlanExporterTests','PlanExecutorTests')) {
+foreach ($d in @('PlanExporter','PlanExecutor','PlanComparer','PlanExporterTests','PlanExecutorTests','PlanComparerTests')) {
   Get-ChildItem (Join-Path $root ('src\NXPlugins\' + $d)) -Filter *.cs | ForEach-Object { $src += $_.FullName }
 }
 New-Item -ItemType Directory -Force -Path (Join-Path $root '.claude\tmp') | Out-Null

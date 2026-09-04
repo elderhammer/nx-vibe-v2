@@ -1,6 +1,6 @@
-﻿# compile-exporter-adapter.ps1 [-ExeName <name>] - csc merge pure-logic core + ExporterAdapter to exe
-# (NX File>Execute). 榛樿杈撳嚭 ExporterAdapter.exe锛涜 NX 浼氳瘽鍗犵敤鏃舵崲鍚嶈緭鍑恒€?# 鍙傛暟绀轰緥: powershell -NoProfile -File scripts\compile-exporter-adapter.ps1 -ExeName ExporterAdapter-v2.exe
-param([string]$ExeName = 'ExporterAdapter.exe')
+﻿# compile-comparer-adapter.ps1 [-ExeName <name>] - csc merge pure-logic core + ComparerAdapter to exe
+# (NX File>Execute). 榛樿杈撳嚭 ComparerAdapter.exe锛涜 NX 浼氳瘽鍗犵敤鏃舵崲鍚嶈緭鍑恒€?# 鍙傛暟绀轰緥: powershell -NoProfile -File scripts\compile-comparer-adapter.ps1 -ExeName ComparerAdapter-v2.exe
+param([string]$ExeName = 'ComparerAdapter.exe')
 $ErrorActionPreference = 'Stop'
 $root = Split-Path -Parent $PSScriptRoot
 $nx = 'C:\Program Files\Siemens\NX2406\NXBIN\managed'
@@ -9,12 +9,12 @@ $out = Join-Path $root ('.claude\tmp\' + $ExeName)
 $rsp = Join-Path $root '.claude\tmp\adapter-src.rsp'
 
 $src = @()
-foreach ($d in @('PlanExporter','PlanExecutor')) {
+foreach ($d in @('PlanExporter','PlanExecutor','PlanComparer')) {
   $dir = Join-Path $root ('src\NXPlugins\' + $d)
   foreach ($f in (Get-ChildItem $dir -Filter *.cs | Sort-Object Name)) { $src += $f.FullName }
 }
 $src += Join-Path $root 'src\NXPlugins\Journal\NxCollect.cs'
-$src += Join-Path $root 'src\NXPlugins\Journal\ExporterAdapter.cs'
+$src += Join-Path $root 'src\NXPlugins\Journal\ComparerAdapter.cs'
 
 $lines = New-Object 'System.Collections.Generic.List[string]'
 foreach ($s in $src) { [void]$lines.Add('"' + $s + '"') }

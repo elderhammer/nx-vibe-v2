@@ -60,6 +60,7 @@
     <Compile Include="Journal\*.cs" />
     <Compile Include="PlanExporter\*.cs" />
     <Compile Include="PlanExecutor\*.cs" />
+    <Compile Include="PlanComparer\*.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
