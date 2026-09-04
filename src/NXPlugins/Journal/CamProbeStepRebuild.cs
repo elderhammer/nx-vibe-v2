@@ -14,11 +14,12 @@
 //   ② translator 真实执行（samples/camprobe-steprebuild-*_1.log）：手写 AP214 方块被全量解析
 //      （115 实体含 8 vertex），失败点 = "Processing of step_manifold_solid_brep failed in new
 //      workflow" + "No parts in current input file" → 资产级文件结构问题（product/brep 链细节），
-//      非环境 stub → 有效 .step 资产来源 = GUI Execute 录制对照 或 v2 期文件迭代。
+//      非环境 stub（坏资产定案——第二波以官方有效资产同环境对照证实，见下）。
 //   ③ 导出侧（StepCreator）：FileSaveFlag=false + OutputFile(BaseCreator) 使 translator 进程
 //      可启（ST-DEVELOPER banner），但 ExportFrom{ExistingPart,DisplayPart}/ExportAs(Ap214)/
 //      ObjectTypes.Solids=true/SelectionScope{EntirePart}/SettingsFile 多组合 solids input=0
-//      （test.prt 磁盘含体铁证 = 214124.prt reopen 32 面）→ 导出选体语义未通，同归 GUI 复验。
+//      → 首因 = SettingsFile 方向错配（step214ug.def 为导入向；导出须 ugstep214.def），
+//      第二波 CamProbeStepExport 修正后闭环（见下）。
 //   ④ StepCreator 基类 BaseCreator 提供 OutputFile/FileSaveFlag 语义（remarks: FileSaveFlag=
 //      false 为文件导出模式）；env STEP214UG_DIR 自带尾斜杠（拼接防双斜杠）。
 //
@@ -30,7 +31,8 @@
 // 判死（两段）：
 //   P1 导入（核心）：NewDisplay 空件 → Step214Importer 照样例 → Commit → 验 Body/Faces > 0
 //   P2 CAM 共存：目标件上 CreateCamSession + CreateCamSetup + 组 + CAVITY op（不依赖导入几何）
-//   结论：P1 = 批处理未产几何（资产级卡点，见 ②）；P2 = α（CAM 全套可建，CAM 侧不受导入影响）
+//   结论（第二波终跑 012104）：P1 = 随资产而定——官方有效资产 α（1 body/31 面 = 实体计数）、
+//   手写 probe-box γ（brep 结构缺陷，见 ②）；P2 = α（CAM 全套可建，CAM 侧不受导入影响）
 //
 // 输出：samples\camprobe-steprebuild-<ts>.txt（args[0] 可覆盖）。
 

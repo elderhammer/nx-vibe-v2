@@ -1,9 +1,11 @@
 # samples — 测试资产（Plan 双向验证闭环）
 
-> 状态盘点（2026-09-03，按 docs/nx2406-install-index.md §1 检索）：
-> NX2406 安装目录**没有**现成的手编 ground truth（含 CAMSetup 工序的 .prt）与 STEP 样例；
-> 只有两类可用素材（见下）。决策③：**首件由用户提供（samples/test.prt，2026-09-03 已在
-> NX2406 会话确认可作基准，见下方盘点）**，其余自建件由 NX2406 会话手编后入库。
+> 状态盘点（2026-09-03 初检；2026-09-05 STEP 收口更新，按 docs/nx2406-install-index.md §1 检索）：
+> NX2406 安装目录**没有**现成的手编 ground truth（含 CAMSetup 工序的 .prt）与**带 CAM 的** STEP
+> 样例；纯几何官方 STEP 样件 1 件（sim_final2.stp，CAMSetupImport 样例库）于 2026-09-05 收口时
+> 命中并就地引用（不入库，见下方素材表与 09-05 小节）。可参考素材表见下。决策③：**首件由用户
+> 提供（samples/test.prt，2026-09-03 已在 NX2406 会话确认可作基准，见下方盘点）**，其余自建件
+> 由 NX2406 会话手编后入库。
 
 ## NX 安装目录可参考素材（**不提交 vendor 文件**，仅引用绝对路径）
 
@@ -11,6 +13,7 @@
 |---|---|---|
 | CAM 模板部件 | `C:\Program Files\Siemens\NX2406\mach\resource\template_part\metric\`（`mill_contour.prt` / `mill_planar.prt` / `drill.prt` / `MillTurn_Exp.prt` / `cam_metric_template.prt`…） | `Part.CreateCamSetup(templateName)` 初始化实验、重建侧"打开+建组"链路冒烟 |
 | 几何样件（无 CAM） | `C:\Program Files\Siemens\NX2406\UGOPEN\glass.prt` / `facetted_hood.prt` 等 | 纯几何读取/面属性遍历实验（FaceResolver 前置） |
+| 官方 STEP 几何样件（无 CAM） | `C:\Program Files\Siemens\NX2406\UGOPEN\SampleNXOpenApplications\DotNet\CAMSetupImport\sample\library\parts\sim_final2.stp`（NX 12.0 导出真 AP214，1 MSB/31 面） | STEP 导入链有效资产/翻译对照（2026-09-05 收口实证 α，就地引用） |
 | 官方 C# 参考实现 | `C:\Program Files\Siemens\NX2406\UGOPEN\SampleNXOpenApplications\DotNet\CAMSetupImport\` | PlanExecutor 建组/导库范式（代码级参考，不拷贝文件） |
 
 ## 需要自建的资产（本目录将来入库）

@@ -183,14 +183,16 @@ diagnostics[]   (info/warning/error)
 > 运行时前置验证项已分批实测收官（typeName 字面量、Stepover 链路、模板初始化、run_journal 无界面
 > 批处理等，2026-09-03/04；索引 §3 全部划勾，见 nxopen-research 附 B）。U-6 已负结案收口
 > （2026-09-04，camprobe-stepover 三跑 + docs/nx-stepover-probe-spec.md：公开 .NET 面无 stepover
-> 有效写入通道，重建侧维持拒收+diag）；残余仅 v2 项（STEP 路径/几何面级，U-5 负结案）。
+> 有效写入通道，重建侧维持拒收+diag）；残余仅 v2 项（STEP 路径/几何面级，U-5 负结案；STEP 路径
+> 运行时悬置已由 2026-09-05 第二波收口，见下）。
 >
 > 2026-09-05 更新：**STEP 导入公开 API 确认存在**（`DexManager.CreateStep203/214/242Importer`，
 > License None / NX6 起；C++ 头 Step214Importer.hxx + 官方样例
 > CAMSetupImport\GeometryImporter.cs 双背书）——早前"STEP 无导入 API"系检索假负结案（证伪三关
 > 协议入 .claude/skills/nx-api-verify §1.5）。§1 步骤②"打开原始 STEP 文件"**维持为 v2 目标路径**。
-> **2026-09-05 第二波（资产缺口收口，批处理实证闭环）**：早前"APP_NONE 下导入 0 几何"分解为
-> 两因并双双定案——① 手写 AP214 方块 = 资产级 brep 结构缺陷（官方有效资产
+> **2026-09-05 第二波（资产缺口收口，批处理实证闭环）**：早前"STEP 批处理通路 0 几何"（导入
+> 无体 / 导出 solids input=0）分解为两因并双双定案——① 手写 AP214 方块 = 资产级 brep 结构缺陷
+> （官方有效资产
 > `sim_final2.stp`（CAMSetupImport 样例库）同环境导入 **1 body/31 面 α**，
 > camprobe-steprebuild-012104）；② 导出 solids input=0 = **SettingsFile 方向错配**
 > （step214ug.def 为导入向，导出应用 ugstep214.def）+ 选体/取件纪律修正

@@ -6,7 +6,7 @@
 > 工程决策（2026-09-03，见 nx-plugin-design.md 头部"已确认决策"）：
 > 仅支持 NX2406；.NET Framework 4.8；代码全部在本目录（sln 在仓库根 `Autocam.Plugins.sln`）。
 
-## 当前状态（2026-09-04）：实证收官 + PlanExporter/Executor/Comparer 三步闭环 v1 完成
+## 当前状态（2026-09-05）：实证收官——v1 三步闭环 + v1.5-①③④ 参数面扩展 + STEP 资产收口（索引 §3 全划勾）
 
 - `NXPlugins.csproj`：类库工程，已引用 NXOpen / NXOpen.UF / NXOpen.Utilities
   （HintPath 指向 `$(NX_DIR)\NXBIN\managed\`，默认
@@ -14,26 +14,35 @@
   ✅ **生产代码已全部纳入 csproj**（Journal\*、PlanExporter\*、PlanExecutor\*；测试目录不入库，
   走 scripts/run-unittests.ps1 红线回归）——sln 构建 = 设计 §7 步骤 4 完成。
 - `Properties/AssemblyInfo.cs`：装配元数据（初始骨架，v0.1.0）。
-- `Journal/`：探针 ×15（步骤 0 实证收官 + 收官批 `CamProbeFinalize` + `CamProbeExecutor` + U-6 收口
-  `CamProbeStepover` 全通，结论回填 docs/nx2406-install-index.md §2.1/§3）；`ExporterAdapter.cs` /
-  `ExecutorAdapter.cs` = 导出/重建 [I] 层适配器（test.prt → test.plan.json → test.rebuilt-*.prt 闭环跑通）。
-- `PlanExporter/` + `PlanExecutor/` + `PlanComparer/`：纯逻辑核心（spec 各落档；[U] 红线 78/78 全绿
-  ——含 U-7 A′ 词集与 Comparer 全维比对：CompareCore 双快照 diff，见 docs/nx-plan-comparer-spec.md）；
-  `PlanExporterTests/`/`PlanExecutorTests/`/`PlanComparerTests/` 测试目录不入库编译。
+- `Journal/`：探针/工具 journal 18 个（步骤 0 实证收官 + 收官批 `CamProbeFinalize`/`CamProbeExecutor` +
+  U-6 收口 `CamProbeStepover` + 键集 `CamProbeParams(-2)` + STEP 链 `CamProbeStepRebuild`/
+  `CamProbeStepExport`（09-05 资产收口，见下）全通，结论回填 docs/nx2406-install-index.md §2.1/§3）；
+  `ExporterAdapter.cs` / `ExecutorAdapter.cs` = 导出/重建 [I] 层适配器（test.prt → test.plan.json →
+  test.rebuilt-*.prt 闭环跑通）。
+- **2026-09-05 STEP 资产收口（索引 §3 项 6 划勾）**：导入（官方 sim_final2.stp 就地引用 →
+  1 body/31 面 α）+ 导出（ugstep214.def 导出向修正 → samples/test.step，回导 1/26 = 源件一致）
+  批处理实证闭环，v2 前置齐备（证据：samples/camprobe-steprebuild-012104*、camprobe-stepexport-012205*）。
+- `PlanExporter/` + `PlanExecutor/` + `PlanComparer/`：纯逻辑核心（spec 各落档；[U] 红线 93/93 全绿
+  ——v1.5-③ 全量回归；含 U-7 A′ 词集与 Comparer 全维比对：CompareCore 双快照 diff，
+  见 docs/nx-plan-comparer-spec.md）；`PlanExporterTests/`/`PlanExecutorTests/`/`PlanComparerTests/`
+  测试目录不入库编译。
 - 合编脚本：`scripts/compile-executor-adapter.ps1`（重建 exe）与 `scripts/compile-exporter-adapter.ps1`
   （导出 exe，U-7 新增，镜像前者）→ .claude/tmp/*.exe 供 NX File → Execute。
 
 ## 规划目录（按 nx-plugin-design.md §7 步骤 0-4 进度）
 
 ```
-Journal/            ✅ 探针×14 + ExporterAdapter/ExecutorAdapter [I] 适配器
+Journal/            ✅ CamProbe×15 + 工具 journal×3 + ExporterAdapter/ExecutorAdapter [I] 适配器
 PlanExporter/       ✅ [U]+[I] 闭环（spec 落档）
 PlanExecutor/       ✅ [U] 33/33 + [I] 集成闭环（spec 落档；参考官方样例
                     %NX_DIR%\UGOPEN\SampleNXOpenApplications\DotNet\CAMSetupImport）
-PlanParser/         未开工（导入侧）
-FaceResolver/       未开工（U-5/U-5c 结案：面级锚点无生产源，待区域级增强）
-PlanComparer/       ✅ [U]+[I] 闭环（spec 落档 2026-09-04；终跑 comparer-run-144237：gt vs rebuilt
-                    issues=6 与校准清单逐条一致）——设计 §7 步骤 3 收官，三步闭环 v1 完成
+PlanParser/         ⛔ 不独立实现（复用 PlanExporter 的 PlanDocument/PlanJsonSerializer，
+                    executor spec §1/§6）
+FaceResolver/       🔧 v2 候选（U-5/U-5c 结案：面级锚点无生产源；区域级 CutRegionsData 增强候选，
+                    设计模块表同口径）
+PlanComparer/       ✅ [U]+[I] 闭环（spec 落档 2026-09-04；v1 终跑 comparer-run-144237 issues=6、
+                    v1.5-③ 终跑 comparer-run-200339 issues=5 均与校准清单逐条一致）——设计 §7 步骤 3
+                    收官，三步闭环 v1 + v1.5-①③④ 参数面扩展完成
 ```
 
 ## 实证收官注记（2026-09-04）
