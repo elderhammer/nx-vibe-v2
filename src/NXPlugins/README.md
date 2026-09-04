@@ -29,7 +29,8 @@ PlanExecutor/       ✅ [U] 33/33 + [I] 集成闭环（spec 落档；参考官�
                     %NX_DIR%\UGOPEN\SampleNXOpenApplications\DotNet\CAMSetupImport）
 PlanParser/         未开工（导入侧）
 FaceResolver/       未开工（U-5/U-5c 结案：面级锚点无生产源，待区域级增强）
-PlanComparer/       未开工（步骤 3；两端素材已齐：test.prt ↔ test.rebuilt-014933.prt）
+PlanComparer/       未开工（步骤 3；两端素材已齐：test.prt ↔ test.rebuilt-132130.prt，D-4 后最新重建件；
+                    014933 保留为历史重建基准）
 ```
 
 ## 实证收官注记（2026-09-04）

@@ -69,12 +69,12 @@ NXOpen.Features.Feature (抽象基类)
 | ------------- | ---------------------------------------------------------- | ---------------------- | ---- |
 | B-Rep 拓扑访问    | `Body.GetFaces()`, `Face.GetEdges()`, `Edge.GetVertices()` | 精确值，无三角化误差             | ✅    |
 | 面类型识别         | `UF_MODL_ask_face_data()` / `Face.SolidFaceType`           | 11 种标准面类型枚举            | ✅    |
-| 面面积           | `UF_MODL_ask_face_area()`                                  | 精确值                    | ✅    |
-| 边凸凹性          | `UF_MODL_ask_edge_convexity()`                             | CONVEX/CONCAVE/TANGENT | ✅    |
+| 面面积           | **无此 API**：`UF_MODL_ask_face_area` 零命中（UGOPEN 头文件全集）；`NXOpen.Face` / UFModl 亦无面积成员 | — | ⛔（U-5 负结案：面质心/面积无公开通道，见 nx-plan-exporter-spec.md §5 与索引 §2.5） |
+| 边凸凹性          | **无此 API**：`UF_MODL_ask_edge_convexity` 零命中（UGOPEN 头文件全集） | — | ⛔（无现成通道，需要时另探） |
 | 边长度           | `Edge.GetLength()`                                         | 精确值                    | ✅    |
 | Body BBox     | `UF_MODL_ask_bounding_box()`                               | 精确值                    | ✅    |
 | 体积/表面积        | `UF_MODL_ask_mass_props_3d()`                              | 精确值                    | ✅    |
-| 面法向           | `AskFaceNormals()`                                         | 精确向量                   | ✅    |
+| 面法向           | `UFModl.AskFaceData`（dir 输出；**无 `AskFaceNormals` 成员**） | 代表点处法向（探针实证） | ✅（2026-09-04 camprobe-geom） |
 | 面 UV 参数域      | `UF_MODL_ask_face_uv_minmax()`                             | 精确值                    | ✅    |
 | 设计特征 ↔ 面映射    | `Feature.GetEntities()`, `BodyFeature.GetFaces()`          | 直接关联                   | ✅    |
 | 特征参数读取        | `GetExpressions()`, 具体 Builder 的 Get 方法                    | 设计参数原值                 | ✅    |
@@ -96,7 +96,11 @@ foreach (Features.Feature feat in workPart.Features)
         Face[] faces = bodyFeat.GetFaces();
         foreach (Face face in faces)
         {
-            double area = theUfSession.Modl.AskFaceArea(face.Tag);
+            // 面级质心/面积无公开 API（U-5 负结案）；可经 UFModl.AskFaceData 读类型/代表点/法向
+            //（签名与探针 CamProbeGeom.cs 实测一致）：
+            double[] pt = new double[3], dir = new double[3], box = new double[6];
+            int ftype; double radius, radData; int normDir;
+            theUfSession.Modl.AskFaceData(face.Tag, out ftype, pt, dir, box, out radius, out radData, out normDir);
         }
     }
 }
@@ -541,7 +545,9 @@ CAPP Plan (JSON, autocam-plan.schema.json)
 > 大写串是**对象模板类型**（`OperationCollection.Create` 的 subtypeName，如 CAVITY_MILL/DRILLING）；
 > `nx_template.type` 应为**模板部件名**（如 mill_contour），两者**成对**使用、空 subtype 在 NX 侧非法——
 > 语义以 schema nx_template 注释与 nx2406-install-index.md §2.1 为准（下述示例 JSON 已按此修正）。
-> operation_type 分层枚举已按本建议落入 schema v3（33 词，见 schema operation 定义），本小节作为其出处保留。
+> D-4 跟进（2026-09-04，见 nx-plan-contract-cleanup-spec.md）：schema operation_type 已取消枚举断言、
+> 改自由串两档（schema 大 $comment 约定 5）——本小节 33 词建议表不再声称"已落入 schema"，保留为外部
+> CAPP/识别素材挂载时的参考词表（届时 additive 恢复枚举）。
 
 建议扩展为**分层枚举 + nx_template 字段**（原 schema `operation_type` 仅 `milling/drilling/other`，粒度不足以映射 NX）：
 
@@ -729,8 +735,12 @@ geometry_ref: {
 | `safe_plane` | `transferClearanceBuilder`（复用 4.3 的 clearance 结构） | 建议必填 |
 | `from_point` / `start_point` / `return_point` / `gohome_point` | `transferAvoidanceFromBuilder` 等 | 可选 |
 | `lower_limit` | `setLowerLimitMode` / `LowerLimitPlane` | 可选 |
-| `blank_ref` | `MillGeomBuilder.Blank` | 首道工序前建议给出 |
-| `machine_ref` | `MachineGroupBuilder`（机床型号+控制器） | 建议 |
+| `blank_ref` | ~~`MillGeomBuilder.Blank`~~ | **已随 D-4 从 schema 删除** |
+| `machine_ref` | ~~`MachineGroupBuilder`（机床型号+控制器）~~ | **已随 D-4 从 schema 删除** |
+
+> D-4 跟进（2026-09-04）：上两行字段族已从合同删除——blank_ref 引用的 `MillGeomBuilder.Blank`
+> 为不存在成员（真实成员 = `BlankGeometry`/`PartGeometry`/`CheckGeometry`，见索引 §2.5）；
+> machine 为库装载（prt 无导出内容）。删除依据见 nx-plan-contract-cleanup-spec.md §5（D-6）。
 
 ### 4.8 层级映射：workingsteps → Program 组树
 

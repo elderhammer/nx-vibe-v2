@@ -259,7 +259,7 @@
                                 "number", "maximum", "variable_average", "variable_maximum",
                                 "degression", "percent_remaining", "user_defined"
                             ],
-                            "$comment": "percent = 刀具直径百分比（NX 常量百分比链路：StepoverBuilder.StepoverType=PercentToolFlat + PercentToolFlatBuilder.Value，待实测，见 nx2406-install-index.md §3）"
+                            "$comment": "percent = 刀具直径百分比（NX 常量百分比链路：StepoverBuilder.StepoverType=PercentToolFlat + PercentToolFlatBuilder.Value）。链路实测负结案（2026-09-04，camprobe-finalize）：整链 commit 写入静默还原模板默认 → 重建侧步距直写不可行，有效通道未明（spec U-6）；见 nx2406-install-index.md §2.1/§2.3"
                         },
                         "value": { "type": "number" }
                     },
@@ -318,7 +318,7 @@
                 },
                 "tool_drive_point": {
                     "type": "string",
-                    "description": "刀具驱动点（NX2406 为 GetToolDrivePoint()/SetToolDrivePoint(string)，取值集合待实测 → 暂不枚举）"
+                    "description": "刀具驱动点。NX2406 实证（2026-09-04，camprobe-finalize）：GetToolDrivePoint() 默认 \"SYS_CL_TIP\"，SetToolDrivePoint(任意串) commit 后原样回读、无校验无 canonicalize → 取值集合程序化不可枚举，故不设枚举（见 nx2406-install-index.md §2.1 收官批增补）"
                 },
                 "cross_over_distance": { "type": "number", "minimum": 0, "description": "越程距离（NX: CrossOverDistance，InheritableToolDepBuilder）" },
                 "non_cutting": { "$ref": "#/definitions/non_cutting" }
@@ -381,7 +381,7 @@
                 "spindle_mode": {
                     "type": "string",
                     "enum": ["RPM", "SFM", "MMPM"],
-                    "$comment": "NX: FeedsBuilder.SpindleModeBuilder（返回 InheritableIntBuilder，数值编码映射待实测）"
+                    "$comment": "NX: FeedsBuilder.SpindleModeBuilder（InheritableIntBuilder）。NX2406 实证（2026-09-04）：自由 int 槽、无模式语义——写 0..6 原样持久、rpm/sfm 零联动，常态 RPM 场景 mode=0 → 导出侧只取 rpm、勿导 mode 数值（见 nx2406-install-index.md §2.1 收官批增补）"
                 },
                 "spindle_rpm": { "type": "number", "minimum": 0, "description": "主轴转速 rpm（NX: SpindleRpmBuilder.Value）" },
                 "surface_speed": { "type": "number", "minimum": 0, "description": "表面速度 m/min（与 rpm 二选一）" },

@@ -112,7 +112,7 @@ A12 `.tmp` 写入 + rename；diagnostics 汇总写回 → POST-2/POST-5/INV-6
 
 ## 6. 与设计文档差异提示
 
-- nx-plugin-design.md §2.1 导出行"按 NX Tag → 几何属性锚点（FaceResolver 反向）"受 U-5 限制：
-  首版不可完整实现（面级锚点无质心/面积生产源；U-5c 实测负结案，2026-09-04）→ 面级回补仅剩
-  区域级（CutRegionsData，腔铣）增强候选。该处后续随 Exporter 实现进展修订。
+- nx-plugin-design.md §2.1 曾表述"按 NX Tag → 几何属性锚点（FaceResolver 反向）"，受 U-5 限制：
+  面级锚点无质心/面积生产源（U-5c 实测负结案，2026-09-04）→ 面级回补仅剩区域级（CutRegionsData，
+  腔铣）增强候选。design §2.1 该行已随 U-5/D-4 修订为组级口径（2026-09-04）——本条为历史差异记录。
 - nxopen-research.md §4.6/§5 风险 1 同理：FaceResolver 0.01mm 质心匹配协议的"导出侧"源待 U-5 后续。
