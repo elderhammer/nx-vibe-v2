@@ -22,6 +22,11 @@
 //   ④ StepCreator 基类 BaseCreator 提供 OutputFile/FileSaveFlag 语义（remarks: FileSaveFlag=
 //      false 为文件导出模式）；env STEP214UG_DIR 自带尾斜杠（拼接防双斜杠）。
 //
+// 第二波（2026-09-05，资产缺口收口）：官方有效资产就地命中 = CAMSetupImport 样例库
+//   sample/library/parts/sim_final2.stp（NX 12.0 ST-DEVELOPER 导出的真 AP214：1 MSB / 31
+//   advanced_face / 平面+圆柱+圆锥 21+9+2，892 实体 33KB）。导入链改以官方资产为输入复验
+//   （手写 probe-box-214.step 保留为坏资产对照，OfficialAsset 缺路径时回退）。
+//
 // 判死（两段）：
 //   P1 导入（核心）：NewDisplay 空件 → Step214Importer 照样例 → Commit → 验 Body/Faces > 0
 //   P2 CAM 共存：目标件上 CreateCamSession + CreateCamSetup + 组 + CAVITY op（不依赖导入几何）
@@ -39,6 +44,7 @@ using Operation = NXOpen.CAM.Operation;
 public class CamProbeStepRebuild
 {
     private const string ProbeBox = @"C:\Users\21505\Code\nx-vibe-v2\samples\probe-box-214.step";
+    private const string OfficialAsset = @"C:\Program Files\Siemens\NX2406\UGOPEN\SampleNXOpenApplications\DotNet\CAMSetupImport\sample\library\parts\sim_final2.stp";
     private static string _out;
 
     public static void Main(string[] args)
@@ -46,7 +52,7 @@ public class CamProbeStepRebuild
         _out = Path.Combine(@"C:\Users\21505\Code\nx-vibe-v2\samples",
             "camprobe-steprebuild-" + DateTime.Now.ToString("yyyyMMdd-HHmmss") + ".txt");
         if (args.Length > 0 && !string.IsNullOrEmpty(args[0])) _out = args[0];
-        Log("== CamProbeStepRebuild（STEP 导入重建链，手写资产路线）==");
+        Log("== CamProbeStepRebuild（STEP 导入重建链，官方资产路线）==");
         Log("time: " + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
         Session s = null;
         Part work = null;
@@ -54,7 +60,11 @@ public class CamProbeStepRebuild
         {
             s = Session.GetSession();
             Log("Session: ApplicationName=" + s.ApplicationName);
-            Log("资产: " + ProbeBox + " (" + new FileInfo(ProbeBox).Length + " B)");
+            string asset = File.Exists(OfficialAsset) ? OfficialAsset : ProbeBox;
+            Log("资产: " + asset + " (" + new FileInfo(asset).Length + " B)"
+                + (asset == OfficialAsset ? " [官方样例库 sim_final2.stp，手写 probe-box 转坏资产对照]"
+                                           : " [官方资产缺失 → 回退手写 probe-box]"));
+            if (asset == OfficialAsset) Log("坏资产对照: " + ProbeBox + " (" + new FileInfo(ProbeBox).Length + " B)");
 
             Step("P1 导入判死（Step214Importer → 空件）", () =>
             {
@@ -72,7 +82,7 @@ public class CamProbeStepRebuild
                 try
                 {
                     R("设置 ObjectTypes.Solids", () => { imp.ObjectTypes.Solids = true; return "ok"; });
-                    R("设置 InputFile", () => { imp.InputFile = ProbeBox; return "ok"; });
+                    R("设置 InputFile", () => { imp.InputFile = asset; return "ok"; });
                     R("设置 OutputFile", () => { imp.OutputFile = work.FullPath; return "ok"; });
                     string stepDir = s.GetEnvironmentVariableValue("STEP214UG_DIR");
                     if (!string.IsNullOrEmpty(stepDir))
@@ -103,7 +113,7 @@ public class CamProbeStepRebuild
                     try
                     {
                         impB.ObjectTypes.Solids = true;
-                        impB.InputFile = ProbeBox;
+                        impB.InputFile = asset;
                         impB.OutputFile = work.FullPath;
                         impB.FileOpenFlag = false;
                         R("Commit(FileOpenFlag=false, 无 def)", () => { impB.Commit(); return "ok"; });
@@ -151,7 +161,7 @@ public class CamProbeStepRebuild
 
             if (work != null)
             {
-                Step("P2 CAM 共存（目标件上建 CAMSetup + 组 + op；当前导入 0 几何=空 CAM 件）", () =>
+                Step("P2 CAM 共存（目标件上建 CAMSetup + 组 + op；官方资产件已含导入几何）", () =>
                 {
                     if (!s.IsCamSessionInitialized()) s.CreateCamSession();
                     CAMSetup cam = work.CreateCamSetup("mill_contour");

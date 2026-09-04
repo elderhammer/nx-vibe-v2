@@ -6,7 +6,10 @@
 > 两份设计文档已按本文记录核对修正（2026-09-03；2026-09-04 收官批探针回填 §2.1/§2.3/§2.5/§3，
 > 源：samples/camprobe-finalize-20260904-010401.txt、samples/smoke-open-20260904-005304.txt；
 > 2026-09-05 STEP 导入通道确认回填 §2.1/§3 项 6——"STEP 无导入 API"假负结案修正，
-> 源：camprobe-steprebuild 系列 + probe-box-214.step + CamProbeStepRebuild.cs）。
+> 源：camprobe-steprebuild 系列 + probe-box-214.step + CamProbeStepRebuild.cs；
+> 2026-09-05 第二波收口（资产缺口 + 导出侧定案）回填同节——源：
+> camprobe-steprebuild-20260905-012104 + camprobe-stepexport-20260905-012205（含 _export.log）
+> + 资产 samples/test.step + 探针 CamProbeStepExport.cs）。
 >
 > 核对方法三路交叉：① `NXBIN\managed\NXOpen.xml`（.NET XML 文档注释）成员清单；
 > ② PowerShell 反射 `NXOpen.dll` 真实签名；③ `UGOPEN\NXOpen\*.hxx`（C++ 头文件）声明。
@@ -72,14 +75,36 @@
   "Part Import Error" = 输入被真实处理，非 stub）。translator 独立日志（samples/*_1.log）证实
   **翻译真实执行并全量解析输入**（手写 AP214 方块 115 实体含 8 顶点），失败点 =
   "Processing of step_manifold_solid_brep failed in new workflow" + "No parts in current input
-  file" → **资产级（文件结构细节）而非环境级**；有效 .step 资产的可靠来源 = GUI Execute 录制
-  对照或 v2 实施期文件迭代（§3 待验证项 6）。导出侧：translator 进程可启（ST-DEVELOPER banner
-  + *_1.log）但 solids input=0（ExportFrom/ExportAs/ObjectTypes.Solids/SelectionScope.EntirePart/
-  SettingsFile 多组合一致）→ 导出选体语义同归 GUI 复验。
+  file" → **资产级（文件结构细节）而非环境级**（手写资产缺陷细节 → 第二波以官方有效资产
+  定案，下方）。导出侧：translator 进程可启（ST-DEVELOPER banner + *_1.log）但 solids input=0
+  （ExportFrom/ExportAs/ObjectTypes.Solids/SelectionScope.EntirePart/SettingsFile 多组合一致）
+  → **首因 = SettingsFile 方向错配**（第二波修正后闭环，下方）。
 - **导出侧记录**：`DexManager.CreateStepCreator`（: BaseCreator，基类提供 OutputFile；
   FileSaveFlag=false=文件导出模式 per remarks）；批处理导出 translator 进程可启（ST-DEVELOPER
   banner）但 solids input=0（ExportFrom=ExistingPart/DisplayPart、ObjectTypes.Solids、
-  SelectionScope=EntirePart、SettingsFile 四组合均 0）→ 导出选体语义批处理未通，同归 GUI 补跑。
+  SelectionScope=EntirePart、SettingsFile 四组合均 0）——**首因 = SettingsFile 用错方向 def**
+  （step214ug.def = "STEP to UG" 导入向；导出向 = 同目录 `ugstep214.def` "UG to STEP"），
+  第二波修正后闭环（下方）。
+- **2026-09-05 第二波收口（资产缺口 + 导出侧定案；源：camprobe-steprebuild-012104 与
+  camprobe-stepexport-012205 终跑档 + 探针源，自建资产 samples/test.step）**：
+  - **有效资产就地命中（不入库，探针内硬编码路径）**：CAMSetupImport 样例库
+    `UGOPEN\SampleNXOpenApplications\DotNet\CAMSetupImport\sample\library\parts\sim_final2.stp`
+    （NX 12.0 ST-DEVELOPER 导出真 AP214：34KB/892 实体/1 MSB/31 advanced_face，平面 21+圆柱 9+
+    圆锥 2）→ 导入链（APP_NONE + step214ug.def + FileOpenFlag=false，与手写资产完全同环境）
+    **α 实证**：Bodies=1、solidFaces=31（= 实体计数）→ 手写 probe-box 失败 = brep 结构细节
+    过不了 "new workflow"，资产级定案闭环（GUI 复验不再必要）。
+  - **导出修复三要素 → 闭环 α**：① SettingsFile 换 **ugstep214.def**（导出向）；② 选体 =
+    `ObjectTypes`（: ObjectTypeSelector，Solids 等类型掩码）+ `ExportSelectionBlock.SelectionScope`
+    （: ObjectSelector，EntirePart|SelectedObjects|EntireAssembly，反射实证）；③ 取件纪律 =
+    OpenDisplay + **uf.Part.SetDisplayPart** + SetWork（PartCollection.SetDisplay 为 4 参签名非
+    1 参——首版编译失败点，XML 实证）。其余：ExportAs=Ap214 / ExportFrom=DisplayPart /
+    FileSaveFlag=false / ExportDestination=NativeFileSystem / OutputFile 全路径含 .step
+    （OutputFileExtension 留空即可，二者交互无须拆分变体）→ samples/test.step（33322B，
+    ST-DEVELOPER AP214）产出；**回导闭环** Step214Importer 导入产物 → Bodies=1/solidFaces=26 =
+    源件 test.prt 1/26 一致（保真）；translator 档 solids input=1 processed=1。
+    StepCreator/BaseCreator 的 Commit 为接口方法（NXOpen.xml 无 M: 条目），journal 直调实证
+    可编译可跑。
+  - **§3 待验证项 6 由此划勾（详见 §3 项 6）**。
 
 **2026-09-04 收官批增补（源：samples/camprobe-finalize-20260904-010401.txt）**：
 
@@ -251,11 +276,13 @@ camprobe-stepover 三跑，见 docs/nx-stepover-probe-spec.md；StepoverLimit �
 3. ~~`StepoverBuilder` 常量百分比链路 / `ToolDrivePoint` string 取值集合 / `SpindleModeBuilder` 数值编码~~ ★ 已实证（2026-09-04，camprobe-finalize-010401，结论入 §2.1）：Stepover 整链 commit 写入无效（静默还原模板默认）；ToolDrivePoint 默认 "SYS_CL_TIP"、setter 无校验；SpindleMode=int 自由槽无模式语义。~~残余：Stepover **有效写入通道**（UI 能改而 .NET 直写无效的内部机制）未明 → spec U-6。~~ ★ 负结案（2026-09-04，camprobe-stepover 三跑 + docs/nx-stepover-probe-spec.md）：8 通道形态全负、commit 后必还原模板默认（含直属 StepoverLimit）→ 公开 .NET 面无有效写入通道，入 §2.5 不存在项清单；机制残留注记见 spec §6。
 4. ~~`CreateCamSetup("mill_contour")` 空 Part 初始化流程~~ ★ 已实证（§2.1）；~~`run_journal.exe -nogui` 批处理参数~~ ★ 已实证（2026-09-04，smoke-open-005304）：帮助用法**无 `-nogui` 旗标**，`run_journal.exe <journal.cs> [-args …]` 本身即无界面批处理；批处理 CAM 会话按 §2.1 纪律显式初始化。
 5. ~~`CAMSetup.View.MachineMethod` 与 UI"加工方法视图"标签的对应关系~~ ★ 已实证（2026-09-03 test.prt dump：四根组与 UI 四导航标签一一对应，见 §2.1）。
-6. STEP 翻译端到端（2026-09-05 悬置，camprobe-steprebuild）：API 层与 translator 执行已实证
-   （_1.log 全量解析 115 实体）；未过项 = 有效资产（手写 AP214 方块报 step_manifold_solid_brep
-   "failed in new workflow" + "No parts"，资产级）与导出选体（solids input=0）→ 待 **GUI Execute
-   会话补跑**：录制一次真实导入/导出拿对照资产与 journal 语义。API 存在性本身已三路 + 官方样例
-   确认（§2.1 增补）。
+6. ~~STEP 翻译端到端~~ ★ 已实证收口（2026-09-05 第二波，camprobe-steprebuild-012104 /
+   camprobe-stepexport-012205 + samples/test.step，源探针 CamProbeStepRebuild.cs /
+   CamProbeStepExport.cs）：导入（官方资产 sim_final2.stp α：1 body/31 面 = 实体计数）与
+   导出（ugstep214.def 导出向 + 选体/取件纪律修正 → test.step，回导 1/26 = 源件一致）双双
+   闭环。早前悬置项逐条归位：手写 AP214 brep 结构缺陷 = 资产级（非环境）；导出 solids
+   input=0 = SettingsFile 方向错配（step214ug.def 为导入向）。GUI Execute 补跑不再必要；
+   细节见 §2.1 增补。
 
 ---
 

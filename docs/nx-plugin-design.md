@@ -5,8 +5,10 @@
 > 与 PlanComparer spec、samples/），模块表状态列已同步；**初始版本三步闭环 v1 完成**
 > （导出 test.plan.json → 重建 test.rebuilt.prt → 对比偏差报告 comparer-run-144237）。
 > 2026-09-05 更新：**STEP 导入公开 API 确认**（早前"STEP 无导入 API"定案系检索假负结案，证伪
-> 三关协议入 nx-api-verify SKILL §1.5）→ §1 步骤②"打开原始 STEP 文件"维持 v2 目标路径；
-> 运行时落地批处理未通待 GUI 复验（详情见 §7 尾注 + 索引 §2.1/§3 项 6）。
+> 三关协议入 nx-api-verify SKILL §1.5）→ §1 步骤②"打开原始 STEP 文件"维持 v2 目标路径。
+> 2026-09-05 第二波：**运行时落地批处理实证闭环**——导入（官方有效资产 sim_final2.stp → 1 body/
+> 31 面）与导出（ugstep214.def 导出向修正 → samples/test.step，回导 1/26 保真）双双 α，v2
+> 前置实证齐备（详情见 §7 尾注 + 索引 §2.1/§3 项 6）。
 > 几何面级通道受 U-5 负结案限制（2026-09-04），见 FaceResolver 行注。
 > 定位转变：**初始版本不再直接消费云端 CAPP 计划**，而是以**工程师手编的 NX 工程
 > 为 ground truth**，跑通「导出 plan.json → 按 plan 自动重建工程 → 对比偏差」三步闭环。
@@ -186,6 +188,13 @@ diagnostics[]   (info/warning/error)
 > 2026-09-05 更新：**STEP 导入公开 API 确认存在**（`DexManager.CreateStep203/214/242Importer`，
 > License None / NX6 起；C++ 头 Step214Importer.hxx + 官方样例
 > CAMSetupImport\GeometryImporter.cs 双背书）——早前"STEP 无导入 API"系检索假负结案（证伪三关
-> 协议入 .claude/skills/nx-api-verify §1.5）。§1 步骤②"打开原始 STEP 文件"**维持为 v2 目标路径**；
-> 其运行时落地在 APP_NONE 批处理下未通（导入链 API 正常但 0 几何，camprobe-steprebuild 2026-09-05，
-> 索引 §2.1/§3 项 6）→ 待 GUI Execute 复验后实施。
+> 协议入 .claude/skills/nx-api-verify §1.5）。§1 步骤②"打开原始 STEP 文件"**维持为 v2 目标路径**。
+> **2026-09-05 第二波（资产缺口收口，批处理实证闭环）**：早前"APP_NONE 下导入 0 几何"分解为
+> 两因并双双定案——① 手写 AP214 方块 = 资产级 brep 结构缺陷（官方有效资产
+> `sim_final2.stp`（CAMSetupImport 样例库）同环境导入 **1 body/31 面 α**，
+> camprobe-steprebuild-012104）；② 导出 solids input=0 = **SettingsFile 方向错配**
+> （step214ug.def 为导入向，导出应用 ugstep214.def）+ 选体/取件纪律修正
+> （ObjectTypes/ObjectSelector.EntirePart + uf.SetDisplayPart）→ test.step 产出并**回导闭环**
+> 1/26 = 源件一致（camprobe-stepexport-012205）。**GUI Execute 复验不再必要**，v2 实施
+> 前置（打开 STEP 拿几何）已齐备；证据/资产 = samples/camprobe-steprebuild-012104*、
+> camprobe-stepexport-012205*、samples/test.step，细节入索引 §2.1/§3 项 6。

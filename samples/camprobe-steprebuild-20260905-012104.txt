@@ -1,0 +1,25 @@
+== CamProbeStepRebuild（STEP 导入重建链，官方资产路线）==
+time: 2026-09-05 01:21:04
+Session: ApplicationName=APP_NONE
+资产: C:\Program Files\Siemens\NX2406\UGOPEN\SampleNXOpenApplications\DotNet\CAMSetupImport\sample\library\parts\sim_final2.stp (33499 B) [官方样例库 sim_final2.stp，手写 probe-box 转坏资产对照]
+坏资产对照: C:\Users\21505\Code\nx-vibe-v2\samples\probe-box-214.step (5727 B)
+
+== 阶段: P1 导入判死（Step214Importer → 空件） ==
+  SaveAs 目标件 = C:\Users\21505\Code\nx-vibe-v2\samples\camprobe-steprebuild-20260905-012104.prt  FullPath=C:\Users\21505\Code\nx-vibe-v2\samples\camprobe-steprebuild-20260905-012104.prt
+  目标: camprobe-steprebuild-20260905-012104 初始 Bodies=0
+  设置 ObjectTypes.Solids = ok
+  设置 InputFile = ok
+  设置 OutputFile = ok
+  设置 SettingsFile = ok: C:\Program Files\Siemens\NX2406\step214ug\step214ug.def
+  设置 FileOpenFlag=false = ok
+  Commit(FileOpenFlag=false, 有 def) = ok
+  变体A 导入后(目标件): Bodies=1 solidFaces=31
+  变体C 坏路径判别 = 坏路径 Commit 抛异常(NXException): Part Import Error: Unable to import selected file to work part. → Commit 处理输入
+  全会话 solidFaces=31
+  P1 判定: 含体导入成功 → α
+
+== 阶段: P2 CAM 共存（目标件上建 CAMSetup + 组 + op；官方资产件已含导入几何） ==
+  CreateCamSetup OK
+  op=OP_CAV1; faces 保持 = 31
+  P2 判定: 目标件上 CAM 全套可建 → α（与导入几何解耦）
+== 结束 ==

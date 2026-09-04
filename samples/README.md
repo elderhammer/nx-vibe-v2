@@ -18,7 +18,7 @@
 | 文件 | 内容 | 用途 |
 |---|---|---|
 | `test.prt`（**已入库**） | ground truth 首件（用户提供，2026-09-03；已在 NX2406 会话打开确认：含实体与完整 CAMSetup，6 道工序，见下方盘点） | 步骤①导出、③对比的基准；步骤 0 dump journal 的验证对象 |
-| `test.step`（计划） | 同件 STEP 导出 | 步骤②"打开原始 STEP"重建路径（v2 范围） |
+| `test.step`（**已入库**，2026-09-05，33KB） | 同件 STEP 导出（CamProbeStepExport 批处理产物：test.prt → ugstep214.def 导出向 → ST-DEVELOPER AP214，含 1 MSB/26 面；回导闭环面数一致） | 步骤②"打开原始 STEP"重建路径（v2 范围）|
 | `test.rebuilt-014933.prt`（**已入库**，2026-09-04） | 按旧形状 plan 重建的 prj′（schema v3 时代，136K） | 历史重建基准（对比件参考） |
 | `test.rebuilt-132130.prt`（**已入库**，2026-09-04） | D-4 后按新形状 plan 重建的 prj′（PlanExecutor [I] 产物） | 重建闭环回归基准/对比件（Comparer 输入） |
 | `test.rebuilt.prt`（**已入库**，2026-09-04，141K） | U-7 词集 plan 重建的 prj′（ExecutorAdapter [I] 产物，13:55） | U-7 重建回归基准/对比件 |
@@ -77,6 +77,13 @@
 | `adapter-run-20260904-194935.txt` | **v1.5-③ S1 重导**（ExporterAdapter-v15）：test.plan.json 新形状——腔 op 6 新键（cut_pattern/cut_order/cut_direction NX 原文串 + finish/boundary×2 N）+ 六 op rpm 全到，schema 内存+落盘复验 PASS（I-1） |
 | `executor-run-20260904-195159.txt` | **v1.5-③ 复跑**（ok=17 fail=0）：4 持久键 + rpm 真实写入无异常（FollowPeriphery/Profile/DepthFirst/Climb 复刻），boundary 拒收 diag ×4 → test.rebuilt-195208.prt（I-2） |
 | `comparer-run-20260904-200339.txt` | **v1.5-③ 终跑**（B=-195208.prt 正确件；issues=5 全校准可解释）：腔对腔 cut_*/finish/boundary/rpm 由"键缺席"转全 PASS = 写入持久终判 + technology 维首亮；残余 = PTP 键错位 4 + tool#4 类型 1（I-3/I-4）。注：195504 首跑为错 B 件（旧主名）→ ComparerAdapter 参数语义改单参 B 覆盖（200022 实证） |
+
+### 2026-09-05 STEP 资产收口批处理档（索引 §3 项 6 实证，结论回填索引 §2.1/§3）
+
+| 文件 | 内容 |
+|---|---|
+| `camprobe-steprebuild-20260905-012104.txt`（+`_1.log`） | **导入 α 终证（官方资产）**：资产 = CAMSetupImport 样例库 `sample/library/parts/sim_final2.stp`（NX 12.0 ST-DEVELOPER 真导出 AP214，**就地引用不入库**，探针内硬编码路径）；APP_NONE + step214ug.def + FileOpenFlag=false → Bodies=1/solidFaces=31（= 文件实体计数），P1 α + P2 CAM 共存 α。坐实：手写 probe-box-214.step 失败 = 资产级 brep 结构缺陷（"new workflow" 拒绝），非环境/API |
+| `camprobe-stepexport-20260905-012205.txt`（+`_1.log` 回导 translator 档 + `_export.log` 导出 translator 档） | **导出 + 回导闭环 α**：test.prt → StepCreator（ExportAs=Ap214/ExportFrom=DisplayPart/ObjectTypes.Solids/SelectionScope=EntirePart/FileSaveFlag=false/OutputFile 全路径含 .step/NativeFileSystem + **ugstep214.def 导出向 def**）→ samples/test.step（33322B）；回导 Step214Importer → Bodies=1/solidFaces=26 = 源件 1/26 一致（导出保真）。导出侧早前 "solids input=0" 首因 = def 方向错配（step214ug.def = 导入向 STEP→UG，见索引 §2.1） |
 
 > 注意：西门子安装目录内文件（模板/样例/程序集）受许可约束，**只引用、不复制进 git**；
 > 自建件由本仓库维护。

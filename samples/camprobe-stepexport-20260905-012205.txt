@@ -1,0 +1,26 @@
+== CamProbeStepExport（STEP 导出 + 回导闭环，ugstep214.def 导出向）==
+time: 2026-09-05 01:22:05
+Session: ApplicationName=APP_NONE
+
+== 阶段: P0 打开源件 test.prt（取件纪律：OpenDisplay + UF SetDisplayPart + SetWork） ==
+  uf.SetDisplayPart = ok
+  源件: test bodies=1 solidFaces=26
+  P0 判定: 源件含体 → 前提成立
+
+== 阶段: P1 导出变体 1（OutputFile 全路径含 .step；ugstep214.def 导出向 def） ==
+  ExportAs = Ap214 = ok
+  ExportFrom = DisplayPart = ok
+  ObjectTypes.Solids = ok
+  SelectionScope = EntirePart = ok
+  FileSaveFlag = false = ok
+  ExportDestination = NativeFileSystem = ok
+  OutputFile = C:\Users\21505\Code\nx-vibe-v2\samples\test.step = ok
+  SettingsFile = C:\Program Files\Siemens\NX2406\step214ug\ugstep214.def = ok
+  Commit = ok
+  产物: C:\Users\21505\Code\nx-vibe-v2\samples\test.step (33322 B)
+
+== 阶段: P2 回导闭环（Step214Importer 导入导出产物 → 面数对照源件） ==
+  回导件: bodies=1 solidFaces=26（源件 1/26）
+  回导体/面数与源件一致 → 产物保真
+  P2 判定: 回导含体且面数一致 → 产物有效 → α（导出闭环通）
+== 结束 ==
