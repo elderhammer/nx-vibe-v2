@@ -1,0 +1,94 @@
+== CamProbeParams v1（v1.5-④ 键集注册表探针）==
+time: 2026-09-04 15:53:41
+Session: ApplicationName=APP_NONE  IsCamSessionInitialized=False
+
+== 阶段: S1 写侧环境（建件→CAM 会话→CreateCamSetup） ==
+  写侧环境 OK, camReady=True
+
+== 阶段: S2 读面扫描：test.prt 真实 op ==
+  -- 读面 腔: CAVITY_MILL
+    cut_pattern = FollowPeriphery
+    cut_order = DepthFirst
+    cut_direction = Climb
+    multi_depth_cut.toggle = False
+    finish_passes.count = 0
+    boundary_intol = 0
+    stepover.type = PercentToolFlat
+    stepover.percent_tool_flat.value = 65
+    stepover.percent_tool_flat.inheritance = False
+    part_stock.value = 0.1
+    part_stock.inheritance = False
+    floor_stock.value = 0
+    depth_per_cut.value = 0
+    rpm = 2400
+    feed_cut = 2000
+  -- 读面 腔: CAVITY_MILL_COPY
+    cut_pattern = Profile
+    cut_order = DepthFirst
+    cut_direction = Climb
+    multi_depth_cut.toggle = False
+    finish_passes.count = 0
+    boundary_intol = 0
+    stepover.type = PercentToolFlat
+    stepover.percent_tool_flat.value = 60
+    stepover.percent_tool_flat.inheritance = False
+    part_stock.value = 0
+    part_stock.inheritance = False
+    floor_stock.value = 0
+    depth_per_cut.value = 0
+    rpm = 3000
+    feed_cut = 1200
+  -- 读面 PTP: 打点_COPY_COPY_COPY
+    hole_depth.value = 0
+    hole_depth.inheritance = True
+    hole_depth_type = Point
+    hole_axis_type = Vector
+    retract_distance.value = 0
+      tool_drive_point / cycle_table: PTP 无 HoleDrillingBuilder 面（编译实证 cast 非法）——既有负证（U-1/PTP）
+    rpm = 3000
+    rpm.inheritance = False
+    feed_cut = 80
+  -- 读面 PTP: 钻头G83_COPY_3_COPY_COPY_COPY_1
+    hole_depth.value = 0
+    hole_depth.inheritance = True
+    hole_depth_type = Point
+    hole_axis_type = Vector
+    retract_distance.value = 0
+      tool_drive_point / cycle_table: PTP 无 HoleDrillingBuilder 面（编译实证 cast 非法）——既有负证（U-1/PTP）
+    rpm = 500
+    rpm.inheritance = False
+    feed_cut = 35
+
+== 阶段: S3 写面矩阵：形态代表键（commit→重开判据） ==
+  -- S3 PM_C1：cut_pattern=Zig（.Type 类嵌套枚举，宿主 builder 直接成员）
+  写前  = pattern=FollowPart order=LevelFirst dir=Climb finish=0 multi=False intol=0
+  写入 = CutPattern=Zig
+  重开 = pattern=Zig order=LevelFirst dir=Climb finish=0 multi=False intol=0
+    S3 判定：重开 == 写入值 → 该形态可持久（入注册表）；还原模板默认 → 不可写（U-6 同款）
+  -- S3 PM_C2：cut_order=DepthFirst（直枚举）
+  写前  = pattern=FollowPart order=LevelFirst dir=Climb finish=0 multi=False intol=0
+  写入 = CutOrder=DepthFirst
+  重开 = pattern=FollowPart order=DepthFirst dir=Climb finish=0 multi=False intol=0
+    S3 判定：重开 == 写入值 → 该形态可持久（入注册表）；还原模板默认 → 不可写（U-6 同款）
+  -- S3 PM_C3：cut_direction=Conventional（.Type）
+  写前  = pattern=FollowPart order=LevelFirst dir=Climb finish=0 multi=False intol=0
+  写入 = CutDirection=Conventional
+  重开 = pattern=FollowPart order=LevelFirst dir=Conventional finish=0 multi=False intol=0
+    S3 判定：重开 == 写入值 → 该形态可持久（入注册表）；还原模板默认 → 不可写（U-6 同款）
+  -- S3 PM_C4：finish_passes=2（int 直赋）
+  写前  = pattern=FollowPart order=LevelFirst dir=Climb finish=0 multi=False intol=0
+  写入 = FinishPasses=2
+  重开 = pattern=FollowPart order=LevelFirst dir=Climb finish=2 multi=False intol=0
+    S3 判定：重开 == 写入值 → 该形态可持久（入注册表）；还原模板默认 → 不可写（U-6 同款）
+  -- S3 PM_C5：multi_depth_cut.toggle=true（bool 直赋）
+  写前  = pattern=FollowPart order=LevelFirst dir=Climb finish=0 multi=False intol=0
+  写入 = MultiDepthCut.Toggle=True
+  重开 = pattern=FollowPart order=LevelFirst dir=Climb finish=0 multi=False intol=0
+    S3 判定：重开 == 写入值 → 该形态可持久（入注册表）；还原模板默认 → 不可写（U-6 同款）
+  -- S3 PM_C6：boundary_intol=0.02（直 double，复查 camprobe-op）
+  写前  = pattern=FollowPart order=LevelFirst dir=Climb finish=0 multi=False intol=0
+  写入 = BoundaryInTol=0.02
+  重开 = pattern=FollowPart order=LevelFirst dir=Climb finish=0 multi=False intol=0
+    S3 判定：重开 == 写入值 → 该形态可持久（入注册表）；还原模板默认 → 不可写（U-6 同款）
+== 汇总 ok=3 fail=0 ==
+== 结束 ==
