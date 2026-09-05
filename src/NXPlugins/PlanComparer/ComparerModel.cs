@@ -22,6 +22,8 @@ namespace NXPlugins.PlanComparer
                                         // TOOL_TYPE_DIFF / MCS_DIFF / FIXTURE_DIFF / SETUP_STRUCT /
                                         // TOOL_STRUCT / PROGRAM_ORDER_DIFF / ORDER_SHIFT / DUP_NAME /
                                         // READ_MISSING
+                                        // v2（2026-09-05，nx-v2-geom-spec）：TOOLPATH_DIFF / REGION_DIFF /
+                                        // SIG_FACE_DIFF（刀路时间长度/区域摘要/签名面集差）
         public string Detail = "";      // 人类可读，含双侧值与键（不静默）
         public double? AbsDiff = null;  // 数值差（有则填；MCS=欧氏距离）
     }
@@ -45,5 +47,10 @@ namespace NXPlugins.PlanComparer
         public int McsChecks = 0, McsPass = 0;     // 每 setup 一个 check
         public int FixtureChecks = 0, FixturePass = 0;
         public int TemplateChecks = 0, TemplatePass = 0;
+
+        // v2 维度计数（2026-09-05，V2-POST-4/5/6）
+        public int ToolpathChecks = 0, ToolpathPass = 0;   // 每配对 op time+length 各一 check
+        public int RegionChecks = 0, RegionPass = 0;       // 区数 + 面积和各一 check
+        public int SigChecks = 0, SigPass = 0;             // 签名面集 1:1 差集为零才 Pass
     }
 }

@@ -62,8 +62,56 @@ public class ExecutorAdapter
             Session s = Session.GetSession();
             Part part = s.Parts.NewDisplay("ExecutorOut" + DateTime.Now.ToString("HHmmss"),
                 Part.Units.Millimeters);
+
+            // v2（2026-09-05，nx-v2-geom-spec）：带几何重建判定 + 目标路径（导入须先有落盘文件）
+            bool v2Geom = false;
+            foreach (OpCommand c in rp.Operations)
+                if (c.HasCutAreaSignatures) { v2Geom = true; break; }
+            string v2Target = Path.Combine(Path.GetDirectoryName(prjPath),
+                "v2.rebuilt-" + DateTime.Now.ToString("yyyyMMdd-HHmmss") + ".prt");
+            if (v2Geom)
+            {
+                Step("v2 STEP 导入前置（SaveAs 空件 → Step214Importer → 验几何）", () =>
+                {
+                    R("SaveAs(空件目标)", () => { part.SaveAs(v2Target); return v2Target; });
+                    string stepAsset = "";
+                    try
+                    {
+                        string baseName = Path.GetFileNameWithoutExtension(plan.input_ref);
+                        stepAsset = Path.Combine(Path.GetDirectoryName(planPath), baseName + ".step");
+                        if (!File.Exists(stepAsset))
+                        {
+                            // 兜底：plan 同目录直接找 <plan名根>.step
+                            string alt = Path.Combine(Path.GetDirectoryName(planPath),
+                                Path.GetFileNameWithoutExtension(planPath) + ".step");
+                            if (File.Exists(alt)) stepAsset = alt;
+                        }
+                    }
+                    catch { }
+                    Log("  STEP 资产: " + stepAsset + " 存在=" + File.Exists(stepAsset));
+                    if (!File.Exists(stepAsset)) throw new Exception("STEP 资产缺失（input_ref 同名 .step 推断失败）→ v2 中止");
+                    Step214Importer imp = s.DexManager.CreateStep214Importer();
+                    try
+                    {
+                        imp.ObjectTypes.Solids = true;
+                        imp.InputFile = stepAsset;
+                        imp.OutputFile = part.FullPath;
+                        string def = Path.Combine(@"C:\Program Files\Siemens\NX2406\step214ug", "step214ug.def");
+                        if (File.Exists(def)) imp.SettingsFile = def;
+                        imp.FileOpenFlag = false;
+                        R("Commit", () => { imp.Commit(); return "ok"; });
+                    }
+                    finally { imp.Destroy(); }
+                    int faces = 0, bodies = 0;
+                    foreach (Body b in part.Bodies.ToArray())
+                        if (!b.IsBlanked && b.IsSolidBody) { bodies++; faces += b.GetFaces().Length; }
+                    Log("  导入后: bodies=" + bodies + " solidFaces=" + faces);
+                    if (bodies == 0) throw new Exception("STEP 导入无几何 → v2 中止");
+                });
+            }
+
             if (!s.IsCamSessionInitialized()) s.CreateCamSession();
-            Log("NewDisplay+CreateCamSession OK");
+            Log("CreateCamSession OK");
 
             bool hasMill = false;
             foreach (OpCommand c in rp.Operations)
@@ -87,6 +135,7 @@ public class ExecutorAdapter
             var progMap = new Dictionary<string, NCGroup>();
             var methodMap = new Dictionary<string, NCGroup>();
             var setupWpMap = new Dictionary<string, NCGroup>();
+            var createdOps = new List<KeyValuePair<OpCommand, Operation>>();   // v2：面指派/刀路用
 
             Step("程序组根准备（模板默认 PROGRAM 复用；子组在 Steps 交错步中按 plan DFS 创建）", () =>
             {
@@ -251,11 +300,84 @@ public class ExecutorAdapter
                         + "  prog=" + prog.Name + " method=" + method.Name + " tool=" + tool.Name + " geom=" + geom.Name);
                     foreach (ParamInstruction pi in c.Params)
                         WriteParam(cam, op, c.Pair, pi);
+                    createdOps.Add(new KeyValuePair<OpCommand, Operation>(c, op));
+                }
+            });
+
+            Step("v2 op 级面指派 + 刀路生成（签名匹配 → CutAreaGeometry 默认集 → GenerateToolPath）", () =>
+            {
+                if (!v2Geom) { Log("  （非 v2 plan，跳过）"); return; }
+                Body body = null;
+                foreach (Body b in part.Bodies.ToArray())
+                    if (!b.IsBlanked && b.IsSolidBody) { body = b; break; }
+                if (body == null) throw new Exception("无 solid body（导入失败？）");
+                List<NXPlugins.PlanExporter.FaceSignature> bodySigs = NxCollect.BodyFaceSignatures(body);
+                Face[] bodyFaces = body.GetFaces();
+                Log("  body 面数=" + bodyFaces.Length + " 签名数=" + bodySigs.Count);
+                foreach (KeyValuePair<OpCommand, Operation> kv in createdOps)
+                {
+                    OpCommand c = kv.Key;
+                    if (!c.HasCutAreaSignatures) continue;   // 非腔/无签名 op 不指派
+                    Operation op = kv.Value;
+                    NXPlugins.PlanExecutor.FaceMatchResult m =
+                        NXPlugins.PlanExecutor.ExecutorCore.MatchSignatures(c.Signatures, bodySigs);
+                    Log("  " + c.OpId + " 签名=" + c.Signatures.Count + " 匹配=" + (c.Signatures.Count - m.MissingCount)
+                        + " 未命中=" + m.MissingCount + " 歧义=" + m.AmbiguousCount);
+                    if (m.MissingCount > 0)
+                        Log("    !! GEOM_SIG_MISMATCH（" + m.MissingCount + " 面未命中，部分指派）——见 spec V2-POST-2 失败语义");
+                    if (c.Signatures.Count - m.MissingCount == 0)
+                    {
+                        Log("    !! 全未命中 → 该 op 不指派、不生成刀路");
+                        continue;
+                    }
+                    // 默认集 SetArray 指派（G1 实证：新建集不可落库）
+                    TaggedObject[] toAssign = new TaggedObject[c.Signatures.Count - m.MissingCount];
+                    int k = 0;
+                    for (int i = 0; i < m.BodyIndexByPlanFace.Length; i++)
+                        if (m.BodyIndexByPlanFace[i] >= 0) toAssign[k++] = bodyFaces[m.BodyIndexByPlanFace[i]];
+                    try
+                    {
+                        CavityMillingBuilder cb = cam.CAMOperationCollection.CreateCavityMillingBuilder(op);
+                        try
+                        {
+                            NXOpen.CAM.Geometry cag = cb.CutAreaGeometry;
+                            if (cag.GeometryList.Length > 0)
+                            {
+                                NXOpen.CAM.GeometrySet gs0 = cag.GeometryList.FindItem(0);
+                                gs0.Selection.SetArray(toAssign);
+                                cb.Commit();
+                                Log("  " + c.OpId + " 面指派 " + toAssign.Length + " → ok");
+                            }
+                            else Log("  !! " + c.OpId + " CutAreaGeometry 无默认集 → 未指派");
+                        }
+                        finally { cb.Destroy(); }
+                    }
+                    catch (Exception e) { Log("  " + c.OpId + " 面指派异常: " + e.Message); }
+                    // 刀路（G2：指派后生成；读回 time/length）
+                    try
+                    {
+                        cam.GenerateToolPath(new CAMObject[] { op });
+                        Log("  " + c.OpId + " toolpath time=" + op.GetToolpathTime()
+                            + " length=" + op.GetToolpathLength());
+                    }
+                    catch (Exception e) { Log("  " + c.OpId + " 刀路生成异常: " + e.Message); }
                 }
             });
 
             Step("落盘 prj′（主名被本会话占用 → 时间戳名兜底；不预删既有资产）", () =>
             {
+                if (v2Geom)
+                {
+                    // v2：文件在导入前置已 SaveAs（v2Target）→ 原地 Save 持久（SaveAs 同路径抛 File exists，033945 教训）
+                    R("Save(原地持久)", () =>
+                    {
+                        part.Save(NXOpen.BasePart.SaveComponents.False, NXOpen.BasePart.CloseAfterSave.False);
+                        return "ok";
+                    });
+                    Log("  v2 已落盘: " + v2Target);
+                    prjPath = v2Target;   // 后续 readback/日志用实际文件
+                    return;
+                }
                 try
                 {
                     part.SaveAs(prjPath);

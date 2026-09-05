@@ -137,6 +137,19 @@ namespace NXPlugins.PlanExporter
                 };
                 oj.nx_template.type = tType;
                 oj.nx_template.subtype = tSub;
+                // v2：op 级 cut-area 面签名（非空才落盘；空列表 → 不产字段 = v1 旧形状兼容，V2-POST-1）
+                if (o.CutAreaSignatures.Count > 0)
+                {
+                    oj.cut_area_signatures = new List<FaceSignatureJson>();
+                    foreach (FaceSignature s in o.CutAreaSignatures)
+                        oj.cut_area_signatures.Add(new FaceSignatureJson
+                        {
+                            face_type = s.FaceType,
+                            normal_axis = s.NormalAxis,
+                            rx = s.Rx, ry = s.Ry, rz = s.Rz,
+                            radius = s.Radius,
+                        });
+                }
                 doc.operations.Add(oj);
 
                 wsIdx++;

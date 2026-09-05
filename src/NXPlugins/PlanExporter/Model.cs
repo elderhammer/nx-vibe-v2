@@ -99,6 +99,33 @@ namespace NXPlugins.PlanExporter
         public string TemplateType = "";
         public string TemplateSubtype = "";
         public bool TemplateAmbiguous = false;
+        /// <summary>op 级 CutAreaGeometry 面签名（v2，F1 实证：AskFaceData 类型|法向轴|代表点 0.01mm|半径，
+        /// 跨件 13/13 唯一命中零歧义）。导出侧采集入 plan（可选字段）；空 = 无签名（v1 旧形状兼容）。</summary>
+        public readonly List<FaceSignature> CutAreaSignatures = new List<FaceSignature>();
+        /// <summary>刀路时间/长度（秒/mm；v2 采集，重建件生成后非空；gt 手编件已存档亦非空）。</summary>
+        public double? ToolpathTime = null;
+        public double? ToolpathLength = null;
+        /// <summary>CutRegionsData 区域级摘要（v2：区数/面积和；质心维留 v2.5——本批只到计数+面积）。</summary>
+        public int? RegionCount = null;
+        public double? RegionAreaSum = null;
+    }
+
+    /// <summary>面身份签名（v2，纯逻辑值对象，无 NX 依赖）。来源 = UFModl.AskFaceData（camprobe-geom 实证）；
+    /// 取整粒度 = 采集侧即定（0.01mm 代表点、0.001 半径、法向主轴+象限）——匹配与比对同粒度透传（V2-INV-2）。
+    /// 语义 = U-5 质心/面积禁令后的替代面身份（F1 实证 033810/034035，不翻案）。</summary>
+    public sealed class FaceSignature
+    {
+        public int FaceType;          // UF 面类型号（22=平面/16=圆柱 等，实证值）
+        public string NormalAxis;     // X+/X-/Y+/Y-/Z+/Z-（法向主轴象限）
+        public double Rx, Ry, Rz;     // 代表点（0.01mm 取整值——采集侧已取整，纯逻辑透传）
+        public double Radius;         // 曲面半径（0.001 取整；平面 = 0）
+
+        public string Key()
+        {
+            return FaceType + "|" + NormalAxis + "|"
+                + Math.Round(Rx / 0.01) + "," + Math.Round(Ry / 0.01) + "," + Math.Round(Rz / 0.01)
+                + "|r" + Math.Round(Radius, 3);
+        }
     }
 
     public sealed class ToolItem

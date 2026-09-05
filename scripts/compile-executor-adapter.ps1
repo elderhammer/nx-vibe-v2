@@ -15,6 +15,8 @@ foreach ($d in @('PlanExporter','PlanExecutor')) {
   foreach ($f in (Get-ChildItem $dir -Filter *.cs | Sort-Object Name)) { $src += $f.FullName }
 }
 $src += Join-Path $root 'src\NXPlugins\Journal\ExecutorAdapter.cs'
+# v2 (2026-09-05): signature collection shared NxCollect (BodyFaceSignatures) - add Journal file
+$src += Join-Path $root 'src\NXPlugins\Journal\NxCollect.cs'
 
 $lines = New-Object 'System.Collections.Generic.List[string]'
 foreach ($s in $src) { [void]$lines.Add('"' + $s + '"') }

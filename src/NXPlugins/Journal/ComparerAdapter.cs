@@ -170,6 +170,9 @@ public class ComparerAdapter
             r.Issues.Count, r.OpsMatched, r.OpsMatched + r.OpsMissing + r.OpsExtra,
             r.ParamPass, r.ParamChecks, r.ToolPass, r.ToolChecks, r.McsPass, r.McsChecks,
             r.FixturePass, r.FixtureChecks, r.TemplatePass, r.TemplateChecks));
+        // v2（2026-09-05，nx-v2-geom-spec V2-POST-4/5/6）：刀路/区域/签名面集计数
+        Log(string.Format("== v2 汇总: toolpath={0}/{1} region={2}/{3} sigfaceset={4}/{5} ==",
+            r.ToolpathPass, r.ToolpathChecks, r.RegionPass, r.RegionChecks, r.SigPass, r.SigChecks));
     }
 
     private static void Log(string s)

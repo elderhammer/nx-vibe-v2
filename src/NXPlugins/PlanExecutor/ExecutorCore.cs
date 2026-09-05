@@ -200,6 +200,9 @@ namespace NXPlugins.PlanExecutor
                 AppendParams(opCmd, o.strategy, false, r);
                 AppendParams(opCmd, o.technology, true, r);
 
+                // v2：cut_area_signatures 解析（V2-PRE-1/PRE-2/PRE-3）
+                AppendSignatures(opCmd, o, r);
+
                 r.Operations.Add(opCmd);
                 opByWsCmd[wsId] = opCmd;
             }
@@ -207,6 +210,80 @@ namespace NXPlugins.PlanExecutor
             // v1.5-① 保序：Steps = 树 DFS 交错（组 ↔ 工序），executor 依此创建（NX 成员序=创建序）
             BuildSteps(plan.workplan.root, "", true, programsByFull, opByWsCmd, r);
             return r;
+        }
+
+        // ---------- v2 签名解析与匹配（nx-v2-geom-spec V2-PRE-*/POST-2） ----------
+
+        /// <summary>V2-PRE-1/PRE-2：签名列表解析——形状/值域违规 → error 该 op 不指派（不静默）；
+        /// 空字段 = 无签名（V2-PRE-3：v1 旧形状兼容，腔铣 op 记 GEOM_SIG_ABSENT warning）。
+        /// V2-PRE-2 轴词集 = 自由串六值（采集侧恒产），schema 不断言枚举、此处运行时校验。</summary>
+        private static void AppendSignatures(OpCommand opCmd, OperationJson o, RebuildPlan r)
+        {
+            List<FaceSignatureJson> list = o.cut_area_signatures;
+            if (list == null || list.Count == 0)
+            {
+                if (o.nx_template.type == "mill_contour" && o.nx_template.subtype == "CAVITY_MILL")
+                    AddDiag(r, RebuildDiagLevel.Warning, "GEOM_SIG_ABSENT", o.operation_id,
+                        "腔铣 op 无 cut_area_signatures（v1 旧形状）→ 不指派面/不生成刀路，行为同 v1");
+                return;
+            }
+            foreach (FaceSignatureJson s in list)
+            {
+                bool bad = s == null || s.face_type < 0 || s.radius < 0
+                    || !IsAxisWord(s.normal_axis)
+                    || double.IsNaN(s.rx) || double.IsNaN(s.ry) || double.IsNaN(s.rz)
+                    || double.IsInfinity(s.rx) || double.IsInfinity(s.ry) || double.IsInfinity(s.rz);
+                if (bad)
+                {
+                    AddDiag(r, RebuildDiagLevel.Error, "GEOM_SIG_INVALID", o.operation_id,
+                        "cut_area_signatures 元素形状/值域违规（face_type/normal_axis/radius/rx..rz）→ 该 op 不指派面");
+                    return;   // 整 op 拒绝（值域纪律，不部分指派）
+                }
+            }
+            foreach (FaceSignatureJson s in list)
+                opCmd.Signatures.Add(new FaceSignature
+                {
+                    FaceType = s.face_type,
+                    NormalAxis = s.normal_axis,
+                    Rx = s.rx, Ry = s.ry, Rz = s.rz,
+                    Radius = s.radius,
+                });
+        }
+
+        private static bool IsAxisWord(string w)
+        {
+            return w == "X+" || w == "X-" || w == "Y+" || w == "Y-" || w == "Z+" || w == "Z-";
+        }
+
+        /// <summary>V2-POST-2 匹配器（纯逻辑）：plan 签名 → body 面签名 1:1 唯一匹配（F1 实证零歧义）。
+        /// 键 = FaceSignature.Key()（取整粒度同 Key() 语义，V2-INV-2 无二次取整）。</summary>
+        public static FaceMatchResult MatchSignatures(List<FaceSignature> planFaces, List<FaceSignature> bodyFaces)
+        {
+            var bodyByKey = new Dictionary<string, List<int>>();
+            for (int i = 0; i < bodyFaces.Count; i++)
+            {
+                string k = bodyFaces[i].Key();
+                List<int> idx;
+                if (!bodyByKey.TryGetValue(k, out idx)) { idx = new List<int>(); bodyByKey[k] = idx; }
+                idx.Add(i);
+            }
+            int[] result = new int[planFaces.Count];
+            int missing = 0, ambiguous = 0;
+            for (int i = 0; i < planFaces.Count; i++)
+            {
+                List<int> cand;
+                if (!bodyByKey.TryGetValue(planFaces[i].Key(), out cand) || cand.Count == 0)
+                {
+                    result[i] = -1;
+                    missing++;
+                }
+                else
+                {
+                    result[i] = cand[0];        // 取首面（歧义时适配器对多余候选记 diag）
+                    if (cand.Count > 1) ambiguous++;
+                }
+            }
+            return new FaceMatchResult(result, missing, ambiguous);
         }
 
         // ---------- 内部工具 ----------

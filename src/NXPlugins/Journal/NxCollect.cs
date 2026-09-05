@@ -259,8 +259,99 @@ public static class NxCollect
             }
             catch (Exception e) { o.ReadbackErrors.Add("ptp builder 打不开: " + e.Message); }
         }
+        CollectV2(op, cam, o);   // v2：刀路/区域/面签名（与 family 读回解耦，沿 POST-3 不静默）
         snap.Operations.Add(o);
         return o;
+    }
+
+    // ---- v2 采集（2026-09-05，nx-v2-geom-spec V2-POST-1/G2/G3）----
+    private static void CollectV2(Operation op, CAMSetup cam, OperationItem o)
+    {
+        try { o.ToolpathTime = op.GetToolpathTime(); } catch (Exception e) { o.ReadbackErrors.Add("刀路时间读回失败: " + e.Message); }
+        try { o.ToolpathLength = op.GetToolpathLength(); } catch (Exception e) { o.ReadbackErrors.Add("刀路长度读回失败: " + e.Message); }
+        if (o.TypeFamily != "Cavity Milling") return;   // 面/区域语义本批仅腔铣族（D-3）
+        // 区域级摘要（G3：Operation.CutRegionsData 活性实证）
+        try
+        {
+            CutRegionsData crd = op.CutRegionsData;
+            if (crd != null)
+            {
+                double[] areas = crd.GetAreas();
+                o.RegionCount = crd.NumberRegions;
+                if (areas != null)
+                {
+                    double sum = 0;
+                    foreach (double a in areas) sum += a;
+                    o.RegionAreaSum = sum;
+                }
+            }
+        }
+        catch (Exception e) { o.ReadbackErrors.Add("区域采集失败: " + e.Message); }
+        // op 级 CutAreaGeometry 面签名（F1：AskFaceData 类型|法向|代表点 0.01|半径 0.001 取整）
+        try
+        {
+            CavityMillingBuilder b = cam.CAMOperationCollection.CreateCavityMillingBuilder(op);
+            try
+            {
+                NXOpen.CAM.Geometry cag = b.CutAreaGeometry;
+                if (cag != null)
+                {
+                    for (int i = 0; i < cag.GeometryList.Length; i++)
+                    {
+                        NXOpen.CAM.GeometrySet gs = cag.GeometryList.FindItem(i);
+                        foreach (TaggedObject it in gs.GetItems())
+                        {
+                            Face fc = it as Face;
+                            if (fc == null) continue;
+                            FaceSignature s = FaceSigOf(fc);
+                            if (s != null) o.CutAreaSignatures.Add(s);
+                        }
+                    }
+                }
+            }
+            finally { b.Destroy(); }
+        }
+        catch (Exception e) { o.ReadbackErrors.Add("v2 面签名采集失败: " + e.Message); }
+    }
+
+    /// <summary>body 全面签名（v2 适配器重建侧用：候选面集 → 签名匹配；F1 实证面）。</summary>
+    public static List<FaceSignature> BodyFaceSignatures(Body body)
+    {
+        var list = new List<FaceSignature>();
+        foreach (Face fc in body.GetFaces())
+        {
+            FaceSignature s = FaceSigOf(fc);
+            if (s != null) list.Add(s);
+        }
+        return list;
+    }
+
+    /// <summary>UFModl.AskFaceData → FaceSignature（取整粒度 = 0.01mm 代表点 / 0.001 半径，camprobe-geom 实证面）。</summary>
+    private static FaceSignature FaceSigOf(Face fc)
+    {
+        try
+        {
+            UFSession uf = UFSession.GetUFSession();
+            double[] pt = new double[3], dir = new double[3], box = new double[6];
+            int ftype; double radius = 0, radData = 0; int normDir;
+            uf.Modl.AskFaceData(fc.Tag, out ftype, pt, dir, box, out radius, out radData, out normDir);
+            string nq = "";
+            double ax = Math.Abs(dir[0]), ay = Math.Abs(dir[1]), az = Math.Abs(dir[2]);
+            if (ax >= ay && ax >= az) nq = (dir[0] >= 0 ? "X+" : "X-");
+            else if (ay >= ax && ay >= az) nq = (dir[1] >= 0 ? "Y+" : "Y-");
+            else nq = (dir[2] >= 0 ? "Z+" : "Z-");
+            var s = new FaceSignature
+            {
+                FaceType = ftype,
+                NormalAxis = nq,
+                Rx = Math.Round(pt[0] / 0.01) * 0.01,
+                Ry = Math.Round(pt[1] / 0.01) * 0.01,
+                Rz = Math.Round(pt[2] / 0.01) * 0.01,
+                Radius = Math.Round(radius, 3),
+            };
+            return s;
+        }
+        catch { return null; }
     }
 
     private static void TryParam(object builder, OperationItem o, string key, Func<double> getter)

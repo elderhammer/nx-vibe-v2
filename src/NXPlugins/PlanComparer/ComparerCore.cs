@@ -157,6 +157,119 @@ namespace NXPlugins.PlanComparer
                 AddIssue(r, a.Name, "OP_PARAM_DIFF",
                     "参数 " + k + " 值形不一致: A=" + Fmt(pva) + " B=" + Fmt(pvb), 1.0);
             }
+
+            // v2 三维（nx-v2-geom-spec V2-POST-4/5/6）：刀路 time/length、区域摘要、签名面集差
+            CompareV2(r, a, b, opt);
+        }
+
+        // ---------- v2 维度（2026-09-05，nx-v2-geom-spec §3 V2-POST-4/5/6） ----------
+
+        private static void CompareV2(ComparerResult r, OperationItem a, OperationItem b, ComparerOptions opt)
+        {
+            // 刀路维（V2-POST-4）：双侧值双判据沿 v1（EpsLen/RelTol）；单侧缺 → FAIL 不静默
+            if (a.ToolpathTime.HasValue || b.ToolpathTime.HasValue)
+            {
+                r.ToolpathChecks++;
+                if (!a.ToolpathTime.HasValue || !b.ToolpathTime.HasValue)
+                    AddIssue(r, a.Name, "TOOLPATH_DIFF",
+                        "刀路时间单侧缺失: A=" + (a.ToolpathTime.HasValue ? Fmt(a.ToolpathTime.Value) : "(未生成)")
+                        + " B=" + (b.ToolpathTime.HasValue ? Fmt(b.ToolpathTime.Value) : "(未生成)"));
+                else if (NumPass(a.ToolpathTime.Value, b.ToolpathTime.Value, opt)) r.ToolpathPass++;
+                else AddIssue(r, a.Name, "TOOLPATH_DIFF",
+                    "刀路时间: A=" + Fmt(a.ToolpathTime.Value) + " B=" + Fmt(b.ToolpathTime.Value)
+                    + " 相对偏差=" + RelDiff(a.ToolpathTime.Value, b.ToolpathTime.Value).ToString("0.0%") + "（超容差）",
+                    Math.Abs(a.ToolpathTime.Value - b.ToolpathTime.Value));
+            }
+            if (a.ToolpathLength.HasValue || b.ToolpathLength.HasValue)
+            {
+                r.ToolpathChecks++;
+                if (!a.ToolpathLength.HasValue || !b.ToolpathLength.HasValue)
+                    AddIssue(r, a.Name, "TOOLPATH_DIFF",
+                        "刀路长度单侧缺失: A=" + (a.ToolpathLength.HasValue ? Fmt(a.ToolpathLength.Value) : "(未生成)")
+                        + " B=" + (b.ToolpathLength.HasValue ? Fmt(b.ToolpathLength.Value) : "(未生成)"));
+                else if (NumPass(a.ToolpathLength.Value, b.ToolpathLength.Value, opt)) r.ToolpathPass++;
+                else AddIssue(r, a.Name, "TOOLPATH_DIFF",
+                    "刀路长度: A=" + Fmt(a.ToolpathLength.Value) + " B=" + Fmt(b.ToolpathLength.Value)
+                    + " 相对偏差=" + RelDiff(a.ToolpathLength.Value, b.ToolpathLength.Value).ToString("0.0%") + "（超容差）",
+                    Math.Abs(a.ToolpathLength.Value - b.ToolpathLength.Value));
+            }
+
+            // 区域维（V2-POST-5）：区数（int 等）+ 面积和（双判据）；单侧缺 → FAIL
+            if (a.RegionCount.HasValue || b.RegionCount.HasValue)
+            {
+                r.RegionChecks++;
+                if (!a.RegionCount.HasValue || !b.RegionCount.HasValue)
+                    AddIssue(r, a.Name, "REGION_DIFF",
+                        "区域计数单侧缺失: A=" + (a.RegionCount.HasValue ? a.RegionCount.Value.ToString() : "(无)")
+                        + " B=" + (b.RegionCount.HasValue ? b.RegionCount.Value.ToString() : "(无)"));
+                else if (a.RegionCount.Value == b.RegionCount.Value) r.RegionPass++;
+                else AddIssue(r, a.Name, "REGION_DIFF",
+                    "区域数: A=" + a.RegionCount.Value + " B=" + b.RegionCount.Value,
+                    Math.Abs(a.RegionCount.Value - b.RegionCount.Value));
+            }
+            if (a.RegionAreaSum.HasValue || b.RegionAreaSum.HasValue)
+            {
+                r.RegionChecks++;
+                if (!a.RegionAreaSum.HasValue || !b.RegionAreaSum.HasValue)
+                    AddIssue(r, a.Name, "REGION_DIFF",
+                        "区域面积和单侧缺失: A=" + (a.RegionAreaSum.HasValue ? Fmt(a.RegionAreaSum.Value) : "(无)")
+                        + " B=" + (b.RegionAreaSum.HasValue ? Fmt(b.RegionAreaSum.Value) : "(无)"));
+                else if (NumPass(a.RegionAreaSum.Value, b.RegionAreaSum.Value, opt)) r.RegionPass++;
+                else AddIssue(r, a.Name, "REGION_DIFF",
+                    "区域面积和: A=" + Fmt(a.RegionAreaSum.Value) + " B=" + Fmt(b.RegionAreaSum.Value)
+                    + " 相对偏差=" + RelDiff(a.RegionAreaSum.Value, b.RegionAreaSum.Value).ToString("0.0%"),
+                    Math.Abs(a.RegionAreaSum.Value - b.RegionAreaSum.Value));
+            }
+
+            // 签名面集维（V2-POST-6）：双侧 cut-area 签名集差集（Key 多集）；双侧齐才比
+            if (a.CutAreaSignatures.Count > 0 || b.CutAreaSignatures.Count > 0)
+            {
+                r.SigChecks++;
+                Dictionary<string, int> aKeys = new Dictionary<string, int>();
+                foreach (NXPlugins.PlanExporter.FaceSignature s in a.CutAreaSignatures) IncKey(aKeys, s.Key());
+                Dictionary<string, int> bKeys = new Dictionary<string, int>();
+                foreach (NXPlugins.PlanExporter.FaceSignature s in b.CutAreaSignatures) IncKey(bKeys, s.Key());
+                int aOnly = 0, bOnly = 0;
+                foreach (KeyValuePair<string, int> kv in aKeys)
+                {
+                    int cb;
+                    if (!bKeys.TryGetValue(kv.Key, out cb)) aOnly += kv.Value;
+                    else if (cb < kv.Value) aOnly += kv.Value - cb;
+                }
+                foreach (KeyValuePair<string, int> kv in bKeys)
+                {
+                    int ca;
+                    if (!aKeys.TryGetValue(kv.Key, out ca)) bOnly += kv.Value;
+                    else if (ca < kv.Value) bOnly += kv.Value - ca;
+                }
+                if (aOnly == 0 && bOnly == 0) r.SigPass++;
+                else AddIssue(r, a.Name, "SIG_FACE_DIFF",
+                    "cut-area 签名面集差: A-only=" + aOnly + " B-only=" + bOnly
+                    + "（A=" + a.CutAreaSignatures.Count + " B=" + b.CutAreaSignatures.Count + "）");
+            }
+        }
+
+        private static void IncKey(Dictionary<string, int> d, string k)
+        {
+            int n;
+            if (d.TryGetValue(k, out n)) d[k] = n + 1;
+            else d[k] = 1;
+        }
+
+        /// <summary>沿 v1 双判据（EpsLen 或 RelTol），无 AbsDiff 包装版（time/length/面积数值）。</summary>
+        private static bool NumPass(double va, double vb, ComparerOptions opt)
+        {
+            double abs = Math.Abs(va - vb);
+            if (abs <= opt.EpsLen) return true;
+            double rel = RelDiff(va, vb);
+            return rel <= opt.RelTol;
+        }
+
+        private static double RelDiff(double va, double vb)
+        {
+            double m = Math.Max(Math.Abs(va), Math.Abs(vb));
+            if (m < 1e-9) return 0;
+            return Math.Abs(va - vb) / m;
         }
 
         private static void CompareToolPair(ComparerResult r, ToolItem a, ToolItem b, int idx, ComparerOptions opt)

@@ -230,9 +230,29 @@
                 "method_ref": { "type": "string", "description": "加工方法组名（如 MILL_ROUGH / DRILL_METHOD），缺省由 operation_type 推断" },
                 "strategy": { "$ref": "#/definitions/strategy" },
                 "technology": { "$ref": "#/definitions/technology" },
+                "cut_area_signatures": {
+                    "type": "array",
+                    "items": { "$ref": "#/definitions/face_signature" },
+                    "description": "op 级 CutAreaGeometry 面签名（v2 可选，additive；重建侧据签名在回导件上复刻相同加工面）——元素缺省空数组或字段缺席 = 无签名（v1 旧形状兼容）"
+                },
                 "notes": { "type": "string", "description": "备注（NX: OperationBuilder.Notes）" }
             },
             "$comment": "NX 落点：OperationCollection.Create(4 父组, type, subtype, UseDefaultName, name) + 对应 CreateXxxMillingBuilder/Drill…Builder（工厂在 OperationCollection，不在 CAMSetup）"
+        },
+
+        "face_signature": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["face_type", "normal_axis", "rx", "ry", "rz", "radius"],
+            "properties": {
+                "face_type": { "type": "integer", "minimum": 0, "description": "UFModl.AskFaceData 面类型号（实证：22=平面/16=圆柱 等；camprobe-geom）" },
+                "normal_axis": { "type": "string", "description": "法向主轴+象限：X+/X-/Y+/Y-/Z+/Z-（自由串六值，导出恒产重建恒匹配，不押词表外）" },
+                "rx": { "type": "number", "description": "代表点 x（0.01mm 取整值——采集侧已取整，匹配/比对同粒度）" },
+                "ry": { "type": "number" },
+                "rz": { "type": "number" },
+                "radius": { "type": "number", "minimum": 0, "description": "曲面半径 0.001 取整（平面 = 0）" }
+            },
+            "$comment": "v2（2026-09-05）面身份签名 = U-5 质心/面积禁令后的替代通道（F1 实证：gt 腔 op 13 面签名在 STEP 回导件 26 面中 13/13 唯一命中零歧义，camprobe-v2face A/B；取整粒度 0.01mm/0.001 对 translator round-trip 稳定）。NX 落点：op CutAreaGeometry 默认集 GeometrySet.Selection.SetArray（G1 实证）。规格：docs/nx-v2-geom-spec.md"
         },
 
         "strategy": {

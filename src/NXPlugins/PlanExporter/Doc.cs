@@ -78,6 +78,16 @@ namespace NXPlugins.PlanExporter
         // v1.5-③：参数值 = ParamValue 联合（数值 N / 枚举串 S），KV 数组 Value = {"N":..}|{"S":..} 包装（P0 实证）
         public Dictionary<string, ParamValue> strategy = new Dictionary<string, ParamValue>();
         public Dictionary<string, ParamValue> technology = new Dictionary<string, ParamValue>();
+        // v2：op 级 cut-area 面签名（可选，additive；导出侧采集、重建侧签名匹配指派。值取整见 FaceSignature）
+        public List<FaceSignatureJson> cut_area_signatures = null;   // null=不落盘（DCJS 对 null 字段落 null？→ 序列化前由 ExporterCore 置空表转 null？沿 fixture_offset 先例：null 落盘）
+    }
+
+    public sealed class FaceSignatureJson
+    {
+        public int face_type = 0;
+        public string normal_axis = "";
+        public double rx = 0, ry = 0, rz = 0;    // 0.01mm 取整值（采集侧已取整）
+        public double radius = 0;                 // 0.001 取整
     }
 
     public sealed class NxTemplateJson

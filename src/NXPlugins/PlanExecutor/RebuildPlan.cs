@@ -97,6 +97,9 @@ namespace NXPlugins.PlanExecutor
         public readonly string ToolId;          // → ToolCommand.ToolId
         public readonly string SetupId;         // → GeometryChainCommand.SetupId
         public readonly List<ParamInstruction> Params = new List<ParamInstruction>();
+        /// <summary>op 级 cut-area 面签名（v2；非空 → 适配器面指派 + 刀路生成；空 → v1 行为 + GEOM_SIG_ABSENT）。</summary>
+        public readonly List<FaceSignature> Signatures = new List<FaceSignature>();
+        public bool HasCutAreaSignatures { get { return Signatures.Count > 0; } }
         public OpCommand(string opId, string displayName, TemplatePair pair, string programFull,
             string methodAnchor, bool methodNeedsCreate, string toolId, string setupId)
         {
@@ -104,6 +107,17 @@ namespace NXPlugins.PlanExecutor
             ProgramFull = programFull; MethodAnchor = methodAnchor;
             MethodNeedsCreate = methodNeedsCreate; ToolId = toolId; SetupId = setupId;
         }
+    }
+
+    /// <summary>签名匹配结果（v2，V2-POST-2 判据 1:1 无歧义）：body 面下标数组（-1 = plan 面未命中）。</summary>
+    public sealed class FaceMatchResult
+    {
+        /// <summary>plan 面 → body 候选面下标（与 plan 签名列表同序；-1 = 未命中）。</summary>
+        public readonly int[] BodyIndexByPlanFace;
+        public readonly int MissingCount;      // 未命中
+        public readonly int AmbiguousCount;    // 命中但 body 侧同签名多面（歧义——F1 实测 0）
+        public FaceMatchResult(int[] idx, int missing, int ambiguous)
+        { BodyIndexByPlanFace = idx; MissingCount = missing; AmbiguousCount = ambiguous; }
     }
 
     /// <summary>Build 结果（MONO-1：Ok=false 时无任何指令，适配器不落盘）。</summary>
