@@ -8,7 +8,7 @@
 > 官方 4.8 Dev Pack 安装器在沙箱挂起、4.8.1 pack 已就位且运行时 4.8.1；语义兼容 4.8 代码）；
 > 代码全部在本目录（sln 在仓库根 `Autocam.Plugins.sln`）。
 
-## 当前状态（2026-09-05 晚）：实证收官——v1 三步闭环 + v1.5-①③④ 参数面扩展 + STEP 资产收口（索引 §3 全划勾）+ **v2 几何重建一体收官**（[nx-v2-geom-spec.md](../docs/nx-v2-geom-spec.md)：STEP 导入→签名面指派→带几何刀路→Comparer 三维 + 腔铣维 gate；[I] 实录 190859/191001/191434/192158/192456，comparer 192456 issues=21=预测、sigfaceset=4/4 验收关闭）
+## 当前状态（2026-09-05 晚）：实证收官——v1 三步闭环 + v1.5-①③④ 参数面扩展 + STEP 资产收口（索引 §3 全划勾）+ **v2 几何重建一体收官**（[nx-v2-geom-spec.md](../docs/nx-v2-geom-spec.md)：STEP 导入→签名面指派→带几何刀路→Comparer 三维 + 腔铣维 gate；[I] 实录 190859/191001/191434/192158/192456，comparer 192456 issues=21=预测、sigfaceset=4/4 验收关闭）+ **v1.5-⑤ feed_cut 写面贯通**（探针三跑持久 → 白名单/采集/写适配器，[U] 102/102；[I] 三连跑待 GUI Execute——见 nx-param-registry-spec.md §2 #15）
 
 - `NXPlugins.csproj`：类库工程，已引用 NXOpen / NXOpen.UF / NXOpen.Utilities
   （HintPath 指向 `$(NX_DIR)\NXBIN\managed\`，默认
@@ -16,20 +16,23 @@
   ✅ **生产代码已全部纳入 csproj**（Journal\*、PlanExporter\*、PlanExecutor\*；测试目录不入库，
   走 scripts/run-unittests.ps1 红线回归）——sln 构建 = 设计 §7 步骤 4 完成。
 - `Properties/AssemblyInfo.cs`：装配元数据（初始骨架，v0.1.0）。
-- `Journal/`：探针/工具 journal 22 个（19 × `CamProbe*` 含 U-6 `CamProbeStepover`、键集
+- `Journal/`：探针/工具 journal 31 个（28 × `CamProbe*`：U-6 `CamProbeStepover`、键集
   `CamProbeParams(-2)`、STEP 链 `CamProbeStepRebuild`/`CamProbeStepExport`、v2 面签名/几何
-  `CamProbeV2Geom`/`CamProbeV2Gt`/`CamProbeFaceSig`/`CamProbeV2OpDiag` + `CamWriteProbe`/
-  `SmokeOpen`/`DumpCamSetup`，全通，结论回填 docs/nx2406-install-index.md §2.1/§3）；
+  `CamProbeV2Geom`/`CamProbeV2Gt`/`CamProbeFaceSig`/`CamProbeV2OpDiag`、OP-003 判别链
+  `CamProbeV2{Regen,BpDiff,Surf,Fix,Flip,Sel,Body,ApiClone}`、写面探针 `CamProbeFeedCut`
+  （v1.5-⑤）+ `CamWriteProbe`/`SmokeOpen`/`DumpCamSetup`，全通，结论回填
+  docs/nx2406-install-index.md §2.1/§3）；
   `ExporterAdapter.cs` / `ExecutorAdapter.cs` / `ComparerAdapter.cs` = 导出/重建/对比 [I] 层适配器
   （test.prt → test.plan.json → test.rebuilt-*.prt / v2.rebuilt-*.prt 闭环跑通；ComparerAdapter
   v2 版含 B 防呆自动选最新 v2.rebuilt 与 CompareV2 维 gate 渲染，da3fd80/2530c6d）。
 - **2026-09-05 STEP 资产收口（索引 §3 项 6 划勾）**：导入（官方 sim_final2.stp 就地引用 →
   1 body/31 面 α）+ 导出（ugstep214.def 导出向修正 → samples/test.step，回导 1/26 = 源件一致）
   批处理实证闭环，v2 前置齐备（证据：samples/camprobe-steprebuild-012104*、camprobe-stepexport-012205*）。
-- `PlanExporter/` + `PlanExecutor/` + `PlanComparer/`：纯逻辑核心（spec 各落档；[U] 红线 100/100
-  全绿——93 回归 + v2 七条（V2GeomTests），含 U-7 A′ 词集、V15 union 值通道与 CompareCore 双快照
-  diff + CompareV2 三维/门控，见 docs/nx-plan-comparer-spec.md 与 docs/nx-v2-geom-spec.md）；
-  `PlanExporterTests/`/`PlanExecutorTests/`/`PlanComparerTests/` 测试目录不入库编译。
+- `PlanExporter/` + `PlanExecutor/` + `PlanComparer/`：纯逻辑核心（spec 各落档；[U] 红线 102/102
+  全绿——93 回归 + v2 七条（V2GeomTests）+ v1.5-⑤ feed_cut 两条，含 U-7 A′ 词集、V15 union
+  值通道与 CompareCore 双快照 diff + CompareV2 三维/门控，见 docs/nx-plan-comparer-spec.md 与
+  docs/nx-v2-geom-spec.md）；`PlanExporterTests/`/`PlanExecutorTests/`/`PlanComparerTests/`
+  测试目录不入库编译。
 - 合编脚本：`scripts/compile-executor-adapter.ps1`（重建 exe）与 `scripts/compile-exporter-adapter.ps1`
   （导出 exe，U-7 新增，镜像前者）→ .claude/tmp/*.exe 供 NX File → Execute。
 

@@ -511,6 +511,22 @@ namespace NXPlugins.PlanExporterTests
             Assert.True(hasRpm, "spindle_rpm → FeedsBuilder.SpindleRpmBuilder Number 指令");
         }
 
+        // v1.5-⑤：technology feed_cut（注册表 #15 写面三跑持久 2026-09-05，camprobe-feedcut）→ 数值指令。
+        public static void test_V15POST2_feed_cut_becomes_instruction()
+        {
+            PlanDocument p = SamplePlan();
+            p.operations[0].technology["feed_cut"] = 2000.0;
+            RebuildPlan r = ExecutorCore.Build(p);
+            Assert.True(r.Ok, "应 Ok");
+            OpCommand cav = null;
+            foreach (OpCommand c in r.Operations) if (c.OpId == "OP-001") cav = c;
+            bool hasFeed = false;
+            foreach (ParamInstruction pi in cav.Params)
+                if (pi.MemberPath == "FeedsBuilder.FeedCutBuilder" && pi.Kind == ParamKind.Number && pi.N == 2000.0)
+                    hasFeed = true;
+            Assert.True(hasFeed, "feed_cut → FeedsBuilder.FeedCutBuilder Number 指令");
+        }
+
         // V15-POST-2：枚举词 ∉ NxParamWords → PARAM_ENUM_UNKNOWN error diag，该键不入指令（不静默）。
         public static void test_V15POST2_enum_word_unknown_rejected()
         {

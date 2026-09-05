@@ -217,6 +217,7 @@ public static class NxCollect
                     TryParam(b, o, "boundary_intol", () => b.CutParameters.BoundaryInTol);
                     TryParam(b, o, "boundary_outtol", () => b.CutParameters.BoundaryOutTol);
                     TryParam(b, o, "tech:spindle_rpm", () => b.FeedsBuilder.SpindleRpmBuilder.Value);
+                    TryParam(b, o, "tech:feed_cut", () => b.FeedsBuilder.FeedCutBuilder.Value);   // v1.5-⑤（注册表 #15 读面既有；写面三跑持久实证）
                     TryParam(b, o, "part_stock", () => b.CutParameters.PartStock.Value);
                     TryParam(b, o, "floor_stock", () => b.CutParameters.FloorStock.Value);
                     TryParam(b, o, "depth_per_cut", () => b.DepthPerCut.Value);
@@ -236,6 +237,7 @@ public static class NxCollect
                 {
                     TryParam(b, o, "bottom_stock", () => b.CuttingParameters.BottomStock.Value);
                     TryParam(b, o, "tech:spindle_rpm", () => b.FeedsBuilder.SpindleRpmBuilder.Value);
+                    TryParam(b, o, "tech:feed_cut", () => b.FeedsBuilder.FeedCutBuilder.Value);   // v1.5-⑤
                 }
                 finally { b.Destroy(); }
             }
@@ -253,7 +255,8 @@ public static class NxCollect
                     TryParam(b, o, "hole_depth", () => b.HoleDepth.Value);
                     // v1.5-③ S1：rpm 读（探针实证打点 3000 / G83 500）→ plan 供给重建近似 DRILLING 写 rpm
                     TryParam(b, o, "tech:spindle_rpm", () => b.FeedsBuilder.SpindleRpmBuilder.Value);
-                    log("  PTP op " + o.Name + " 参数面细分待后续批（cycle/细分 U-1 负证；rpm 已扩读）");
+                    TryParam(b, o, "tech:feed_cut", () => b.FeedsBuilder.FeedCutBuilder.Value);   // v1.5-⑤（PTP feed 读实证 80/35，注册表 #15）
+                    log("  PTP op " + o.Name + " 参数面细分待后续批（cycle/细分 U-1 负证；rpm/feed 已扩读）");
                 }
                 finally { b.Destroy(); }
             }

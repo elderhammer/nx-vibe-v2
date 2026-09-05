@@ -1,0 +1,21 @@
+== CamProbeFeedCut（feed_cut 写面探针，注册表 #15）==
+time: 2026-09-05 20:09:05
+Session: ApplicationName=APP_NONE
+写侧环境 OK, camReady=True
+-- F2 锚点+: rpm=3000
+  写前: feed=250 rpm=1061 perTooth=0.1178 feedStatus=True rpmStatus=False
+  写入+commit OK
+  重开: feed=250 rpm=3000 perTooth=0.1178 feedStatus=True rpmStatus=False
+  判定 [F2 锚点+: rpm=3000] rpm=3000 → 持久 ✓ 
+-- F1 feed_cut=2000
+  写前: feed=250 rpm=1061 perTooth=0.1178 feedStatus=True rpmStatus=False
+  写入+commit OK
+  重开: feed=2000 rpm=1061 perTooth=0.1178 feedStatus=False rpmStatus=False
+  判定 [F1 feed_cut=2000] feed=2000 → 持久 ✓ 
+-- F1b 邻接: FeedPerTooth=0.3
+  写前: feed=250 rpm=1061 perTooth=0.1178 feedStatus=True rpmStatus=False
+  写入+commit OK
+  重开: feed=250 rpm=1061 perTooth=0.3 feedStatus=True rpmStatus=False
+  判定 [F1b 邻接: FeedPerTooth=0.3] perTooth=0.3 → 持久 ✓ 
+== 汇总 ok=0 fail=0 ==
+== 结束 ==

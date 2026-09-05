@@ -26,6 +26,7 @@ U-6 教训再次坐实并扩界：**形态同类 ≠ 可写**（int 直赋 finis
 枚举形态 cut_pattern/cut_order/step_method 中前二可写而 step_method 不可写）→ 注册表按键实证、
 不按形态推断。重建侧可写子集 = 4 持久键增量（ParamWhiteList），不可写键一律拒收 + diag（U-6 同款）。
 **未测写面的键（rpm/feed_cut 等）标注"未测"**，不得按形态推断后入白名单。
+（v1.5-⑤ 2026-09-05：feed_cut 三跑持久实证 → 入写面白名单；rpm 由 executor [I] 全链实证——见 §2 #15。）
 
 ## 1. 协议（外部边界）
 
@@ -58,7 +59,7 @@ U-6 教训再次坐实并扩界：**形态同类 ≠ 可写**（int 直赋 finis
 | 12 | strategy.depth_per_cut | `b.DepthPerCut`（宿主 builder 直接成员） | 腔 | Inheritable 叶子 | ✓ 0 | **持久 ✓**（Executor [I] 实证） |
 | 13 | strategy.hole_depth（导出现状事实键，schema 未收——executor spec §1 偏差记录同源） | `b.HoleDepth.Value`（PTP：PointToPointBuilder） | PTP | Inheritable 叶子 | ✓ 0（True=继承） | 未测写（PTP 重建 v1 不做细分——approximation 见 executor spec） |
 | 14 | （schema 现无键；hole_depth_type/hole_axis_type/retract_distance 为候选扩展，不押注） | `b.HoleDepthType` / `b.HoleAxisType` / `b.RetractDistance` | PTP | 直枚举 / 直枚举 / Inheritable | ✓ Point / Vector / 0 | 未测写 |
-| 15 | technology.spindle_rpm / feed_cut | `b.FeedsBuilder.SpindleRpmBuilder.Value` / `.FeedCutBuilder.Value` | 腔 + PTP | Inheritable 叶子 | ✓ 腔 2400/2000、3000/1200；PTP 3000/80、500/35（rpm status False=显式；打点 hole_depth True=继承） | 未测写（本批未探；重建侧 v1 不写转速——空件无刀路） |
+| 15 | technology.spindle_rpm / feed_cut | `b.FeedsBuilder.SpindleRpmBuilder.Value` / `.FeedCutBuilder.Value` | 腔 + PTP | Inheritable 叶子 | ✓ 腔 2400/2000、3000/1200；PTP 3000/80、500/35（rpm status False=显式；打点 hole_depth True=继承） | **v1.5-⑤ 补测（2026-09-05，camprobe-feedcut 三跑 200847/200905/200924 一致）：feed_cut=2000 → 重开 2000 持久 ✓**（F1；F1b FeedPerTooth 0.3 邻接亦持久；F2 rpm=3000 锚点持久 = 会话健康）→ feed_cut 入写面白名单 + 采集/写适配器贯通（[U] 102/102；[I] 待跑）；rpm 写持久已由 executor [I]（200339 全链）实证 |
 | 16 | strategy.cycle / tool_drive_point | PTP：无 HoleDrillingBuilder 面（cast 编译非法） | PTP | — | **✗ 不可读**（U-1 负证：builder 公开面/BuilderProperties JSON/用户属性三路零命中） | n/a |
 
 > 注 1（判定口径分层）：#1-4、9-12 的持久结论覆盖"commit→重开"判据；#2/#3 为 v1 首跑单跑、
@@ -79,7 +80,7 @@ U-6 教训再次坐实并扩界：**形态同类 ≠ 可写**（int 直赋 finis
 | R-2 | 写面判据统一：持久 = 重开（独立 builder）== 写入值；还原 = 重开回模板默认 | U-6 口径 | 探针日志判定行与 §2 表一致 | [实证] |
 | R-3 | 负键多跑齐备：每个还原键 ≥2 独立会话复现（本批三跑逐条一致） | U-6 三跑纪律 | 163751/163823/163850 三 txt 判定行相同 | [实证] |
 | R-4 | 形态归并禁区：不可写性不按形态推断、不合并行（#4 vs #5、#1/#2 vs #6） | U-6 教训（本批扩界） | §2 表按键分列 + 注 3 | [doc] |
-| R-5 | 下游红线：v1.5-③ 重建白名单只含持久键（#1-4 增量 + 既有 #10-12）；#5-9 拒收 + diag 不静默 | 实证口级纪律（executor spec PRE-4 维持） | v1.5-③ 实现 diff 审阅 | [doc] |
+| R-5 | 下游红线：重建白名单只含持久键（#1-4 增量 + 既有 #10-12 + **#15 feed_cut（v1.5-⑤，2026-09-05 三跑持久）**）；#5-9 拒收 + diag 不静默 | 实证口级纪律（executor spec PRE-4 维持） | v1.5-⑤ 实现 diff 审阅 | [doc] |
 | R-6 | 回填完整：索引 §2.1/§2.5、schema $comment、exporter/comparer spec v1.5 注记同步 | CLAUDE.md 回填规则 | 改动 diff 审阅 | [doc] |
 
 ## 4. 算法/改动面（步骤 → 性质映射）
@@ -114,6 +115,6 @@ U-6 教训再次坐实并扩界：**形态同类 ≠ 可写**（int 直赋 finis
 
 - **v1.5-③ 三侧实现**（本纪要即其键集/持久性依据，含 #2/#3 入白名单前 [I] 复跑、comparer 参数字典、
   校准清单更新）；
-- #15（rpm/feed_cut）等未测键的写面探针（如 v1.5 重建要写转速进给再开批，本批不探）；
+- #15（rpm/feed_cut）等未测键的写面探针（**2026-09-05 已探并收口**：feed_cut 三跑持久 ✓ 入白名单 = v1.5-⑤，rpm 由 executor [I] 实证——见 §2 #15 补行）；
 - PTP 细分重建（cycle 细分参数 U-1 负证，#16）与 PTP approximation（executor spec 已声明口径）；
 - schema 结构改动（strategy 无 tolerance/multi_depth_method 键——缺省保持，不押注无消费者字段）。

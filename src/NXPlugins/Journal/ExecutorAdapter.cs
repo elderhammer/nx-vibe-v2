@@ -450,6 +450,7 @@ public class ExecutorAdapter
                         case "DepthPerCut": b.DepthPerCut.Value = pi.N.Value; break;
                         case "HoleDepth": b.HoleDepth.Value = pi.N.Value; break;
                         case "FeedsBuilder.SpindleRpmBuilder": b.FeedsBuilder.SpindleRpmBuilder.Value = pi.N.Value; break;
+                        case "FeedsBuilder.FeedCutBuilder": b.FeedsBuilder.FeedCutBuilder.Value = pi.N.Value; break;  // v1.5-⑤ feed_cut（注册表 #15 三跑持久）
                         // v1.5-③ S1：4 持久键（注册表 #1-4）；Enum 词已由 ExecutorCore NxParamWords 校验 → Parse 安全
                         case "CutPattern.CutPattern":
                             b.CutPattern.CutPattern = (CutPatternBuilder.Types)Enum.Parse(
@@ -481,6 +482,7 @@ public class ExecutorAdapter
                     {
                         case "HoleDepth": b.HoleDepth.Value = pi.N.Value; break;
                         case "FeedsBuilder.SpindleRpmBuilder": b.FeedsBuilder.SpindleRpmBuilder.Value = pi.N.Value; break;
+                        case "FeedsBuilder.FeedCutBuilder": b.FeedsBuilder.FeedCutBuilder.Value = pi.N.Value; break;  // v1.5-⑤ feed_cut
                         default: Log("    " + op.Name + " 参数路径对孔族无写实现: " + pi.MemberPath); return;
                     }
                     b.Commit();

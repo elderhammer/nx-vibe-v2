@@ -39,11 +39,13 @@ namespace NXPlugins.PlanExecutor
             { "finish_passes", new ParamTarget("CutParameters.FinishPasses.NumberOfFinishPasses", ParamKind.Number) },
         };
 
-        /// <summary>technology 可写键 → 写面目标（rpm 写入持久已实测）。</summary>
+        /// <summary>technology 可写键 → 写面目标（rpm 持久 [I] 已证；feed_cut 三跑持久实证
+        /// 2026-09-05 camprobe-feedcut，注册表 #15 补行——v1.5-⑤）。</summary>
         public static readonly Dictionary<string, ParamTarget> TechnologyWritable =
             new Dictionary<string, ParamTarget>
         {
             { "spindle_rpm", new ParamTarget("FeedsBuilder.SpindleRpmBuilder", ParamKind.Number) },
+            { "feed_cut",    new ParamTarget("FeedsBuilder.FeedCutBuilder", ParamKind.Number) },
         };
 
         /// <summary>PRE-4 判据源：两张表非空。</summary>

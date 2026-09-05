@@ -428,6 +428,7 @@ namespace NXPlugins.PlanExporterTests
             cav.Params["finish_passes"] = 0.0;
             cav.Params["boundary_intol"] = 0.0;
             cav.Params["tech:spindle_rpm"] = 2400.0;
+            cav.Params["tech:feed_cut"] = 2000.0;   // v1.5-⑤（注册表 #15 读面既有 → 导出直写）
             PlanDocument doc = ExporterCore.Build(snap, WhiteList.Resolve);
             OperationJson oj = doc.operations[0];
             ParamValue cp = oj.strategy["cut_pattern"];
@@ -439,6 +440,7 @@ namespace NXPlugins.PlanExporterTests
             Assert.True(oj.strategy["boundary_intol"].N == 0.0, "boundary_intol 应为数值");
             Assert.False(oj.strategy.ContainsKey("spindle_rpm"), "tech: 前缀应分流（不进 strategy）");
             Assert.True(oj.technology["spindle_rpm"].N == 2400.0, "tech:spindle_rpm → technology.spindle_rpm");
+            Assert.True(oj.technology["feed_cut"].N == 2000.0, "tech:feed_cut → technology.feed_cut（v1.5-⑤）");
         }
 
         // V15-INV-1：旧形状（KV Value 裸 number）经归一 shim 解析后值等价（P0 ②b 锚定）；新形状 shim 幂等。

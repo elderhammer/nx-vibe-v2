@@ -1,6 +1,9 @@
 # v1.5-③ 参数面扩展规格（spec-before-code 纪要落档，2026-09-04；S1 范围）
 
 > 状态：**已实现收官（2026-09-04）**——[U] 全量 93/93 全绿（V15-* 十条红线 + 83 旧回归）；[I] 三连跑点亮：
+> （v1.5-⑤ 跟进 2026-09-05：S1 排除的 feed_cut（S3 归属）经注册表 #15 写面探针三跑持久实证
+> （camprobe-feedcut-{200847,200905,200924}）→ 白名单/采集/写适配器贯通收官，[U] 102/102；
+> [I] 三连跑待 GUI Execute——见 docs/nx-param-registry-spec.md §2 #15 与 nx-v2-geom-spec.md §7 校准②。）
 > I-1 重导（adapter-run-20260904-194935：新形状落盘复验 PASS，腔 op 6 新键 + 全 op rpm）、
 > I-2 复跑（executor-run-20260904-195159：ok=17 fail=0，4 持久键 + rpm 真实写入无异常、boundary 拒收
 > diag、test.rebuilt-195208.prt）、I-3 终跑（comparer-run-20260904-200339：issues 19→5 全部校准可解释，
