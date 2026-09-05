@@ -71,6 +71,13 @@ U-6 教训再次坐实并扩界：**形态同类 ≠ 可写**（int 直赋 finis
 > 注 3（形态 → 可写无单调性，本批新增坐实）：直赋类内 int（#4）可写而 bool（#5）不可写；枚举类内
 > #1/#2 可写而 #6 不可写——四形态表（索引 §2.2）只描述读写代码分支形态，**不描述可写性**；可写性
 > 一律以本注册表按键实证列为准（U-6 教训重申）。
+> 注 4（2026-09-06 深度键形态边界，头文件实证）：#12 写面仅覆盖 Constant(Distance) 形态——
+> `GlobalDepthPerCut` 宿主 = StepoverBuilder（StepoverTypes 15 值），gt/reb 两侧实测 Type 均 Constant，
+> PercentToolFlat 等形态未测（v1 口径无碍）；`CutLevel.ApplyGlobalDepthPerCut()`（NX7.5）未测成员，
+> 现链路 commit 直生效无需调用；`CutLevel.Types` = Constant/Optimized/RangeBottom（单范围口径）。
+> 注 5（2026-09-06 PTP 收尾）：#13 重建落点（DRILLING）HoleDepth 写面持久 ✓（ptpkeys P1A 双会话），
+> 孔族采集补读 hole_depth 键实现 PTP→DRILLING 近似键面对称（comparer 单侧缺失方向化配套，
+> nx-plan-comparer-spec.md §4 A3）。
 
 ## 3. 性质（红线；本批全为文档/实证层，无 [U] 代码改动）
 

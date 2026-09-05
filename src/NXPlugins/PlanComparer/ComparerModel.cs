@@ -6,12 +6,13 @@ using System.Collections.Generic;
 
 namespace NXPlugins.PlanComparer
 {
-    /// <summary>对比容差（决策④直觉默认；首批样例校准后固化为评分规格文档）。</summary>
+    /// <summary>对比容差（决策④直觉默认 → 2026-09-06 校准池触底后固化，规格见
+    /// docs/nx-plan-comparer-spec.md §7 评分规格；调值须过校准回归并在该节留痕）。</summary>
     public sealed class ComparerOptions
     {
-        public double EpsLen = 0.01;    // 数值绝对容差 mm（沿设计 §2.2 几何口径）
-        public double RelTol = 0.05;    // 数值相对偏差容差（5%，待校准）
-        public double EpsAxis = 1e-6;   // MCS 单位向量轴元素差容差
+        public double EpsLen = 0.01;    // 数值绝对容差 mm（沿设计 §2.2 几何口径，§7 固化）
+        public double RelTol = 0.05;    // 数值相对偏差容差（§7 固化——哨兵 OP-001 time 6.3% 须仍 FAIL）
+        public double EpsAxis = 1e-6;   // MCS 单位向量轴元素差容差（§7 固化）
     }
 
     /// <summary>非 PASS 项（结构差异/数值偏差/类型失配），Code 稳定可聚合（INV-C4）。</summary>

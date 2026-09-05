@@ -1,7 +1,15 @@
 # plan 合同残留清理规格（D-4，spec-before-code 纪要落档，2026-09-04）
 
-> 状态：**纪要落档（2026-09-04）**；范围决策 = operation_type/feature_type 走 **X（自由串两档开放）**、
-> geometry_ref/blank/machines 走 **i（全面删）**；索引回填三项必做。实现按本文件性质表为红线。
+> 状态：**已实现收口（2026-09-04 实施，2026-09-06 本文档回填）**；范围决策 = operation_type/feature_type
+> 走 **X（自由串两档开放）**、geometry_ref/blank/machines 走 **i（全面删）**；索引回填三项必做。
+> 实现按本文件性质表为红线。
+>
+> 实现记录（2026-09-06 回填，原"纪要落档、实现待执行"表述系状态滞后）：代码提交 **185f1db**（D-4
+> 合同残留清理：operation_type/feature_type 自由串两档 + geometry_ref/blank/machines 死结构删除，
+> schema v3.0 生效）+ **9a5f6e4**（D-4 集成复验：test.plan.json 重导新形状 + Executor I-2 复跑全 PASS，
+> 实录 samples/adapter-run-20260904-132025.txt / executor-run-20260904-132124.txt（ok=16，C1-POST-1
+> 点亮））；连带事项（PlanValidator 枚举收紧）随 U-7 A′ 批收官（nx-tool-type-enum-spec.md §7 尾注）；
+> C1-* 红线落点：[U] 层由 schema/序列化/validator 单测覆盖（历次全量回归绿），[I] 层 = 上述两实录。
 > 需求源：docs/nx-tool-type-enum-spec.md §7（第二批清单）+ 2026-09-04 审查（云端 CAPP 表述 vs 实证）；
 > 合同：schema/autocam-plan.schema.json v3.0（本批 = 枚举去断言/字段删除，结构收窄，contract_version 维持 3.0）。
 > 事实源：nx2406-install-index.md §2.1/§2.5 + NX2406 安装资料源码（uf_modl.h、NXOpen.xml、CAMSetupImport 样例）。

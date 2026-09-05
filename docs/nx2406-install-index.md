@@ -106,6 +106,19 @@
     可编译可跑。
   - **§3 待验证项 6 由此划勾（详见 §3 项 6）**。
 
+**2026-09-05 v2.5 深度键修正实证增补（源：camprobe-v2depth-20260905-211011/215614、camprobe-ptpkeys、docs/nx-param-registry-spec.md #12）**：
+- **腔每刀深度引擎消费成员** = `CavityMillingBuilder.CutLevel.GlobalDepthPerCut.DistanceBuilder`
+  （宿主 = `StepoverBuilder` 型，含 StepoverTypes 15 值：Constant/Scallop/PercentToolFlat/…）；
+  op 级 `b.DepthPerCut`（Inheritable 叶子）写持久但**惰性**（引擎不消费、gt 恒 0）——写面/导出读键
+  必须走 CutLevel 子树；gt/reb 两侧实测 Type 均 Constant（Distance 形态），PercentToolFlat 等形态未测。
+- `CutLevel.ApplyGlobalDepthPerCut()`（NX7.5，cam_base）存在但未测——现链路 commit 直生效（v2depth
+  实证），无需调用。
+- `CutLevel.Types = Constant/Optimized/RangeBottom` 与 `RangeTypes` 层范围面——v1 单范围口径仅覆盖
+  Constant。
+- **孔族 `HoleDepth` = `OperationBuilder` 基类成员**（NX5，InheritableDoubleBuilder，全操作族可达）；
+  `BottomStock/BottomClearance` = `HoleMachiningBuilder.CuttingParameters`（HoleMachiningCutParameters，
+  NX9.0.2/NX2312）；PTP 旧模板（PointToPointBuilder）无 CuttingParameters 面（U-1 同源）。
+
 **2026-09-05 v2 几何重建预检增补（源：camprobe-v2geom-{033422,033944}、camprobe-v2gt-033332、
 camprobe-v2face-A-033810/B-034035 + 探针源 CamProbeV2Geom/CamProbeV2Gt/CamProbeFaceSig）**：
 
