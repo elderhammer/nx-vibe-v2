@@ -1,0 +1,68 @@
+== ComparerAdapter ==
+time: 2026-09-05 19:24:56
+A=C:\Users\21505\Code\nx-vibe-v2\samples\test.prt  B=C:\Users\21505\Code\nx-vibe-v2\samples\v2.rebuilt-20260905-191437.prt
+OpenDisplay 失败(文件已存在)——尝试 UF 已载枚举复用
+  候选[0] name=mill_planar
+  候选[1] name=v2.rebuilt-20260905-191437
+  候选[2] name=test
+复用已装载: test
+SetDisplayPart: test
+SetWork: test
+== 采集 A: test ==
+  tool 17.0 → type=Mill subtype=Mill5
+  tool 13.94 → type=Mill subtype=Mill5
+  tool 9.96 → type=Mill subtype=Mill5
+  tool D6.0X90中心钻 → type=Mill subtype=MillChamfer
+  tool 8.5 → type=Drill subtype=DrillStandard
+  tool 17.5 → type=Drill subtype=DrillStandard
+MCS 回读: origin=(75,0,100) z=(0,0,1)
+  PTP op 打点_COPY_COPY_COPY 参数面细分待后续批（cycle/细分 U-1 负证；rpm 已扩读）
+  PTP op 钻头G83_COPY_3_COPY_COPY_COPY_1 参数面细分待后续批（cycle/细分 U-1 负证；rpm 已扩读）
+OpenDisplay 失败(文件已存在)——尝试 UF 已载枚举复用
+  候选[0] name=mill_planar
+  候选[1] name=v2.rebuilt-20260905-191437
+复用已装载: v2.rebuilt-20260905-191437
+SetDisplayPart: v2.rebuilt-20260905-191437
+SetWork: v2.rebuilt-20260905-191437
+== 采集 B: v2.rebuilt-20260905-191437 ==
+  tool T-001 → type=Mill subtype=Mill5
+  tool T-002 → type=Mill subtype=Mill5
+  tool T-003 → type=Mill subtype=Mill5
+  tool T-004 → type=Mill subtype=Mill5
+  tool T-005 → type=Drill subtype=DrillStandard
+  tool T-006 → type=Drill subtype=DrillStandard
+MCS 回读: origin=(75,0,100) z=(0,0,1)
+快照 A: ops=6 tools=6 setups=1  快照 B: ops=6 tools=6 setups=1
+== 结构 ==
+  op 配对=6 仅A(重建缺)=0 仅B(重建多)=0  刀具 A=6 B=6  setup A=1 B=1
+== 逐项（非 PASS） ==
+  [FAIL] TOOLPATH_DIFF@CAVITY_MILL 刀路时间: A=58.32 B=129.822 相对偏差=55.1%（超容差）
+  [FAIL] TOOLPATH_DIFF@CAVITY_MILL 刀路长度: A=118746.82 B=34591.731 相对偏差=70.9%（超容差）
+  [FAIL] REGION_DIFF@CAVITY_MILL 区域数: A=80 B=24
+  [FAIL] REGION_DIFF@CAVITY_MILL 区域面积和: A=850374.88 B=237249.96 相对偏差=72.1%
+  [FAIL] TOOLPATH_DIFF@CAVITY_MILL_COPY 刀路时间: A=0.515 B=27.246 相对偏差=98.1%（超容差）
+  [FAIL] TOOLPATH_DIFF@CAVITY_MILL_COPY 刀路长度: A=928.849 B=8210.627 相对偏差=88.7%（超容差）
+  [FAIL] REGION_DIFF@CAVITY_MILL_COPY 区域数: A=36 B=24
+  [FAIL] REGION_DIFF@CAVITY_MILL_COPY 区域面积和: A=88.92 B=33839.24 相对偏差=99.7%
+  [FAIL] TOOLPATH_DIFF@CAVITY_MILL_COPY_COPY 刀路时间: A=8.03 B=0 相对偏差=100.0%（超容差）
+  [FAIL] TOOLPATH_DIFF@CAVITY_MILL_COPY_COPY 刀路长度: A=4506.326 B=0 相对偏差=100.0%（超容差）
+  [FAIL] REGION_DIFF@CAVITY_MILL_COPY_COPY 区域数: A=3 B=0
+  [FAIL] REGION_DIFF@CAVITY_MILL_COPY_COPY 区域面积和: A=19321.39 B=0 相对偏差=100.0%
+  [FAIL] TOOLPATH_DIFF@CAVITY_MILL_COPY_COPY_COPY 刀路时间: A=6.816 B=220.111 相对偏差=96.9%（超容差）
+  [FAIL] TOOLPATH_DIFF@CAVITY_MILL_COPY_COPY_COPY 刀路长度: A=3761.573 B=57103.107 相对偏差=93.4%（超容差）
+  [FAIL] REGION_DIFF@CAVITY_MILL_COPY_COPY_COPY 区域数: A=2 B=24
+  [FAIL] REGION_DIFF@CAVITY_MILL_COPY_COPY_COPY 区域面积和: A=14863.68 B=274869.84 相对偏差=94.6%
+  [FAIL] OP_PARAM_DIFF@打点_COPY_COPY_COPY 参数 hole_depth 单侧缺失: A=0 B=(无)
+  [FAIL] OP_PARAM_DIFF@打点_COPY_COPY_COPY 参数 bottom_stock 单侧缺失: A=(无) B=0
+  [FAIL] OP_PARAM_DIFF@钻头G83_COPY_3_COPY_COPY_COPY_1 参数 hole_depth 单侧缺失: A=0 B=(无)
+  [FAIL] OP_PARAM_DIFF@钻头G83_COPY_3_COPY_COPY_COPY_1 参数 bottom_stock 单侧缺失: A=(无) B=0
+  [FAIL] TOOL_TYPE_DIFF@tool#4 刀具类型失配: A=Mill|MillChamfer B=Mill|Mill5
+  [note] tool#1 名差（非致命）: A=17.0 B=T-001
+  [note] tool#2 名差（非致命）: A=13.94 B=T-002
+  [note] tool#3 名差（非致命）: A=9.96 B=T-003
+  [note] tool#4 名差（非致命）: A=D6.0X90中心钻 B=T-004
+  [note] tool#5 名差（非致命）: A=8.5 B=T-005
+  [note] tool#6 名差（非致命）: A=17.5 B=T-006
+== 汇总: issues=21 op=6/6 param=42/46 tool=5/6 mcs=1/1 fixture=1/1 template=6/6 ==
+== v2 汇总: toolpath=0/8 region=0/8 sigfaceset=4/4 ==
+== 结束 ==

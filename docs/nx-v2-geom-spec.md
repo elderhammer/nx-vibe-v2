@@ -136,8 +136,9 @@ STEP 资产；评分规格固化（决策④遗留，随本批校准记录后另
    > 实录 192158（正确 B = v2.rebuilt-191437）：**v2 汇总 sigfaceset=4/4（面复刻维全 PASS，
    > 零 SIG_FACE_DIFF）**；issues 43→25 全可归因（腔刀路/区域差 ×16 = feed_cut 白名单缺口 +
    > 区域分割粒度 + OP-003 待诊；PTP 键错位 ×4 + tool#4 = 200339 清单同源；PTP 刀路单侧缺 ×4 =
-   > v2 范围缺席噪音 → 维 gate 修正：v2 三维仅腔铣族比对（ComparerCore CompareV2，192158 后
-   > issues 预期 21））。
+   > v2 范围缺席噪音 → 维 gate 修正：v2 三维仅腔铣族比对（ComparerCore CompareV2）。
+   > 实录 192456（gate 后终跑）：**issues=21（与预测一致）**，v2 汇总 toolpath=0/8 region=0/8
+   > sigfaceset=4/4——残余 21 全为已知校准条目，无新增未解释项 → I-3 验收关闭。
    > 校准清单新增：① 区域维同面复刻仍敏感（gt 80 vs rebuilt 24）——v2.5 区域几何配对而非计数；
    > ② feed_cut（注册表 #15 未测写）成为写面探针候选——gt feedCut 2000/500 与 rebuilt 默认 250
    > 是腔刀路时间差主因。
