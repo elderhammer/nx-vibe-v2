@@ -122,11 +122,16 @@ STEP 资产；评分规格固化（决策④遗留，随本批校准记录后另
 1. **I-1 导出重导（ExporterAdapter.exe，args = 输出 test.plan.json 路径）**：test.prt → plan
    含腔 op `cut_area_signatures`（13 条，与 camprobe-v2face-A-033810 档签名一致）+ schema
    落盘复验 PASS（validator 词集无违例）。验收 grep：`"cut_area_signatures"` 出现且含 13 元素。
-2. **I-2 v2 重建（ExecutorAdapter-v2.exe，args = plan 路径 [可选 prj 目标]）**：plan.input_ref
+2. **I-2 v2 重建（ExecutorAdapter-v2b.exe，args = plan 路径 [可选 prj 目标]）**：plan.input_ref
    = test.prt → 自动推导 samples\test.step → 导入（验 1 body/26 面）→ 组/op 照 v1 → 签名
-   匹配指派 13/13 → 刀路 time>0 → 原地 Save（v2.rebuilt-<ts>.prt）。验收：日志含
-   "匹配=13 未命中=0"、toolpath time>0、Save(原地持久) ok；重开复核 body 26 面 + 刀路存档
-   （可选第二探针/CamProbeV2Gt 同款重开）。
+   匹配指派 → 刀路 time>0 → 原地 Save（v2.rebuilt-<ts>.prt）。验收：日志含
+   "匹配=13 未命中=0"、toolpath time>0、Save(原地持久) ok；重开复核 body 26 面 + 刀路存档。
+   > 实录 191001（首跑）：op 面指派全中但刀路 0——缺组级 part 指派 → eecc71c 补
+   > （gt 结构 = 组级 set0 Body + op 级面）。实录 191434（修复后）：OP-001 129.8s / OP-002
+   > 27.2s / OP-004 220.1s 全出；**OP-003（COPY_COPY，3 面）仍 0**——面签名 3/3、组级/参数
+   > 与 gt 全同仍空刀路（gt 8.03s/3 区）→ 待诊校准条目：候选判别 = 几何集属性
+   > （GeometrySet.MaterialSide/Stock 等，不在复刻面）或 op 级 CutLevel/区域设置——需一次
+   > gt vs rebuilt 同 op builder 只读对照探针（探针待批）。
 3. **I-3 对比终跑（ComparerAdapter.exe，args = B 件路径）**：A=test.prt B=v2.rebuilt-<ts>.prt →
    issues 中腔 op 不再出现 TOOLPATH_DIFF 大偏差/REGION_DIFF/SIG_FACE_DIFF（签名 13/13 后
    预期收敛；若仍差 → 校准清单新增条目并落档）。验收：`== v2 汇总: toolpath=2/2 region=… 

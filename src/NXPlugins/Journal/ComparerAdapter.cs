@@ -34,6 +34,12 @@ public class ComparerAdapter
         string b0 = TrimQuotes(args.Length > 0 ? args[0] : "");
         if (b0.Length > 0) partBPath = b0;
         else if (args.Length > 1 && !string.IsNullOrEmpty(args[1])) partBPath = TrimQuotes(args[1]);
+        // v2 防呆（2026-09-05 两轮实测：B 默认旧档致对比无效）——无参时优先最新 v2.rebuilt-*.prt
+        if (b0.Length == 0)
+        {
+            string newest = NewestV2Rebuilt();
+            if (newest != null) partBPath = newest;
+        }
         if (args.Length > 2 && !string.IsNullOrEmpty(args[2])) _outPath = args[2];
         _outPath = Path.Combine(Path.GetDirectoryName(Path.GetFullPath(_outPath)),
             "comparer-run-" + DateTime.Now.ToString("yyyyMMdd-HHmmss") + ".txt");
@@ -189,5 +195,20 @@ public class ComparerAdapter
     {
         if (s == null) return "";
         return s.Trim().Trim('"').Trim();
+    }
+
+    /// <summary>samples 目录最新 v2.rebuilt-*.prt（按名序=时间戳序；无 → null 沿用旧默认）。</summary>
+    private static string NewestV2Rebuilt()
+    {
+        try
+        {
+            string dir = @"C:\Users\21505\Code\nx-vibe-v2\samples";
+            string newest = null;
+            foreach (string f in System.IO.Directory.GetFiles(dir, "v2.rebuilt-*.prt"))
+                if (newest == null || string.Compare(f, newest, StringComparison.OrdinalIgnoreCase) > 0)
+                    newest = f;
+            return newest;
+        }
+        catch { return null; }
     }
 }
