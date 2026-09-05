@@ -1,0 +1,103 @@
+== CamProbeV2OpDiag（op 级几何集/参数判别读）==
+time: 2026-09-05 19:20:13
+件: c:\Users\21505\Code\nx-vibe-v2\samples\v2.rebuilt-20260905-191437.prt
+Session: ApplicationName=APP_NONE
+打开 OK: v2.rebuilt-20260905-191437  camSession=True
+腔 op 数=4
+
+== op: CAVITY_MILL  pathT=129.821859223857 pathL=34591.730929981
+  --- op 级参数面 ---
+  CutPattern = FollowPeriphery
+  CutOrder = DepthFirst
+  CutDirection = Climb
+  FinishPasses = N=0
+  PartStock = 0.1
+  FloorStock = 0
+  DepthPerCut = 0
+  DepthPerCutBuilder status = False
+  CutLevel = CUTLEVEL@CutLevel
+  rpm = 2400
+  feedCut = 250
+  CutRegions = n=24
+  --- CutAreaGeometry 几何集属性（集级判别候选） ---
+    set[0] items=13
+      MaterialSide=None
+      Intol=0.03 Outtol=0.03
+      PartOffset=0
+      InitialStock=0 FinalStock=0.1
+      CheckStock=0 CustomStock=F Reversed=F
+  --- 组级 part 几何集 ---
+    set[0] items=1 MaterialSide=None PartOffset=0 InitialStock=0 FinalStock=0
+
+== op: CAVITY_MILL_COPY  pathT=27.2459654766119 pathL=8210.62692649367
+  --- op 级参数面 ---
+  CutPattern = Profile
+  CutOrder = DepthFirst
+  CutDirection = Climb
+  FinishPasses = N=0
+  PartStock = 0
+  FloorStock = 0
+  DepthPerCut = 0
+  DepthPerCutBuilder status = False
+  CutLevel = CUTLEVEL@CutLevel
+  rpm = 3000
+  feedCut = 250
+  CutRegions = n=24
+  --- CutAreaGeometry 几何集属性（集级判别候选） ---
+    set[0] items=6
+      MaterialSide=None
+      Intol=0.03 Outtol=0.03
+      PartOffset=0
+      InitialStock=0 FinalStock=0
+      CheckStock=0 CustomStock=F Reversed=F
+  --- 组级 part 几何集 ---
+    set[0] items=1 MaterialSide=None PartOffset=0 InitialStock=0 FinalStock=0
+
+== op: CAVITY_MILL_COPY_COPY  pathT=0 pathL=0
+  --- op 级参数面 ---
+  CutPattern = FollowPeriphery
+  CutOrder = DepthFirst
+  CutDirection = Climb
+  FinishPasses = N=0
+  PartStock = 0
+  FloorStock = 0
+  DepthPerCut = 0
+  DepthPerCutBuilder status = False
+  CutLevel = CUTLEVEL@CutLevel
+  rpm = 1800
+  feedCut = 250
+  CutRegions = n=0
+  --- CutAreaGeometry 几何集属性（集级判别候选） ---
+    set[0] items=3
+      MaterialSide=None
+      Intol=0.03 Outtol=0.03
+      PartOffset=0
+      InitialStock=0 FinalStock=0
+      CheckStock=0 CustomStock=F Reversed=F
+  --- 组级 part 几何集 ---
+    set[0] items=1 MaterialSide=None PartOffset=0 InitialStock=0 FinalStock=0
+
+== op: CAVITY_MILL_COPY_COPY_COPY  pathT=220.111397123973 pathL=57103.1073093763
+  --- op 级参数面 ---
+  CutPattern = FollowPeriphery
+  CutOrder = DepthFirst
+  CutDirection = Climb
+  FinishPasses = N=0
+  PartStock = 0
+  FloorStock = 0
+  DepthPerCut = 0
+  DepthPerCutBuilder status = False
+  CutLevel = CUTLEVEL@CutLevel
+  rpm = 1800
+  feedCut = 250
+  CutRegions = n=24
+  --- CutAreaGeometry 几何集属性（集级判别候选） ---
+    set[0] items=13
+      MaterialSide=None
+      Intol=0.03 Outtol=0.03
+      PartOffset=0
+      InitialStock=0 FinalStock=0
+      CheckStock=0 CustomStock=F Reversed=F
+  --- 组级 part 几何集 ---
+    set[0] items=1 MaterialSide=None PartOffset=0 InitialStock=0 FinalStock=0
+== 结束 ==
