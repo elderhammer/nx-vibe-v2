@@ -1,0 +1,119 @@
+== ExecutorAdapter ==
+time: 2026-09-05 19:10:01
+plan=C:\Users\21505\Code\nx-vibe-v2\samples\test.plan.json  prj=C:\Users\21505\Code\nx-vibe-v2\samples\test.rebuilt.prt
+解析 OK: plan_id=PLAN-0001 ops=6 tools=6 setups=1
+  diag[warning] TOOL_TYPE_INFERRED scope=T-004 NX 注册对表未覆盖 (Mill, MillChamfer)，按默认铣 (mill_planar,MILL) 重建（v1 表，见 U-7 spec §5b）
+  diag[warning] PARAM_UNSUPPORTED scope=OP-001 参数字段不在写入面白名单（重建不写，读面可导出）: boundary_intol（Boundary 容差族负结案，注册表 #7/#8）
+  diag[warning] PARAM_UNSUPPORTED scope=OP-002 参数字段不在写入面白名单（重建不写，读面可导出）: boundary_intol（Boundary 容差族负结案，注册表 #7/#8）
+  diag[warning] PARAM_UNSUPPORTED scope=OP-003 参数字段不在写入面白名单（重建不写，读面可导出）: boundary_intol（Boundary 容差族负结案，注册表 #7/#8）
+  diag[warning] PARAM_UNSUPPORTED scope=OP-004 参数字段不在写入面白名单（重建不写，读面可导出）: boundary_intol（Boundary 容差族负结案，注册表 #7/#8）
+pre-flight OK: programs=3 tools=6 setups=1 ops=6
+
+== 阶段: v2 STEP 导入前置（SaveAs 空件 → Step214Importer → 验几何） ==
+  SaveAs(空件目标) = C:\Users\21505\Code\nx-vibe-v2\samples\v2.rebuilt-20260905-191002.prt
+  STEP 资产: C:\Users\21505\Code\nx-vibe-v2\samples\test.step 存在=True
+  Commit = ok
+  导入后: bodies=1 solidFaces=26
+CreateCamSession OK
+CreateCamSetup(mill_contour) OK
+
+== 阶段: 许可 gate ==
+  cam_base Reserve OK
+
+== 阶段: 程序组根准备（模板默认 PROGRAM 复用；子组在 Steps 交错步中按 plan DFS 创建） ==
+
+== 阶段: 刀具组（模板对 + 数值直填） ==
+  tool: T-001 (mill_planar, MILL) 直径=17
+  tool: T-002 (mill_planar, MILL) 直径=13.94
+  tool: T-003 (mill_planar, MILL) 直径=9.96
+  tool: T-004 (mill_planar, MILL) 直径=6
+  tool: T-005 (hole_making, STD_DRILL) 直径=8.5
+  tool: T-006 (hole_making, STD_DRILL) 直径=17.5
+
+== 阶段: setup 几何链（MCS + WORKPIECE）+ MCS/fixture 写 ==
+  setup S-01: MCS_MILL/WORKPIECE
+  MCS 写: origin=(75,0,100) fixture=1
+
+== 阶段: 方法组锚点 ==
+  方法锚点数=1
+
+== 阶段: 重建执行（workplan DFS 交错：组↔工序，v1.5-① 保序） ==
+  program: A01 (parent=)
+  op: OP-001 名=CAVITY_MILL (mill_contour, CAVITY_MILL)  prog=A01 method=METHOD tool=T-001 geom=WORKPIECE
+    CAVITY_MILL 写 CutPattern.CutPattern=FollowPeriphery
+    CAVITY_MILL 写 CutParameters.CutOrder=DepthFirst
+    CAVITY_MILL 写 CutParameters.CutDirection.Type=Climb
+    CAVITY_MILL 写 CutParameters.FinishPasses.NumberOfFinishPasses=0
+    CAVITY_MILL 写 CutParameters.PartStock=0.1
+    CAVITY_MILL 写 CutParameters.FloorStock=0
+    CAVITY_MILL 写 DepthPerCut=0
+    CAVITY_MILL 写 FeedsBuilder.SpindleRpmBuilder=2400
+  op: OP-002 名=CAVITY_MILL_COPY (mill_contour, CAVITY_MILL)  prog=A01 method=METHOD tool=T-003 geom=WORKPIECE
+    CAVITY_MILL_COPY 写 CutPattern.CutPattern=Profile
+    CAVITY_MILL_COPY 写 CutParameters.CutOrder=DepthFirst
+    CAVITY_MILL_COPY 写 CutParameters.CutDirection.Type=Climb
+    CAVITY_MILL_COPY 写 CutParameters.FinishPasses.NumberOfFinishPasses=0
+    CAVITY_MILL_COPY 写 CutParameters.PartStock=0
+    CAVITY_MILL_COPY 写 CutParameters.FloorStock=0
+    CAVITY_MILL_COPY 写 DepthPerCut=0
+    CAVITY_MILL_COPY 写 FeedsBuilder.SpindleRpmBuilder=3000
+  op: OP-003 名=CAVITY_MILL_COPY_COPY (mill_contour, CAVITY_MILL)  prog=A01 method=METHOD tool=T-003 geom=WORKPIECE
+    CAVITY_MILL_COPY_COPY 写 CutPattern.CutPattern=FollowPeriphery
+    CAVITY_MILL_COPY_COPY 写 CutParameters.CutOrder=DepthFirst
+    CAVITY_MILL_COPY_COPY 写 CutParameters.CutDirection.Type=Climb
+    CAVITY_MILL_COPY_COPY 写 CutParameters.FinishPasses.NumberOfFinishPasses=0
+    CAVITY_MILL_COPY_COPY 写 CutParameters.PartStock=0
+    CAVITY_MILL_COPY_COPY 写 CutParameters.FloorStock=0
+    CAVITY_MILL_COPY_COPY 写 DepthPerCut=0
+    CAVITY_MILL_COPY_COPY 写 FeedsBuilder.SpindleRpmBuilder=1800
+  op: OP-004 名=CAVITY_MILL_COPY_COPY_COPY (mill_contour, CAVITY_MILL)  prog=A01 method=METHOD tool=T-003 geom=WORKPIECE
+    CAVITY_MILL_COPY_COPY_COPY 写 CutPattern.CutPattern=FollowPeriphery
+    CAVITY_MILL_COPY_COPY_COPY 写 CutParameters.CutOrder=DepthFirst
+    CAVITY_MILL_COPY_COPY_COPY 写 CutParameters.CutDirection.Type=Climb
+    CAVITY_MILL_COPY_COPY_COPY 写 CutParameters.FinishPasses.NumberOfFinishPasses=0
+    CAVITY_MILL_COPY_COPY_COPY 写 CutParameters.PartStock=0
+    CAVITY_MILL_COPY_COPY_COPY 写 CutParameters.FloorStock=0
+    CAVITY_MILL_COPY_COPY_COPY 写 DepthPerCut=0
+    CAVITY_MILL_COPY_COPY_COPY 写 FeedsBuilder.SpindleRpmBuilder=1800
+  program: A01/A1-1 (parent=A01)
+  op: OP-005 名=打点_COPY_COPY_COPY (hole_making, DRILLING)  prog=A1-1 method=METHOD tool=T-004 geom=WORKPIECE
+    打点_COPY_COPY_COPY 写 HoleDepth=0
+    打点_COPY_COPY_COPY 写 FeedsBuilder.SpindleRpmBuilder=3000
+  program: A01/A1-3 (parent=A01)
+  op: OP-006 名=钻头G83_COPY_3_COPY_COPY_COPY_1 (hole_making, DRILLING)  prog=A1-3 method=METHOD tool=T-005 geom=WORKPIECE
+    钻头G83_COPY_3_COPY_COPY_COPY_1 写 HoleDepth=0
+    钻头G83_COPY_3_COPY_COPY_COPY_1 写 FeedsBuilder.SpindleRpmBuilder=500
+
+== 阶段: v2 op 级面指派 + 刀路生成（签名匹配 → CutAreaGeometry 默认集 → GenerateToolPath） ==
+  body 面数=26 签名数=26
+  OP-001 签名=13 匹配=13 未命中=0 歧义=0
+  OP-001 面指派 13 → ok
+  OP-001 toolpath time=0 length=0
+  OP-002 签名=6 匹配=6 未命中=0 歧义=0
+  OP-002 面指派 6 → ok
+  OP-002 toolpath time=0 length=0
+  OP-003 签名=3 匹配=3 未命中=0 歧义=0
+  OP-003 面指派 3 → ok
+  OP-003 toolpath time=0 length=0
+  OP-004 签名=13 匹配=13 未命中=0 歧义=0
+  OP-004 面指派 13 → ok
+  OP-004 toolpath time=0 length=0
+
+== 阶段: 落盘 prj′（主名被本会话占用 → 时间戳名兜底；不预删既有资产） ==
+  Save(原地持久) = ok
+  v2 已落盘: C:\Users\21505\Code\nx-vibe-v2\samples\v2.rebuilt-20260905-191002.prt
+
+== 阶段: 回读对照（I-2：结构/刀具直径/MCS/fixture/可写参数 vs plan） ==
+  OpenDisplay 943006（已装载，SaveAs 后同一对象）→ 复用内存 part: 文件已存在
+  工序数对照 = PASS
+  工序序/名对照 = PASS
+  PASS 刀具 T-001 直径回读=17（plan=17）
+  PASS 刀具 T-002 直径回读=13.94（plan=13.94）
+  PASS 刀具 T-003 直径回读=9.96（plan=9.96）
+  PASS 刀具 T-004 直径回读=6（plan=6）
+  PASS 刀具 T-005 直径回读=8.5（plan=8.5）
+  PASS 刀具 T-006 直径回读=17.5（plan=17.5）
+  PASS MCS 原点 MCS_MILL 回读=(75,0,100)（plan=(75,0,100)）
+  PASS fixture=1（plan=1）
+== 汇总 ok=19 fail=0 ==
+== 结束 ==

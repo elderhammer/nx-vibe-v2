@@ -314,6 +314,31 @@ public class ExecutorAdapter
                 List<NXPlugins.PlanExporter.FaceSignature> bodySigs = NxCollect.BodyFaceSignatures(body);
                 Face[] bodyFaces = body.GetFaces();
                 Log("  body 面数=" + bodyFaces.Length + " 签名数=" + bodySigs.Count);
+                // 组级 part 几何指派（191001 刀路=0 根因）：gt 结构 = 组级 set0=Body + op 级面；
+                // 缺组级 body → 腔铣刀路空（探针 033422 对照组实证：组级+op 级双指派才有刀路）。
+                // 机制 = G1 A2：MillGeomBuilder(wp).PartGeometry 默认集 SetArray(body) + Commit
+                foreach (NCGroup wpG in setupWpMap.Values)
+                {
+                    if (wpG == null) continue;
+                    try
+                    {
+                        MillGeomBuilder mgb = cam.CAMGroupCollection.CreateMillGeomBuilder(wpG);
+                        try
+                        {
+                            NXOpen.CAM.Geometry pg = mgb.PartGeometry;
+                            if (pg == null || pg.GeometryList.Length == 0)
+                            { Log("  !! wp " + wpG.Name + " PartGeometry 无默认集 → 组级指派跳过"); continue; }
+                            NXOpen.CAM.GeometrySet gs0 = pg.GeometryList.FindItem(0);
+                            if (gs0.GetItems().Length > 0)
+                            { Log("  wp " + wpG.Name + " 组级 part 已有几何 items=" + gs0.GetItems().Length + " → 跳过"); continue; }
+                            gs0.Selection.SetArray(new TaggedObject[] { body });
+                            mgb.Commit();
+                            Log("  wp " + wpG.Name + " 组级 part 指派 body → ok");
+                        }
+                        finally { mgb.Destroy(); }
+                    }
+                    catch (Exception e) { Log("  wp " + wpG.Name + " 组级指派异常: " + e.Message); }
+                }
                 foreach (KeyValuePair<OpCommand, Operation> kv in createdOps)
                 {
                     OpCommand c = kv.Key;
@@ -357,8 +382,10 @@ public class ExecutorAdapter
                     try
                     {
                         cam.GenerateToolPath(new CAMObject[] { op });
-                        Log("  " + c.OpId + " toolpath time=" + op.GetToolpathTime()
-                            + " length=" + op.GetToolpathLength());
+                        double tp = op.GetToolpathTime();
+                        Log("  " + c.OpId + " toolpath time=" + tp
+                            + " length=" + op.GetToolpathLength()
+                            + (tp <= 0 ? "（0 → 校验组级 body/面指派均到位；若仍 0 查 op 参数空刀路因）" : ""));
                     }
                     catch (Exception e) { Log("  " + c.OpId + " 刀路生成异常: " + e.Message); }
                 }
