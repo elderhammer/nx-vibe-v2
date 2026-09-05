@@ -167,6 +167,15 @@ public class ExecutorAdapter
                     catch (Exception e) { Log("  " + tc.ToolId + " builder 打不开: " + e.Message); }
                     if (mb != null)
                     {
+                        // CHAMFER_MILL 倒角刀：模板默认 ChamferLength=4（D16 型）致 D<8 写直径被 NX
+                        // 校验拒（"chamfer/corner radius 交叉中心线"）；预置 ChamferLength=D/2（90°
+                        // 尖角中心钻语义）——camprobe-chamferwrite s4/s5 实证可写持久（反射面见
+                        // SetToolChamferLength 注记）
+                        if (tc.Pair.Subtype == "CHAMFER_MILL" && tc.Diameter.HasValue)
+                        {
+                            try { SetToolChamferLength(mb, tc.Diameter.Value / 2.0); }
+                            catch (Exception e) { Log("  " + tc.ToolId + " ChamferLength 预写失败(继续): " + e.Message); }
+                        }
                         try
                         {
                             if (tc.Diameter.HasValue) mb.TlDiameterBuilder.Value = tc.Diameter.Value;
@@ -494,6 +503,18 @@ public class ExecutorAdapter
             Log("    " + op.Name + " 模板 " + pair + " 参数写未实现（skip）");
         }
         catch (Exception e) { Log("    " + op.Name + " 参数写异常(" + pi.MemberPath + "): " + e.Message); }
+    }
+
+    // CHAMFER_MILL 倒角刀 ChamferLength 反射写：ChamferLengthBuilder 仅在运行时型上（编译期
+    // MillingToolBuilder 无此成员）；探针实证（camprobe-chamferwrite-202922 s4/s5）写后持久。
+    private static void SetToolChamferLength(MillingToolBuilder mb, double v)
+    {
+        System.Reflection.PropertyInfo pi = mb.GetType().GetProperty("ChamferLengthBuilder");
+        if (pi == null) return;
+        object leaf = pi.GetValue(mb, null);
+        System.Reflection.PropertyInfo pv = leaf.GetType().GetProperty("Value");
+        if (pv == null) return;
+        pv.SetValue(leaf, v, null);
     }
 
     // ---- 回读对照 ----

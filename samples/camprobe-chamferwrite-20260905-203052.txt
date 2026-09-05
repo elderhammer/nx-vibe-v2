@@ -1,0 +1,62 @@
+== CamProbeChamferWrite（CHAMFER_MILL 参数写序列）==
+time: 2026-09-05 20:30:52
+Session: ApplicationName=APP_NONE
+写侧环境 OK
+-- CHAMFER_MILL 默认参数面（Tl*/Chamfer/Rad/Angle）--
+  ~ ChamferLengthBuilder = [InheritableDoubleBuilder] .Value=4
+  ~ ReliefDiameterBuilder = [InheritableDoubleBuilder] .Value=0
+  ~ TlCor1RadBuilder = [InheritableDoubleBuilder] .Value=0
+  ~ TlCor2RadBuilder = [InheritableDoubleBuilder] .Value=0
+  ~ TlTipAngBuilder = [InheritableDoubleBuilder] .Value=0
+  ~ TlXcenCor1Builder = [InheritableDoubleBuilder] .Value=0
+  ~ TlXcenCor2Builder = [InheritableDoubleBuilder] .Value=0
+  ~ TlYcenCor1Builder = [InheritableDoubleBuilder] .Value=0
+  ~ TlYcenCor2Builder = [InheritableDoubleBuilder] .Value=0
+  ~ HelicalDiameter = [InheritableToolDepBuilder] .Value=90
+  ~ HelicalRampAngle = [InheritableDoubleBuilder] .Value=15
+  ~ TaperedShankDiameterBuilder = [InheritableDoubleBuilder] .Value=0
+  ~ TlAdjRegBuilder = [InheritableIntBuilder] .Value=0
+  ~ TlCutcomReg = 0
+  ~ TlCutcomRegBuilder = [InheritableIntBuilder] .Value=0
+  ~ TlDiameterBuilder = [InheritableDoubleBuilder] .Value=16
+  ~ TlDirection = Clw
+  ~ TlFluteLnBuilder = [InheritableDoubleBuilder] .Value=50
+  ~ TlHeightBuilder = [InheritableDoubleBuilder] .Value=75
+  ~ TlHolderDescription = 
+  ~ TlHolderLibref = 
+  ~ TlLowCorRadBuilder = [InheritableDoubleBuilder] .Value=0
+  ~ TlNumFlutesBuilder = [InheritableIntBuilder] .Value=2
+  ~ TlShankDiaBuilder = [InheritableDoubleBuilder] .Value=0
+  ~ TlTaperAngBuilder = [InheritableDoubleBuilder] .Value=45
+  ~ TlUpCorRadBuilder = [InheritableDoubleBuilder] .Value=0
+  ~ TlZMountBuilder = [InheritableDoubleBuilder] .Value=0
+  ~ TlZOffsetBuilder = [InheritableDoubleBuilder] .Value=0
+  ~ ToolHelixAngleBuilder = null
+  ~ TlCtlgNum = 
+  ~ TlDescription = Chamfer Mill
+  ~ TlHolderNumberBuilder = [InheritableIntBuilder] .Value=0
+  ~ TlLibref = 
+  ~ TlManualToolChange = False
+  ~ TlNumberBuilder = [InheritableIntBuilder] .Value=0
+  ~ TlText = 
+（dump 刀未改，弃）
+
+-- s1：直径=6 单独（预期复现异常） --
+  写入/commit 异常: The chamfer or corner radius cannot cross the centerline of the tool.
+
+-- s2：LowCorRad=0 → 直径=6 --
+  写入/commit 异常: The chamfer or corner radius cannot cross the centerline of the tool.
+
+-- s3：LowCorRad=0+FluteLn=20 → 直径=6 --
+  写入/commit 异常: The chamfer or corner radius cannot cross the centerline of the tool.
+
+-- s4：ChamferLength=3(90°尖角=D/2，反射写) → 直径=6 --
+  写入+commit OK
+  重开: 直径=6 ChamferLen(反射)=3
+  类型读回: Mill|MillChamfer
+
+-- s5：ChamferLength=2（反射写） → 直径=6（< D/2 判别 apex 触碰是否允许） --
+  写入+commit OK
+  重开: 直径=6 ChamferLen(反射)=2
+  类型读回: Mill|MillChamfer
+== 结束 ==
