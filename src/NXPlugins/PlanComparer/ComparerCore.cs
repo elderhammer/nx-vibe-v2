@@ -116,7 +116,9 @@ namespace NXPlugins.PlanComparer
             else r.TemplatePass++;
 
             // POST-C1 / V15-POST-3：Params 键并集逐键按 kind 判据——双侧同形（N/N → 双判据回归；S/S →
-            // ordinal equality）；形异/单侧缺失 → FAIL 不静默。kind 由采集侧按键固定（同采集面两侧同形）。
+            // ordinal equality）；形异 → FAIL 不静默。单侧缺失方向性（2026-09-06 口径修订，PTP 收尾）：
+            // A-only（重建漏写导出键）→ FAIL 不静默；B-only（近似重建模板带出的 gt 无概念面参数，如
+            // PTP→DRILLING 的 bottom_stock）→ note 不 FAIL（无对比发生，不计 check）。kind 由采集侧按键固定。
             var keys = new HashSet<string>();
             foreach (KeyValuePair<string, ParamValue> kv in a.Params) keys.Add(kv.Key);
             foreach (KeyValuePair<string, ParamValue> kv in b.Params) keys.Add(kv.Key);
@@ -125,6 +127,11 @@ namespace NXPlugins.PlanComparer
                 bool aHas = a.Params.ContainsKey(k), bHas = b.Params.ContainsKey(k);
                 if (!aHas || !bHas)
                 {
+                    if (!aHas && bHas)
+                    {
+                        r.Notes.Add("参数 " + k + " 仅重建侧有（近似模板带出，gt 无此概念面，不判 FAIL）: B=" + Fmt(b.Params[k]));
+                        continue;
+                    }
                     r.ParamChecks++;
                     AddIssue(r, a.Name, "OP_PARAM_DIFF",
                         "参数 " + k + " 单侧缺失: A=" + (aHas ? Fmt(a.Params[k]) : "(无)") + " B=" + (bHas ? Fmt(b.Params[k]) : "(无)"));

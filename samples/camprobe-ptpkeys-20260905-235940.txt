@@ -1,0 +1,17 @@
+== CamProbePtpKeys（PTP 键错位收尾判定）==
+time: 2026-09-05 23:59:40
+mode=P1（P1=写面持久 fresh part / P2=读面双档 CAMSIG_PRT）
+
+== S1 写面持久（fresh part, mill_contour + hole_making/DRILLING）==
+建件 OK: CamProbePtpKeys
+组创建: OK
+
+-- P1A HoleDepth=8.5 --
+  Create (PROBE_P1A) OK -> PROBE_P1A
+  commit 后新 builder 读回 = 8.5  <<< 判定: P1A HoleDepth=8.5 持久性见值
+
+-- P1B BottomStock=0.3 --
+  Create (PROBE_P1B) OK -> PROBE_P1B
+  commit 后新 builder 读回 = 0.3  <<< 判定: P1B BottomStock=0.3 持久性见值
+== 结束（未 Save）==
+== 结束 ==

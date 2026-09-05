@@ -1,0 +1,31 @@
+== CamProbePtpKeys（PTP 键错位收尾判定）==
+time: 2026-09-06 00:01:39
+mode=P2（P1=写面持久 fresh part / P2=读面双档 CAMSIG_PRT）
+
+== S2 读面双档: C:\Users\21505\Code\nx-vibe-v2\samples\v2.rebuilt-20260905-215029.prt ==
+打开 OK: v2.rebuilt-20260905-215029  camSession=True
+钻孔族 op 数=2
+
+== op: 打点_COPY_COPY_COPY  type=Drilling
+  builder = HoleDrillingBuilder
+  HoleDepth = 0
+  HoleDepth status = False
+  HoleDepthType = Point
+  BottomStock = 0
+  BottomStock status = True
+  BottomClearance 异常: NullReferenceException 未将对象引用设置到对象的实例。
+  rpm = 3000
+  feedCut = 80
+
+== op: 钻头G83_COPY_3_COPY_COPY_COPY_1  type=Drilling
+  builder = HoleDrillingBuilder
+  HoleDepth = 0
+  HoleDepth status = False
+  HoleDepthType = Point
+  BottomStock = 0
+  BottomStock status = True
+  BottomClearance 异常: NullReferenceException 未将对象引用设置到对象的实例。
+  rpm = 500
+  feedCut = 35
+== 结束（未 Save）==
+== 结束 ==

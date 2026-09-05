@@ -1,0 +1,25 @@
+== CamProbePtpKeys（PTP 键错位收尾判定）==
+time: 2026-09-06 00:01:22
+mode=P2（P1=写面持久 fresh part / P2=读面双档 CAMSIG_PRT）
+
+== S2 读面双档: C:\Users\21505\Code\nx-vibe-v2\samples\test.prt ==
+打开 OK: test  camSession=True
+钻孔族 op 数=2
+
+== op: 打点_COPY_COPY_COPY  type=Point to Point
+  builder = PointToPointBuilder
+  HoleDepth = 0
+  HoleDepth status = True
+  HoleDepthType = Point
+  rpm = 3000
+  feedCut = 80
+
+== op: 钻头G83_COPY_3_COPY_COPY_COPY_1  type=Point to Point
+  builder = PointToPointBuilder
+  HoleDepth = 0
+  HoleDepth status = True
+  HoleDepthType = Point
+  rpm = 500
+  feedCut = 35
+== 结束（未 Save）==
+== 结束 ==

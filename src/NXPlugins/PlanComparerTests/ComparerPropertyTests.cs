@@ -130,11 +130,23 @@ namespace NXPlugins.PlanExporterTests
 
         public static void test_POSTC1_key_present_only_one_side_fails()
         {
-            // 键单侧有 → FAIL 条目（不静默缺字段）
+            // 方向性口径（2026-09-06）：A-only（重建漏写导出键）→ FAIL 不静默
             ExportSnapshot b = Sample();
             b.Operations[1].Params.Remove("hole_depth");
             ComparerResult r = CompareCore.Compare(Sample(), b);
-            Assert.True(HasIssue(r, "OP_PARAM_DIFF", "打点1"), "单侧缺键 → FAIL 条目: " + Describe(r));
+            Assert.True(HasIssue(r, "OP_PARAM_DIFF", "打点1"), "A-only 缺键 → FAIL 条目: " + Describe(r));
+        }
+
+        public static void test_POSTC1_extra_key_b_only_is_note_not_fail()
+        {
+            // 方向性口径（2026-09-06 PTP 收尾）：B-only 键（近似模板带出的 gt 无概念面参数）→ note 不 FAIL
+            ExportSnapshot b = Sample();
+            b.Operations[1].Params["bottom_stock"] = new ParamValue(0.0);
+            ComparerResult r = CompareCore.Compare(Sample(), b);
+            Assert.False(HasIssue(r, "OP_PARAM_DIFF", "打点1"), "B-only 键 → 不 FAIL: " + Describe(r));
+            bool noted = false;
+            foreach (string n in r.Notes) if (n.Contains("bottom_stock")) noted = true;
+            Assert.True(noted, "B-only 键应进 Notes（不静默）: " + Describe(r));
         }
 
         // ---------- POST-C2：模板对失配显式 ----------

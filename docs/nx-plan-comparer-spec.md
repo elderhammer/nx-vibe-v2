@@ -147,6 +147,14 @@ I-2）同 API 面，全部已实证，零新探针；几何/刀路维度显式�
 > rebuilt 39850/118 = 43×）→ 203514"深度差驱动"系错归因，实为体上下文 γ 类差异（OP-003 判别⑦
 > 同款机制第二实例：超密而非零）→ 转永久校准**。残留 15 = OP-003 γ 4 + OP-002 γ 类 4 + OP-001
 > 已知残余 3 + PTP 键错位 4，零新增未解释 → 校准清单：区域几何配对须覆盖 OP-002 超密现象。
+> **PTP 键错位收尾复跑记录（comparer-run-20260906-000948，issues 15→11，验收关闭）**：判定探针
+> camprobe-ptpkeys（2026-09-06，P1 双会话：HoleDepth/BottomStock 写面持久 ✓；P2 双档：gt PTP
+> HoleDepth 0/True=继承 + HoleDepthType=Point vs 重建 DRILLING HoleDepth 0/False + 同 Point——键值
+> 0=0、深度语义近似成立）→ 两处小改：① NxCollect 孔族分支补读 hole_depth（基类 HoleDepth，P1A
+> 持久实证）→ 键面对称；② 单侧缺失判据方向化（A-only → FAIL 保持；B-only = 近似模板带出的 gt 无
+> 概念面参数 → note 不 FAIL，[U] 104/104）→ 复跑：**param=50/50 全 PASS**，hole_depth 双侧配对消 2、
+> bottom_stock 降 note 消 2 → 残留 11 = OP-003 γ 4 + OP-002 γ 类 4 + OP-001 已知残余 3
+> （stepover 60/65 vs 70 不可写 + 区域 ±1 粒度），**零未解释，校准池触底（纯结构性定案）**。
 > 2026-09-05 早两跑（comparer-run-191118/191558，
 > B=test.rebuilt.prt v1 空件）为 B 防呆修复（da3fd80）前错选件，issues=43 无效、不构成校准。
 
@@ -155,7 +163,9 @@ I-2）同 API 面，全部已实证，零新探针；几何/刀路维度显式�
 A1 输入合法性与索引：双侧 op 名 → map（重复名 → DUP 失配 + diag，INV-C1）；setup 名 map；刀具序
     → PRE-C1/INV-C1
 A2 配对：B 逐 op 查 A 名；A-only/B-only → 结构条目（POST-C6）；名集同序异 → ORDER_SHIFT（POST-C7）
-A3 逐配对对比：模板对归一比对（POST-C2）；Params 双判据逐键（POST-C1）；值单侧有 → 条目归 FAIL 不静默
+A3 逐配对对比：模板对归一比对（POST-C2）；Params 双判据逐键（POST-C1）；单侧缺失方向性（2026-09-06
+    口径修订，PTP 收尾）：A-only（重建漏写导出键）→ FAIL 不静默；B-only（近似模板带出的 gt 无概念面
+    参数）→ note 不 FAIL
 A4 刀具序对：类型键 + 数值双判据 + 名 diag（POST-C3）
 A5 setup 名对：origin 欧氏/轴元素差/fixture（POST-C4）
 A6 结构项：顶层组序（ProgramOrder）、单侧 op、刀具/setup 数差 → 结构条目（POST-C6；不含父组，见 §2 口径注记）

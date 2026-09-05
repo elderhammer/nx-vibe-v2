@@ -239,6 +239,9 @@ public static class NxCollect
                 try
                 {
                     TryParam(b, o, "bottom_stock", () => b.CuttingParameters.BottomStock.Value);
+                    // v2.5 PTP 收尾（2026-09-06 camprobe-ptpkeys P1A 双会话持久实证）：孔族补读基类 HoleDepth，
+                    // 与 PTP 导出键对齐——近似重建（打点/G83 → DRILLING）键面对称化
+                    TryParam(b, o, "hole_depth", () => b.HoleDepth.Value);
                     TryParam(b, o, "tech:spindle_rpm", () => b.FeedsBuilder.SpindleRpmBuilder.Value);
                     TryParam(b, o, "tech:feed_cut", () => b.FeedsBuilder.FeedCutBuilder.Value);   // v1.5-⑤
                 }
