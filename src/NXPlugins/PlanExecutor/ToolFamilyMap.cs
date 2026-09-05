@@ -25,14 +25,18 @@ namespace NXPlugins.PlanExecutor
             "铣刀", "Milling Tool", "Chamfer Mill", "倒斜铣刀", "End Mill", "Ball", "Bull Nose",
         };
 
-        /// <summary>注册对表（INV-U7-2）：(NX Types|Subtypes) → Create 注册对。行 = 探针 P2 实测校准
+        /// <summary>注册对表（INV-U7-2）：(NX Types|Subtypes) → Create 注册对。行 = 探针实测校准
         /// （camprobe-u7-115251：新建 (mill_planar,MILL) 读回 (Mill,Mill5)、(hole_making,STD_DRILL)
-        /// 读回 (Drill,DrillStandard)）；枚举原文精确匹配（大小写敏感）。</summary>
+        /// 读回 (Drill,DrillStandard)；（Mill,MillChamfer)→(mill_planar,CHAMFER_MILL) 由
+        /// camprobe-chamfer-201406 全模板扫描命中（CHAMFER_MILL 对 9 模板通用读回 MillChamfer，
+        /// 锚点对同批回归）——tool#4（T-004 中心钻）注册对问题收口，TOOL_TYPE_INFERRED 消除）；
+        /// 枚举原文精确匹配（大小写敏感）。</summary>
         private static readonly Dictionary<string, TemplatePair> RegisterPairs =
             new Dictionary<string, TemplatePair>
         {
             { "Mill|Mill5", new TemplatePair("mill_planar", "MILL") },
             { "Drill|DrillStandard", new TemplatePair("hole_making", "STD_DRILL") },
+            { "Mill|MillChamfer", new TemplatePair("mill_planar", "CHAMFER_MILL") },
         };
 
         /// <summary>PRE-3/U-7 判据源：注册对表与关键词表均非空。</summary>

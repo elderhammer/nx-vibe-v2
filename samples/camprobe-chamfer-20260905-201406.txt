@@ -1,0 +1,86 @@
+== CamProbeChamfer（MillChamfer 注册对扫描）==
+time: 2026-09-05 20:14:06
+Session: ApplicationName=APP_NONE
+模板部件数=17
+!! MATCH (Mill,MillChamfer) <= mill_planar/CHAMFER_MILL
+  [2] mill_planar/CHAMFER_MILL → Mill|MillChamfer
+  [16] hole_making/SPOT_DRILL → Drill|DrillSpotDrill
+  [17] hole_making/STD_DRILL → Drill|DrillStandard
+  [18] hole_making/CENTERDRILL → Drill|DrillCenterBell
+  [19] hole_making/STEP_DRILL → Drill|DrillStep
+  [20] hole_making/CORE_DRILL → Drill|DrillCore
+  [21] hole_making/SPOT_FACING_TOOL → Drill|DrillSpotFace
+  [22] hole_making/COUNTER_SINK → Drill|DrillCountersink
+  [23] hole_making/BACK_COUNTERSINK → Drill|DrillBackCountersink
+  [24] hole_making/COUNTER_BORE → Drill|DrillCounterbore
+  [25] hole_making/BORING_BAR_STD → Drill|DrillBoringBar
+  [26] hole_making/BORING_BAR_CHAMFER → Drill|DrillChamferBoringBar
+  [27] hole_making/REAMER → Drill|DrillReam
+  [28] hole_making/TAP → Drill|DrillTap
+  [29] hole_making/THREAD_MILL → Drill|DrillThreadMill
+!! MATCH (Mill,MillChamfer) <= hole_making/CHAMFER_MILL
+  [35] hole_making/CHAMFER_MILL → Mill|MillChamfer
+!! MATCH (Mill,MillChamfer) <= mill_contour/CHAMFER_MILL
+  [37] mill_contour/CHAMFER_MILL → Mill|MillChamfer
+  [40] mill_contour/MILL_7_PARAMETER → Mill|Mill7
+!! MATCH (Mill,MillChamfer) <= mill_rotary/CHAMFER_MILL
+  [52] mill_rotary/CHAMFER_MILL → Mill|MillChamfer
+  [60] mill_rotary/T_CUTTER → Tcutter|Undefined
+!! MATCH (Mill,MillChamfer) <= mill_multi-axis/CHAMFER_MILL
+  [67] mill_multi-axis/CHAMFER_MILL → Mill|MillChamfer
+  [80] mill_multi-axis/HEAD → FAIL Input parameter is out of range
+!! MATCH (Mill,MillChamfer) <= mill_multi_blade/CHAMFER_MILL
+  [82] mill_multi_blade/CHAMFER_MILL → Mill|MillChamfer
+!! MATCH (Mill,MillChamfer) <= generic_motion/CHAMFER_MILL
+  [96] generic_motion/CHAMFER_MILL → Mill|MillChamfer
+  [100] generic_motion/MILL_10_PARAMETER → Mill|Mill10
+  [120] turning/FORM_TOOL → Form|Undefined
+  [128] centerline/SPOT_DRILL → Drill|DrillSpotDrill
+  [129] centerline/STD_DRILL → Drill|DrillStandard
+  [130] centerline/CENTERDRILL → Drill|DrillCenterBell
+  [131] centerline/STEP_DRILL → Drill|DrillStep
+  [132] centerline/CORE_DRILL → Drill|DrillCore
+  [133] centerline/SPOT_FACING → Drill|DrillSpotFace
+  [134] centerline/COUNTER_SINK → Drill|DrillCountersink
+  [135] centerline/BACK_COUNTERSINK → Drill|DrillBackCountersink
+  [136] centerline/COUNTER_BORE → Drill|DrillCounterbore
+  [137] centerline/BORING_BAR_STD → Drill|DrillBoringBar
+  [138] centerline/BORING_BAR_CHAMFER → Drill|DrillChamferBoringBar
+  [139] centerline/REAMER → Drill|DrillReam
+  [140] centerline/TAP → Drill|DrillTap
+!! MATCH (Mill,MillChamfer) <= cam_test_new/CHAMFER_MILL
+  [158] cam_test_new/CHAMFER_MILL → Mill|MillChamfer
+  [160] cam_test_new/BALL_MILL → Mill|MillBall
+  [168] cam_test_new/BACK_BORING → Drill|DrillBackBore
+!! MATCH (Mill,MillChamfer) <= cam_legacy/CHAMFER_MILL
+  [171] cam_legacy/CHAMFER_MILL → Mill|MillChamfer
+
+创建=174 失败=27
+== 含 Chamfer/锚点读回的注册对 ==
+  mill_planar/MILL → Mill|Mill5
+  mill_planar/CHAMFER_MILL → Mill|MillChamfer
+  hole_making/STD_DRILL → Drill|DrillStandard
+  hole_making/BORING_BAR_CHAMFER → Drill|DrillChamferBoringBar
+  hole_making/MILL → Mill|Mill5
+  hole_making/CHAMFER_MILL → Mill|MillChamfer
+  mill_contour/MILL → Mill|Mill5
+  mill_contour/CHAMFER_MILL → Mill|MillChamfer
+  mill_rotary/MILL → Mill|Mill5
+  mill_rotary/CHAMFER_MILL → Mill|MillChamfer
+  mill_multi-axis/MILL → Mill|Mill5
+  mill_multi-axis/CHAMFER_MILL → Mill|MillChamfer
+  mill_multi_blade/MILL → Mill|Mill5
+  mill_multi_blade/CHAMFER_MILL → Mill|MillChamfer
+  generic_motion/MILL → Mill|Mill5
+  generic_motion/CHAMFER_MILL → Mill|MillChamfer
+  centerline/STD_DRILL → Drill|DrillStandard
+  centerline/BORING_BAR_CHAMFER → Drill|DrillChamferBoringBar
+  multi_axis_deposition/MILL_FLAT → Mill|Mill5
+  fixed_axis_deposition/MILL_FLAT → Mill|Mill5
+  probing/MILL → Mill|Mill5
+  cam_test_new/CHAMFER_MILL → Mill|MillChamfer
+  cam_test_new/MILL → Mill|Mill5
+  cam_legacy/MILL → Mill|Mill5
+  cam_legacy/CHAMFER_MILL → Mill|MillChamfer
+== 结论: (Mill,MillChamfer) 命中=mill_planar/CHAMFER_MILL ==
+== 结束 ==

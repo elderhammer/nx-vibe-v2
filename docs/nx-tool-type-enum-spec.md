@@ -100,6 +100,13 @@ schema `tool.type` 词集从"零出处 14 CAPP 词"（D-2 违例根源）替换�
 > 注：注册对 `MILL`/`STD_DRILL` 建出的默认刀型读回为 Mill5/DrillStandard——执行侧"枚举→注册对"
 > 实为**按默认刀型建通用组 + 数值直填**（D-2 现状延续）；将来按 subtype 精准建刀（如 MillChamfer
 > 型）需另探注册对/参数通道，超出 v1，不阻塞本批。
+> **MillChamfer 注册对已收口（2026-09-05，camprobe-chamfer-201406 全模板扫描）**：
+> (Mill,MillChamfer) ← `(mill_planar, CHAMFER_MILL)`（CHAMFER_MILL 对 9 模板通用读回 MillChamfer；
+> mill_contour/hole_making/mill_rotary/multi-axis/multi_blade/generic_motion/cam_test_new/
+> cam_legacy 同款；锚点对 (mill_planar,MILL)→Mill5、(hole_making,STD_DRILL)→DrillStandard 同批
+> 回归）→ 重建注册对表加行（ToolFamilyMap RegisterPairs），T-004 中心钻的 TOOL_TYPE_INFERRED
+> 与 comparer tool#4 条目消除（[I] 复跑待 GUI Execute 实证：DRILLING op 引用 Chamfer 刀型生成
+> 兼容性以实际运行为准）。
 
 ## 6. 冲突与文档回填点
 

@@ -30,11 +30,21 @@ namespace NXPlugins.PlanExporterTests
             Assert.Equal("STD_DRILL", r.Pair.Subtype, "P2 校准对 (Drill,DrillStandard)→STD_DRILL");
         }
 
-        public static void test_inv_u7_2_uncovered_pair_inferred()
+        public static void test_inv_u7_2_chamfer_pair_resolves()
         {
-            // 注册对表外组合（如 MillChamfer 型，spec §5b：精准建刀超 v1）→ 不伪造精确命中
+            // tool#4 收口（2026-09-05）：(Mill,MillChamfer) 由 camprobe-chamfer 全模板扫描命中
+            // 注册对 (mill_planar,CHAMFER_MILL)（读回 MillChamfer）→ 精确命中，非 Inferred
             ToolFamilyMap.Resolution r = ToolFamilyMap.Resolve("Mill", "MillChamfer");
-            Assert.True(r.Inferred, "(Mill,MillChamfer) 未覆盖 → Inferred");
+            Assert.False(r.Inferred, "(Mill,MillChamfer) 已覆盖非推断");
+            Assert.Equal("mill_planar", r.Pair.Type, "camprobe-chamfer 命中对 type");
+            Assert.Equal("CHAMFER_MILL", r.Pair.Subtype, "camprobe-chamfer 命中对 subtype");
+        }
+
+        public static void test_inv_u7_2_mill7_still_uncovered()
+        {
+            // 注册对表外 NX 词（Mill,Mill7）仍不覆盖 → Inferred（不伪造精确命中）
+            ToolFamilyMap.Resolution r = ToolFamilyMap.Resolve("Mill", "Mill7");
+            Assert.True(r.Inferred, "(Mill,Mill7) 未覆盖 → Inferred");
         }
 
         public static void test_inv_u7_2_enum_words_case_sensitive()

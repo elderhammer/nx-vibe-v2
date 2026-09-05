@@ -122,7 +122,8 @@ I-2）同 API 面，全部已实证，零新探针；几何/刀路维度显式�
 > PTP 键错位 4（hole_depth↔bottom_stock，重建近似可见面不静默）+ tool#4 类型 1（U-7 已知）；
 > 腔对腔 cut_*/finish/boundary/rpm 由"键缺席"转全 PASS = 写入持久终判 + technology 维首亮。
 > ② **v2 gate 终跑**（comparer-run-20260905-192456，issues=**21** = 预测）：结构/刀具/MCS/白名单
-> 参数面残余与 200339 清单同源（PTP 4 + tool#4 1）；v2 三维残余 = 腔 16 = OP-001/002/004 ×4
+> 参数面残余与 200339 清单同源（PTP 4 + tool#4 1——**tool#4 项 2026-09-05 注册对扫描收口**：
+> (Mill,MillChamfer)→(mill_planar,CHAMFER_MILL) 入重建表，[I] 复跑预期 -1）；v2 三维残余 = 腔 16 = OP-001/002/004 ×4
 > （刀路 time/length + 区域数/面积和——归因 = feed_cut 写面缺口（注册表 #15 未测写 → 写面探针
 > 候选，gt 2000/500 vs rebuilt 默认 250 为时间差主因）+ 区域分割粒度（gt 80/36/2 vs rebuilt
 > 24×3））+ OP-003 ×4（空刀路——判别读探针 camprobe-v2op-191955/192013 + 七探针链 γ 定案：
