@@ -279,7 +279,7 @@ public static class NxCollect
         try { o.ToolpathTime = op.GetToolpathTime(); } catch (Exception e) { o.ReadbackErrors.Add("刀路时间读回失败: " + e.Message); }
         try { o.ToolpathLength = op.GetToolpathLength(); } catch (Exception e) { o.ReadbackErrors.Add("刀路长度读回失败: " + e.Message); }
         if (o.TypeFamily != "Cavity Milling") return;   // 面/区域语义本批仅腔铣族（D-3）
-        // 区域级摘要（G3：Operation.CutRegionsData 活性实证）
+        // 区域级摘要 + 明细（G3：Operation.CutRegionsData 活性实证；v2.5 配对明细 = 质心+面积同序 vector）
         try
         {
             CutRegionsData crd = op.CutRegionsData;
@@ -293,6 +293,14 @@ public static class NxCollect
                     foreach (double a in areas) sum += a;
                     o.RegionAreaSum = sum;
                 }
+                try
+                {
+                    NXOpen.Point3d[] cents = crd.GetCentroidPoints();
+                    if (cents != null && areas != null && cents.Length == areas.Length)
+                        for (int i = 0; i < cents.Length; i++)
+                            o.RegionItems.Add(new RegionItem(cents[i].X, cents[i].Y, cents[i].Z, areas[i]));
+                }
+                catch (Exception e2) { o.ReadbackErrors.Add("区域明细采集失败: " + e2.Message); }
             }
         }
         catch (Exception e) { o.ReadbackErrors.Add("区域采集失败: " + e.Message); }

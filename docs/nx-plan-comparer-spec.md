@@ -155,6 +155,18 @@ I-2）同 API 面，全部已实证，零新探针；几何/刀路维度显式�
 > 概念面参数 → note 不 FAIL，[U] 104/104）→ 复跑：**param=50/50 全 PASS**，hole_depth 双侧配对消 2、
 > bottom_stock 降 note 消 2 → 残留 11 = OP-003 γ 4 + OP-002 γ 类 4 + OP-001 已知残余 3
 > （stepover 60/65 vs 70 不可写 + 区域 ±1 粒度），**零未解释，校准池触底（纯结构性定案）**。
+> **区域配对研究批判别链 + 开发（2026-09-06，issues 11→9 口径细化，区域维诊断化）**：
+> ① 判别链（camprobe-v2regionclone-002142/002206 + v2surfdiff-002349 + v2regionfull-002615/002633）：
+> **OP-002 归因链最终修订**——gt 侧同参同面克隆 = 27.4s/119 区（≈ rebuilt 118，rebuilt 本体=克隆逐位同 =
+> executor 复刻完备）→ 推翻"体上下文 γ"；surfdiff 53 行差全在白名单外（非切削/stepover 60/#9/
+> ReferenceTool）；regionfull 定案 = **gt 本体只加工两孔底段 18 层×2 区窄带（z 76.5–79.8）vs rebuilt
+> 全程 118 层×1 区（99.8 起）**——面集级几何属性/加工范围差异（UI 集设置通道），非参数键、非体上下文，
+> 修复 = 面级写通道（超出 v1 executor 模型，排队面级扩展批）。**γ 家族缩为 OP-003 唯一**。
+> ② 区域配对开发（RegionItem 明细采集 + RegionPairing 分层配对纯逻辑 + ComparerCore 明细路径）：
+> [U] 116/116（12 条配对新红线：判别基线 36/118、3/0 必须 FAIL + 粒度 note + 2:1 合并 + 漂移哨兵 +
+> 层距漂移/端层分级）。③ 校准复跑 003738/004123：层配对按序对齐修复（绝对 z 搜索在层距微差下
+> 失效——gt 0.1944 vs reb 0.1991 累积漂移）；阈值定案 NoteAreaRatio=2%（0.1% 微区 note vs 4.3%
+> 整层 FAIL 哨兵）。区域维诊断化：报告从"80 vs 79"升级为"差层面积占比 + A-only 位置"。
 > 2026-09-05 早两跑（comparer-run-191118/191558，
 > B=test.rebuilt.prt v1 空件）为 B 防呆修复（da3fd80）前错选件，issues=43 无效、不构成校准。
 
@@ -223,7 +235,7 @@ run-unittests.ps1 纳入 PlanComparer/PlanComparerTests 目录；csproj 加 Plan
 | 参数数值 | `EpsLen=0.01mm` + `RelTol=5%` | `\|a-b\| ≤ EpsLen` **或** 相对偏差 ≤ RelTol → PASS | 000948 param=50/50 零噪音；哨兵 = OP-001 长度 3.4% PASS vs time 6.3% FAIL——阈值不掩盖已知不可写残余（stepover 60/65 vs 70，#9），调整须保哨兵 FAIL |
 | 参数枚举 | ordinal 相等 | 词集同源（采集侧按键固定，两侧同形） | v1.5-③ 起枚举键全 PASS |
 | MCS/fixture | origin 欧氏 ≤ EpsLen；z/x 轴元素差 ≤ `EpsAxis=1e-6`；fixture 整数等 | — | 192456 起 mcs=1/1、fixture=1/1 |
-| 刀路三维（v2 gate，仅腔铣族） | time/length/区域面积和 = 同 RelTol=5%；区域数 = 整数等；签名面集 = 集合等 | CompareV2 维 | OP-004 深度复刻后 2 区=2 区全同；OP-001 区域 80 vs 79 = ±1 粒度差 → 区域几何配对为 v2.5 增强排队项（非容差问题） |
+| 刀路三维（v2 gate，仅腔铣族） | time/length = 同 RelTol=5%；**区域 = 明细分层配对判据（v2.5，RegionPairing）**：层数差分级（差层面积占比 ≤ NoteAreaRatio=2% → note；> 2% → FailStructure）+ 层内 1:1/2:1 合并 + 配对面积漂移 ≤ RelTol（哨兵）；签名面集 = 集合等 | CompareV2 维 | OP-004 深度复刻后 2 区=2 区全同；OP-001 80 vs 79 层 = **1 真差层（面积 4.3% > 2%，FailStructure 哨兵案例——端层范围取整差，非纯粒度）**；OP-002 18 vs 118 层（84.8%）→ 机理级报告；阈值 004123 定案（0.1% 微区 → note / 4.3% 整层 → FAIL），调值按 §7 变更纪律留痕 |
 | 单侧缺失（2026-09-06 方向化） | A-only → FAIL；B-only（近似模板带出，gt 无概念面）→ note | 不静默（note 含键与值） | PTP 收尾 000948：bottom_stock ×2 降 note 后 param=50/50 |
 
 **变更纪律**：本表值 = 2026-09-06 定稿。任何容差调整须过全量 [U] + 校准回归——已知 FAIL 哨兵（OP-001

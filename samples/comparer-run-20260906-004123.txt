@@ -1,0 +1,58 @@
+== ComparerAdapter ==
+time: 2026-09-06 00:41:23
+A=C:\Users\21505\Code\nx-vibe-v2\samples\test.prt  B=C:\Users\21505\Code\nx-vibe-v2\samples\v2.rebuilt-20260906-003620.prt
+OpenDisplay 失败(文件已存在)——尝试 UF 已载枚举复用
+  候选[0] name=hole_making
+  候选[1] name=v2.rebuilt-20260906-003620
+  候选[2] name=test
+复用已装载: test
+SetDisplayPart: test
+SetWork: test
+== 采集 A: test ==
+  tool 17.0 → type=Mill subtype=Mill5
+  tool 13.94 → type=Mill subtype=Mill5
+  tool 9.96 → type=Mill subtype=Mill5
+  tool D6.0X90中心钻 → type=Mill subtype=MillChamfer
+  tool 8.5 → type=Drill subtype=DrillStandard
+  tool 17.5 → type=Drill subtype=DrillStandard
+MCS 回读: origin=(75,0,100) z=(0,0,1)
+  PTP op 打点_COPY_COPY_COPY 参数面细分待后续批（cycle/细分 U-1 负证；rpm/feed 已扩读）
+  PTP op 钻头G83_COPY_3_COPY_COPY_COPY_1 参数面细分待后续批（cycle/细分 U-1 负证；rpm/feed 已扩读）
+OpenDisplay 失败(文件已存在)——尝试 UF 已载枚举复用
+  候选[0] name=hole_making
+  候选[1] name=v2.rebuilt-20260906-003620
+复用已装载: v2.rebuilt-20260906-003620
+SetDisplayPart: v2.rebuilt-20260906-003620
+SetWork: v2.rebuilt-20260906-003620
+== 采集 B: v2.rebuilt-20260906-003620 ==
+  tool T-001 → type=Mill subtype=Mill5
+  tool T-002 → type=Mill subtype=Mill5
+  tool T-003 → type=Mill subtype=Mill5
+  tool T-004 → type=Mill subtype=MillChamfer
+  tool T-005 → type=Drill subtype=DrillStandard
+  tool T-006 → type=Drill subtype=DrillStandard
+MCS 回读: origin=(75,0,100) z=(0,0,1)
+快照 A: ops=6 tools=6 setups=1  快照 B: ops=6 tools=6 setups=1
+== 结构 ==
+  op 配对=6 仅A(重建缺)=0 仅B(重建多)=0  刀具 A=6 B=6  setup A=1 B=1
+== 逐项（非 PASS） ==
+  [FAIL] TOOLPATH_DIFF@CAVITY_MILL 刀路时间: A=58.32 B=54.631 相对偏差=6.3%（超容差）
+  [FAIL] REGION_DIFF@CAVITY_MILL 区域配对: 分层结构差: A=80 层 B=79 层（A-only 区 1 / B-only 区 0，差层面积占比 4.3%）
+  [FAIL] TOOLPATH_DIFF@CAVITY_MILL_COPY 刀路时间: A=0.515 B=28.374 相对偏差=98.2%（超容差）
+  [FAIL] TOOLPATH_DIFF@CAVITY_MILL_COPY 刀路长度: A=928.849 B=39849.684 相对偏差=97.7%（超容差）
+  [FAIL] REGION_DIFF@CAVITY_MILL_COPY 区域配对: 分层结构差: A=18 层 B=118 层（A-only 区 18 / B-only 区 100，差层面积占比 84.8%）
+  [FAIL] TOOLPATH_DIFF@CAVITY_MILL_COPY_COPY 刀路时间: A=8.03 B=0 相对偏差=100.0%（超容差）
+  [FAIL] TOOLPATH_DIFF@CAVITY_MILL_COPY_COPY 刀路长度: A=4506.326 B=0 相对偏差=100.0%（超容差）
+  [FAIL] REGION_DIFF@CAVITY_MILL_COPY_COPY 区域数: A=3 B=0
+  [FAIL] REGION_DIFF@CAVITY_MILL_COPY_COPY 区域面积和: A=19321.39 B=0 相对偏差=100.0%
+  [note] 参数 bottom_stock 仅重建侧有（近似模板带出，gt 无此概念面，不判 FAIL）: B=0
+  [note] 参数 bottom_stock 仅重建侧有（近似模板带出，gt 无此概念面，不判 FAIL）: B=0
+  [note] tool#1 名差（非致命）: A=17.0 B=T-001
+  [note] tool#2 名差（非致命）: A=13.94 B=T-002
+  [note] tool#3 名差（非致命）: A=9.96 B=T-003
+  [note] tool#4 名差（非致命）: A=D6.0X90中心钻 B=T-004
+  [note] tool#5 名差（非致命）: A=8.5 B=T-005
+  [note] tool#6 名差（非致命）: A=17.5 B=T-006
+== 汇总: issues=9 op=6/6 param=50/50 tool=6/6 mcs=1/1 fixture=1/1 template=6/6 ==
+== v2 汇总: toolpath=3/8 region=1/5 sigfaceset=4/4 ==
+== 结束 ==

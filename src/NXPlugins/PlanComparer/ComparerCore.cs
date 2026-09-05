@@ -208,8 +208,23 @@ namespace NXPlugins.PlanComparer
                     Math.Abs(a.ToolpathLength.Value - b.ToolpathLength.Value));
             }
 
-            // 区域维（V2-POST-5）：区数（int 等）+ 面积和（双判据）；单侧缺 → FAIL
-            if (a.RegionCount.HasValue || b.RegionCount.HasValue)
+            // 区域维（V2-POST-5）：明细齐（v2.5 配对）→ 分层配对判据 1 check（RegionPairing）；
+            // 否则 fallback 摘要判据（区数 int 等 + 面积和双判据；旧快照/旧夹具兼容）
+            bool regionPaired = a.RegionItems.Count > 0 && b.RegionItems.Count > 0;
+            if (regionPaired)
+            {
+                r.RegionChecks++;
+                RegionVerdict rv = RegionPairing.Judge(a.RegionItems, b.RegionItems,
+                    new RegionPairOptions(), opt.RelTol);
+                if (rv.IsPass) r.RegionPass++;
+                else if (rv.Kind == RegionVerdictKind.Note)
+                {
+                    r.RegionPass++;
+                    r.Notes.Add("区域粒度差 note: " + rv.Detail);
+                }
+                else AddIssue(r, a.Name, "REGION_DIFF", "区域配对: " + rv.Detail);
+            }
+            if (!regionPaired && (a.RegionCount.HasValue || b.RegionCount.HasValue))
             {
                 r.RegionChecks++;
                 if (!a.RegionCount.HasValue || !b.RegionCount.HasValue)
@@ -221,7 +236,7 @@ namespace NXPlugins.PlanComparer
                     "区域数: A=" + a.RegionCount.Value + " B=" + b.RegionCount.Value,
                     Math.Abs(a.RegionCount.Value - b.RegionCount.Value));
             }
-            if (a.RegionAreaSum.HasValue || b.RegionAreaSum.HasValue)
+            if (!regionPaired && (a.RegionAreaSum.HasValue || b.RegionAreaSum.HasValue))
             {
                 r.RegionChecks++;
                 if (!a.RegionAreaSum.HasValue || !b.RegionAreaSum.HasValue)

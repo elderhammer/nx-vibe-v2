@@ -105,9 +105,24 @@ namespace NXPlugins.PlanExporter
         /// <summary>刀路时间/长度（秒/mm；v2 采集，重建件生成后非空；gt 手编件已存档亦非空）。</summary>
         public double? ToolpathTime = null;
         public double? ToolpathLength = null;
-        /// <summary>CutRegionsData 区域级摘要（v2：区数/面积和；质心维留 v2.5——本批只到计数+面积）。</summary>
+        /// <summary>CutRegionsData 区域级摘要（v2：区数/面积和）。明细（v2.5 配对）见 RegionItems。</summary>
         public int? RegionCount = null;
         public double? RegionAreaSum = null;
+        /// <summary>区域明细（v2.5 区域配对，2026-09-06）：逐区质心 + 面积，源 = CutRegionsData
+        /// GetCentroidPoints/GetAreas（同序 vector，regionfull 实证 36/118 区齐）；空 = 无明细（fallback 摘要判据）。</summary>
+        public readonly List<RegionItem> RegionItems = new List<RegionItem>();
+    }
+
+    /// <summary>区域明细项（v2.5 配对）。源 = CutRegionsData = NX_NO_DOC 内部 API（NX10.0.2/cam_base，
+    /// 头文件实证），跨 NX 版本可能漂移；配对语义 = 分层统计性对齐（层 × 层内区），非区身份追踪
+    /// （内部面无区 ID）。</summary>
+    public sealed class RegionItem
+    {
+        public readonly double Cx, Cy, Cz, Area;
+        public RegionItem(double cx, double cy, double cz, double area)
+        { Cx = cx; Cy = cy; Cz = cz; Area = area; }
+        public override string ToString() { return "(" + Cx.ToString("0.###") + "," + Cy.ToString("0.###")
+            + "," + Cz.ToString("0.###") + ") 面积=" + Area.ToString("0.###"); }
     }
 
     /// <summary>面身份签名（v2，纯逻辑值对象，无 NX 依赖）。来源 = UFModl.AskFaceData（camprobe-geom 实证）；
