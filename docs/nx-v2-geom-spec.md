@@ -132,10 +132,15 @@ STEP 资产；评分规格固化（决策④遗留，随本批校准记录后另
    > 与 gt 全同仍空刀路（gt 8.03s/3 区）→ 待诊校准条目：候选判别 = 几何集属性
    > （GeometrySet.MaterialSide/Stock 等，不在复刻面）或 op 级 CutLevel/区域设置——需一次
    > gt vs rebuilt 同 op builder 只读对照探针（探针待批）。
-3. **I-3 对比终跑（ComparerAdapter.exe，args = B 件路径）**：A=test.prt B=v2.rebuilt-<ts>.prt →
-   issues 中腔 op 不再出现 TOOLPATH_DIFF 大偏差/REGION_DIFF/SIG_FACE_DIFF（签名 13/13 后
-   预期收敛；若仍差 → 校准清单新增条目并落档）。验收：`== v2 汇总: toolpath=2/2 region=… 
-   sigfaceset=1/1 ==`（或差条目逐条可解释）。
+3. **I-3 对比终跑（ComparerAdapter-v2.exe，无参 → B 防呆自动最新 v2.rebuilt-*.prt）**：
+   > 实录 192158（正确 B = v2.rebuilt-191437）：**v2 汇总 sigfaceset=4/4（面复刻维全 PASS，
+   > 零 SIG_FACE_DIFF）**；issues 43→25 全可归因（腔刀路/区域差 ×16 = feed_cut 白名单缺口 +
+   > 区域分割粒度 + OP-003 待诊；PTP 键错位 ×4 + tool#4 = 200339 清单同源；PTP 刀路单侧缺 ×4 =
+   > v2 范围缺席噪音 → 维 gate 修正：v2 三维仅腔铣族比对（ComparerCore CompareV2，192158 后
+   > issues 预期 21））。
+   > 校准清单新增：① 区域维同面复刻仍敏感（gt 80 vs rebuilt 24）——v2.5 区域几何配对而非计数；
+   > ② feed_cut（注册表 #15 未测写）成为写面探针候选——gt feedCut 2000/500 与 rebuilt 默认 250
+   > 是腔刀路时间差主因。
 4. **I-4 校准清单更新**：终跑 diff 全条目与校准记录对照后回填 comparer spec §3 记录。
 
 > 实现侧执行记录（2026-09-05）：spec 落档 → schema/Model/Doc/ExporterCore/NxCollect 扩展 →

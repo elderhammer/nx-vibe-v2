@@ -166,6 +166,13 @@ namespace NXPlugins.PlanComparer
 
         private static void CompareV2(ComparerResult r, OperationItem a, OperationItem b, ComparerOptions opt)
         {
+            // 维口径 gate（2026-09-05 校准，comparer 192158）：v2 三维 = 腔铣族专属（D-3）——
+            // 双侧模板对均非 CAVITY_MILL（PTP/Drilling 近似 op 不生成刀路/无面签名）→ 不比对
+            TemplateResolution ra2 = WhiteList.Resolve(a.TypeFamily);
+            TemplateResolution rb2 = WhiteList.Resolve(b.TypeFamily);
+            bool aCav = ra2.Pair != null && ra2.Pair.Subtype == "CAVITY_MILL";
+            bool bCav = rb2.Pair != null && rb2.Pair.Subtype == "CAVITY_MILL";
+            if (!aCav && !bCav) return;
             // 刀路维（V2-POST-4）：双侧值双判据沿 v1（EpsLen/RelTol）；单侧缺 → FAIL 不静默
             if (a.ToolpathTime.HasValue || b.ToolpathTime.HasValue)
             {

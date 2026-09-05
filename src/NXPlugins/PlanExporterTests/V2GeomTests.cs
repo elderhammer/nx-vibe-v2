@@ -154,7 +154,13 @@ namespace NXPlugins.PlanExporterTests
         private static OperationItem OpWithV2(string name, double? tpTime, double? tpLen,
             int? regCnt, double? regArea, params FaceSignature[] sigs)
         {
-            var o = new OperationItem { Name = name };
+            return OpWithV2(name, "Cavity Milling", tpTime, tpLen, regCnt, regArea, sigs);
+        }
+
+        private static OperationItem OpWithV2(string name, string family, double? tpTime, double? tpLen,
+            int? regCnt, double? regArea, params FaceSignature[] sigs)
+        {
+            var o = new OperationItem { Name = name, TypeFamily = family };
             o.ToolpathTime = tpTime;
             o.ToolpathLength = tpLen;
             o.RegionCount = regCnt;
@@ -205,6 +211,18 @@ namespace NXPlugins.PlanExporterTests
                 OpWithV2("CAV", null, null, 80, 671095.64),
                 OpWithV2("CAV", null, null, 242, 671095.64));
             Assert.Equal(1, CountCode(var, "REGION_DIFF"), "区数变异 → FAIL");
+        }
+
+        // v2 维 gate（192158 校准）：非腔铣族（PTP/Drilling）op 不产生 v2 三维 check——
+        // 近似 op 无面签名/不生成刀路，双侧有值也不比对（口径 = 腔铣族专属，D-3）。
+        public static void test_V2GATE_noncavity_ops_no_v2_checks()
+        {
+            ComparerResult r = CompareOps(
+                OpWithV2("打点", "Point to Point", 0.134, 203.46, null, null),
+                OpWithV2("打点", "Point to Point", 0, 0, null, null));
+            Assert.Equal(0, r.ToolpathChecks, "PTP 族 → 无刀路 check（192158 噪音消除）");
+            Assert.Equal(0, r.RegionChecks, "PTP 族 → 无区域 check");
+            Assert.Equal(0, r.SigChecks, "PTP 族 → 无签名面集 check");
         }
 
         // V2-POST-6：签名面集差——双侧同 3 → SigPass；B 删 1 → SIG_FACE_DIFF（A-only=1）。
