@@ -135,13 +135,33 @@ STEP 资产；评分规格固化（决策④遗留，随本批校准记录后另
    > （gt 结构 = 组级 set0 Body + op 级面）。实录 191434（修复后）：OP-001 129.8s / OP-002
    > 27.2s / OP-004 220.1s 全出；**OP-003（COPY_COPY，3 面）仍 0**——面签名 3/3、组级/参数
    > 与 gt 全同仍空刀路（gt 8.03s/3 区）→ 待诊校准条目。
-   > **判别读探针已跑（camprobe-v2op-191955 = gt 档 / 192013 = rebuilt 档，源
-   > CamProbeV2OpDiag.cs）**：几何集属性项两侧全同（MaterialSide/Stock/Offset/Reversed；
-   > 仅 Intol 0.02 vs 0.03 差，但同差的 OP-002 gt 侧有刀路 → 非判别）；DepthPerCut 继承态
-   > （gt True vs rebuilt False）与 feed 缺口（gt 500 vs rebuilt 250，同缺口 OP-002 正常出
-   > 刀路）均非零化判别项 → **集属性/DPC/feed 三候选假设排除（136504a）**。零化参数仍未定位：
-   > 下续 = BuilderProperties 双档 JSON diff（OP-003 + OP-001 对照），v2.5 待续；OP-003 的 4 条
-   > FAIL 以已知校准条目暂挂（192456 验收无新增未解释项）。
+   > **判别链七探针收官（2026-09-05 晚，camprobe-v2{regen,bp,surf,fix,flip,sel,body,apiclone} 系列，
+   > 源 Journal/CamProbeV2*.cs）→ γ 级定案：OP-003 空刀路 = rebuilt（STEP 回导）体上下文上的
+   > NX 引擎区域形成差异，非 executor 复刻缺口**。证据链：
+   > ① 新会话单独/按序重生成均确定性 0（camprobe-v2regen，排除会话态/顺序）；
+   > ② `Operation.BuilderProperties` 双档实验**失效并修正认知**：同件内 OP-001 与 OP-003 的 JSON
+   > 逐字节相同（同 md5）→ BP JSON 非逐 op 生效参数快照（非"已提交态"逐 op 视图），索引 §2.1
+   > 表述已随本批修正（camprobe-v2bp）；
+   > ③ 深面反射（camprobe-v2surf，builder 树 3 层白名单递归）：OP-003 件间差异 ⊖ OP-001 对照后
+   > 仅剩容差 0.02 vs 0.03（兄弟同差）→ 无 OP-003 专属参数差异；gt 件内 OP-003 的显著候选 =
+   > `CutLevel.GlobalDepthPerCut`（20 vs 兄弟 0.2/0.3）——plan 现读写的 op 级 `b.DepthPerCut`
+   > 恒 0 继承，腔真实 stepdown 在 CutLevel 子树（导出读键缺口候选，见 ④）；
+   > ④ 写回判别（camprobe-v2fix C1..C6：DPC 20/DepthPerCut 20/Stepover 65/Ext 2/组合/Blank 0.2）
+   > 均不解除零刀路；翻转判别（camprobe-v2flip）：**CutLevel 子树写持久 ✓（可写族）**，但 gt 侧
+   > DPC 20→1 后刀路不变（8.03s/3 区）→ DPC 非零化参；
+   > ⑤ 面集判别（camprobe-v2sel）：13/10 面选择 → 24 区 220.11s（= OP-004 同参值），自身 3 面
+   > → 0 可复现；同会话还原 3 面后刀路不失效（工具路径状态缓存现象，佐证面变不触发重算）；
+   > ⑥ 体保真（camprobe-v2body）：gt 与 rebuilt body 全同（area/vol/COF/26 面/68 边；OP-003
+   > 3 面均为 4 边平面 Z+ z=100 两侧一致）；
+   > ⑦ API 新建判别（camprobe-v2apiclone）：executor 同款 API + 默认参数 + 同 3 面 → **gt 件
+   > 14.78s/3 区非零 vs rebuilt 件 0**——同码同面同参仅件不同 → 零化与 op 创建路径/参数无关，
+   > rebuilt 体上下文引擎行为（候选机制：STEP 回导体的 cut-region 内部面/loop 引用或 import
+   > 特征态，公开面无可调开关；体量/拓扑/签名/边数全等但区域形成不同）。
+   > **处置**：executor 不改（已按 plan 正确复刻面与参数）；OP-003 4 条 FAIL 转**永久校准条目**
+   > （192456 已知残余之一）；v2.5 区域几何配对须先解释本差异（判别 ⑦ 为复现基线）。
+   > 副产品（④）：腔 real stepdown = `CutLevel.GlobalDepthPerCut` 而非 op 级 `b.DepthPerCut`
+   > → 导出深度键读成员修正候选（gt 0.3/0.2/20/20 vs rebuilt 模板默认 1 是区域/刀路结构差的
+   > 主因候选，v2.5 写面扩展批先验证再入白名单）。
 3. **I-3 对比终跑（ComparerAdapter-v2.exe，无参 → B 防呆自动最新 v2.rebuilt-*.prt）**：
    > 实录 192158（正确 B = v2.rebuilt-191437）：**v2 汇总 sigfaceset=4/4（面复刻维全 PASS，
    > 零 SIG_FACE_DIFF）**；issues 43→25 全可归因（腔刀路/区域差 ×16 = feed_cut 白名单缺口 +

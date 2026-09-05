@@ -1,0 +1,25 @@
+== CamProbeV2Regen（OP-003 新会话重生成判别）==
+time: 2026-09-05 19:47:54
+件: C:\Users\21505\Code\nx-vibe-v2\samples\v2.rebuilt-20260905-191437.prt
+Session: ApplicationName=APP_NONE
+打开 OK: v2.rebuilt-20260905-191437  camSession=True
+op 定位 OK: CAVITY_MILL_COPY_COPY
+--- 重生成前 ---
+  [OP-003 前] time=0 length=0
+    CutRegions n=0
+    CutArea set[0] items=3
+--- 判别实验 1a：单独重生成 OP-003 ---
+生成 wall=0.0s
+  [OP-003 单独重生成后] time=0 length=0
+    CutRegions n=0
+    CutArea set[0] items=3
+--- 判别实验 1b：按原生成序重生成 OP-001..004（顺序依赖判别） ---
+  生成 CAVITY_MILL wall=0.9s time=129.8219 length=34591.7309
+  生成 CAVITY_MILL_COPY wall=0.4s time=27.246 length=8210.6269
+  生成 CAVITY_MILL_COPY_COPY wall=0.0s time=0 length=0
+  生成 CAVITY_MILL_COPY_COPY_COPY wall=0.9s time=220.1114 length=57103.1073
+  [OP-003 按序重生成后] time=0 length=0
+    CutRegions n=0
+    CutArea set[0] items=3
+总 wall=2.3s（未 Save，只读会话）
+== 结束 ==

@@ -149,8 +149,12 @@ camprobe-v2face-A-033810/B-034035 + 探针源 CamProbeV2Geom/CamProbeV2Gt/CamPro
 - **BuilderProperties 通道**：`CAMObject.BuilderProperties : string` = **全参数 JSON 树序列化**
   （腔 op ~40KB、PTP ~21KB；参数含 Value/ValueIntent/ExpressionString/InheritanceStatus/Tag，
   如 CAVITY_MILL JSON 含 CutLevel/GlobalDepthPerCut/DistanceBuilder/NonCuttingBuilder…）。
-  可作通用只读增强候选（免逐 Builder 读）；内部格式无文档、需 CAM 会话（无会话访问曾 AV）。
-  **PTP 的 JSON 无 cycle 键**（Peck/Dwell/G83/ToolDrivePoint 扫描零命中）。
+  **2026-09-05 实证修正：非逐 op 生效参数快照**——同件内同模板两 op（CAVITY_MILL 与
+  CAVITY_MILL_COPY_COPY，参数实态不同：feedCut 2000 vs 500）的 BuilderProperties JSON
+  **逐字节相同**（camprobe-v2bp-gt-194846，同 md5）→ 反映模板/代表级参数树，不随逐 op 生效值
+  变化；**不可作逐 op 参数 diff、不可作"已提交态"逐 op 视图**（stepover P1 判读同源限定）。
+  内部格式无文档、需 CAM 会话（无会话访问曾 AV）。**PTP 的 JSON 无 cycle 键**（Peck/Dwell/G83/
+  ToolDrivePoint 扫描零命中）——模板级缺键结论不受影响（schema 级证据）。
 - **PTP 旧模板可读面（打点/G83 同）**：FeedsBuilder 真实值可读（打点 rpm=3000/feed=80、G83
   rpm=500/feed=35，InheritanceStatus=False=显式）；OperationBuilder 级 HoleDepth(=0 继承)/
   HoleDepthType(Point)/HoleAxisType(Vector)/RetractDistance/SafeClearance；MillOperationBuilder 级

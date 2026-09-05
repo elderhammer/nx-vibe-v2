@@ -1,0 +1,5144 @@
+== CamProbeV2Surf（腔 op builder 深面反射 dump）==
+label=reb  件: C:\Users\21505\Code\nx-vibe-v2\samples\v2.rebuilt-20260905-191437.prt
+打开 OK: v2.rebuilt-20260905-191437  camSession=True
+
+== op: CAVITY_MILL  pathT=129.8219
+[b] : CavityMillingBuilder
+  ~ BlankGeometry = [Geometry]
+  [CutLevel] : CutLevel
+    ~ CutLevelType = Constant
+    [DistanceBelow] : InheritableToolDepBuilder
+      ~ Intent = ToolDep
+      ~ ExpressionString = 
+      ~ Value = 0
+      ~ ValueIntent = Function
+      ~ InheritanceStatus = False
+      ~ NextSink = null
+    [GlobalDepthPerCut] : StepoverBuilder
+      ~ AdditionalPasses = 0
+      ~ Angular = 0
+      ~ ApplyOn = OnPlane
+      ~ BlankContourDepth = null
+      ~ BlankContourNoLevels = 0
+      [DistanceBuilder] : InheritableToolDepBuilder
+        ~ Intent = PartUnits
+        ~ ExpressionString = 
+        ~ Value = 1
+        ~ ValueIntent = PartUnits
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ DistanceMaximumBuilder = null
+      ~ DistanceMinimumBuilder = null
+      ~ FirstDistance = null
+      ~ HorizontalLimitBuilder = null
+      ~ InheritableDistance = null
+      ~ MaximumAverage = 0
+      ~ MaximumAverageBuilder = null
+      ~ MaximumAverageOnlyBuilder = null
+      ~ MaximumBuilder = null
+      ~ MaximumPercentBuilder = null
+      ~ MinimumAverage = 0
+      ~ MinimumAverageBuilder = null
+      ~ MinimumDistance = null
+      ~ MinimumPercentBuilder = null
+      ~ MultipleBuilder = null
+      ~ NumberAtFirstDirection = 0
+      ~ NumberAtSecondDirection = 0
+      ~ NumberOfStepovers = 0
+      ~ PercentFluteLength = null
+      ~ PercentOfDegression = 0
+      ~ PercentOfRemainingBuilder = null
+      ~ PercentThreadLength = null
+      ~ PercentToolFlatBuilder = null
+      ~ PercentWireBuilder = null
+      [ScallopBuilder] : InheritableDoubleBuilder
+        ~ ExpressionString = 
+        ~ Value = 0.01
+        ~ ValueIntent = PartUnits
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ StepoverType = Constant
+      ~ StockPerPassBuilder = null
+      ~ UserDefined = null
+      ~ ValueOfDegression = null
+      ~ VariableMaximumBuilder = null
+      ~ VariableMaximumOnlyBuilder = null
+      ~ VariableMinimumBuilder = null
+      ~ VerticalLimitBuilder = null
+      ~ NextSink = null
+    ~ RangeType = Automatic
+    ~ TopOffCriticalDepths = False
+    ~ TopZc = 0
+    ~ NextSink = null
+  ~ TrimBoundary = [Boundary]
+  ~ AdditionalPasses = 0
+  ~ AutomaticPartBoundaryMethod = FollowWallTop
+  [AvoidanceMethods] : AvoidanceMethodsBuilder
+    ~ AvoidanceMethod = None
+    ~ NextSink = null
+  [BndStepover] : StepoverBuilder
+    ~ AdditionalPasses = 0
+    ~ Angular = 0
+    ~ ApplyOn = OnPlane
+    ~ BlankContourDepth = null
+    ~ BlankContourNoLevels = 0
+    [DistanceBuilder] : InheritableToolDepBuilder
+      ~ Intent = PartUnits
+      ~ ExpressionString = 
+      ~ Value = 15
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = False
+      ~ NextSink = null
+    ~ DistanceMaximumBuilder = null
+    ~ DistanceMinimumBuilder = null
+    ~ FirstDistance = null
+    ~ HorizontalLimitBuilder = null
+    ~ InheritableDistance = null
+    ~ MaximumAverage = 15
+    ~ MaximumAverageBuilder = null
+    ~ MaximumAverageOnlyBuilder = null
+    ~ MaximumBuilder = null
+    ~ MaximumPercentBuilder = null
+    ~ MinimumAverage = 15
+    ~ MinimumAverageBuilder = null
+    ~ MinimumDistance = null
+    ~ MinimumPercentBuilder = null
+    [MultipleBuilder] : MultipleStepoverBuilder
+      ~ PreviewBuilder = null
+      ~ NextSink = null
+    ~ NumberAtFirstDirection = 0
+    ~ NumberAtSecondDirection = 0
+    ~ NumberOfStepovers = 0
+    ~ PercentFluteLength = null
+    ~ PercentOfDegression = 0
+    ~ PercentOfRemainingBuilder = null
+    ~ PercentThreadLength = null
+    [PercentToolFlatBuilder] : InheritableDoubleBuilder
+      ~ ExpressionString = 
+      ~ Value = 70
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = False
+      ~ NextSink = null
+    ~ PercentWireBuilder = null
+    [ScallopBuilder] : InheritableDoubleBuilder
+      ~ ExpressionString = 
+      ~ Value = 0.3
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = False
+      ~ NextSink = null
+    ~ StepoverType = PercentToolFlat
+    ~ StockPerPassBuilder = null
+    ~ UserDefined = null
+    ~ ValueOfDegression = null
+    ~ VariableMaximumBuilder = null
+    ~ VariableMaximumOnlyBuilder = null
+    ~ VariableMinimumBuilder = null
+    ~ VerticalLimitBuilder = null
+    ~ NextSink = null
+  ~ CheckGeometry = [Geometry]
+  ~ CornerLoops = False
+  ~ CutAreaGeometry = [Geometry]
+  [CutPattern] : CutPatternBuilder
+    ~ CutPattern = FollowPeriphery
+    ~ NextSink = null
+  ~ DeferCuttingStatus = False
+  [DepthPerCut] : InheritableDoubleBuilder
+    ~ ExpressionString = 
+    ~ Value = 0
+    ~ ValueIntent = PartUnits
+    ~ InheritanceStatus = False
+    ~ NextSink = null
+  ~ IslandCleanup = False
+  [NonCuttingBuilder] : NcmPlanarBuilder
+    ~ ApplySafetyToDirect = False
+    [ClearanceBuilder] : NcmClearanceBuilder
+      ~ Axis = null
+      ~ AxisObject = null
+      ~ Body = null
+      ~ BoundingBoxClearance = 3
+      ~ ClearanceType = UseCommon
+      ~ PlaneXform = null
+      ~ Point = null
+      ~ PointObject = null
+      ~ Radius = 0
+      ~ SafeDistance = 3
+      ~ SafeDistanceBuilder = [ExpressionDouble]
+      ~ NextSink = null
+    ~ CollisionCheck = True
+    ~ CutcomMinimumAngle = 10
+    [CutcomMinimumMoveBuilder] : InheritableToolDepBuilder
+      ~ Intent = PartUnits
+      ~ ExpressionString = 
+      ~ Value = 2.5
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = False
+      ~ NextSink = null
+    ~ CutcomOutputContactPoint = False
+    ~ CutcomOutputPlane = False
+    ~ CutcomTrackingPointType = 0
+    ~ CutcomType = None
+    [EngageClosedAreaBuilder] : NcmPlanarEngRetBuilder
+      ~ ArcAngle = 90
+      [DiameterBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 90
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [EffectDistBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 500
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ EngRetType = Helical
+      ~ ExtendAfterArc = null
+      ~ ExtendBeforeArc = null
+      [HeightBuilder] : InheritableToolDepBuilder
+        ~ Intent = PartUnits
+        ~ ExpressionString = 
+        ~ Value = 3
+        ~ ValueIntent = PartUnits
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ HeightFrom = PreviousLevel
+      [HelicalRampAngleBuilder] : InheritableDoubleBuilder
+        ~ ExpressionString = 
+        ~ Value = 15
+        ~ ValueIntent = PartUnits
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ IfEngageDoesNotFit = Skip
+      ~ IgnoreBlankOnTrimSide = True
+      [LengthBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 90
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [MaxWidthBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 500
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [MinClearanceBuilder] : InheritableToolDepBuilder
+        ~ Intent = PartUnits
+        ~ ExpressionString = 
+        ~ Value = 0
+        ~ ValueIntent = PartUnits
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [MinRampLengthBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 70
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ MinimumClearance = ExtendAndTrim
+      ~ Plane = null
+      [RadiusBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 90
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ RampAngle = 15
+      ~ StartAtArcCenter = False
+      ~ SwingAngle = 0
+      ~ Trim = True
+      ~ UseEffectDist = True
+      ~ UseMaxWidth = False
+      ~ Vector = null
+      ~ NextSink = null
+    [EngageInitialClosedBuilder] : NcmPlanarEngRetBuilder
+      ~ ArcAngle = 90
+      [DiameterBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 90
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = True
+        ~ NextSink = null
+      [EffectDistBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 500
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ EngRetType = SameAsDefault
+      ~ ExtendAfterArc = null
+      ~ ExtendBeforeArc = null
+      [HeightBuilder] : InheritableToolDepBuilder
+        ~ Intent = PartUnits
+        ~ ExpressionString = 
+        ~ Value = 3
+        ~ ValueIntent = PartUnits
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ HeightFrom = PreviousLevel
+      [HelicalRampAngleBuilder] : InheritableDoubleBuilder
+        ~ ExpressionString = 
+        ~ Value = 15
+        ~ ValueIntent = PartUnits
+        ~ InheritanceStatus = True
+        ~ NextSink = null
+      ~ IfEngageDoesNotFit = Skip
+      ~ IgnoreBlankOnTrimSide = True
+      [LengthBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 90
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [MaxWidthBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 500
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [MinClearanceBuilder] : InheritableToolDepBuilder
+        ~ Intent = PartUnits
+        ~ ExpressionString = 
+        ~ Value = 0
+        ~ ValueIntent = PartUnits
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [MinRampLengthBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 70
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = True
+        ~ NextSink = null
+      ~ MinimumClearance = ExtendAndTrim
+      ~ Plane = null
+      [RadiusBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 90
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ RampAngle = 15
+      ~ StartAtArcCenter = False
+      ~ SwingAngle = 0
+      ~ Trim = True
+      ~ UseEffectDist = True
+      ~ UseMaxWidth = False
+      ~ Vector = null
+      ~ NextSink = null
+    [EngageInitialOpenBuilder] : NcmPlanarEngRetBuilder
+      ~ ArcAngle = 90
+      [DiameterBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 90
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = True
+        ~ NextSink = null
+      [EffectDistBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 500
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ EngRetType = SameAsDefault
+      [ExtendAfterArc] : InheritableToolDepBuilder
+        ~ Intent = PartUnits
+        ~ ExpressionString = 
+        ~ Value = 0
+        ~ ValueIntent = PartUnits
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [ExtendBeforeArc] : InheritableToolDepBuilder
+        ~ Intent = PartUnits
+        ~ ExpressionString = 
+        ~ Value = 0
+        ~ ValueIntent = PartUnits
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [HeightBuilder] : InheritableToolDepBuilder
+        ~ Intent = PartUnits
+        ~ ExpressionString = 
+        ~ Value = 3
+        ~ ValueIntent = PartUnits
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ HeightFrom = PreviousLevel
+      [HelicalRampAngleBuilder] : InheritableDoubleBuilder
+        ~ ExpressionString = 
+        ~ Value = 15
+        ~ ValueIntent = PartUnits
+        ~ InheritanceStatus = True
+        ~ NextSink = null
+      ~ IfEngageDoesNotFit = Skip
+      ~ IgnoreBlankOnTrimSide = False
+      [LengthBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 50
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [MaxWidthBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 500
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [MinClearanceBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 50
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [MinRampLengthBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 70
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = True
+        ~ NextSink = null
+      ~ MinimumClearance = SameAsOpenEngage
+      ~ Plane = null
+      [RadiusBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 50
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ RampAngle = 0
+      ~ StartAtArcCenter = False
+      ~ SwingAngle = 0
+      ~ Trim = False
+      ~ UseEffectDist = True
+      ~ UseMaxWidth = False
+      ~ Vector = null
+      ~ NextSink = null
+    [EngageOpenAreaBuilder] : NcmPlanarEngRetBuilder
+      ~ ArcAngle = 90
+      [DiameterBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 90
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [EffectDistBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 500
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ EngRetType = Arc
+      [ExtendAfterArc] : InheritableToolDepBuilder
+        ~ Intent = PartUnits
+        ~ ExpressionString = 
+        ~ Value = 0
+        ~ ValueIntent = PartUnits
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [ExtendBeforeArc] : InheritableToolDepBuilder
+        ~ Intent = PartUnits
+        ~ ExpressionString = 
+        ~ Value = 0
+        ~ ValueIntent = PartUnits
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [HeightBuilder] : InheritableToolDepBuilder
+        ~ Intent = PartUnits
+        ~ ExpressionString = 
+        ~ Value = 3
+        ~ ValueIntent = PartUnits
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ HeightFrom = PreviousLevel
+      [HelicalRampAngleBuilder] : InheritableDoubleBuilder
+        ~ ExpressionString = 
+        ~ Value = 0
+        ~ ValueIntent = PartUnits
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ IfEngageDoesNotFit = Skip
+      ~ IgnoreBlankOnTrimSide = False
+      [LengthBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 50
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [MaxWidthBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 500
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [MinClearanceBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 50
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [MinRampLengthBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 70
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ MinimumClearance = ExtendAndTrim
+      ~ Plane = null
+      [RadiusBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 50
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ RampAngle = 0
+      ~ StartAtArcCenter = False
+      ~ SwingAngle = 0
+      ~ Trim = True
+      ~ UseEffectDist = True
+      ~ UseMaxWidth = False
+      ~ Vector = null
+      ~ NextSink = null
+    [FinalSafeDistanceBuilder] : InheritableToolDepBuilder
+      ~ Intent = PartUnits
+      ~ ExpressionString = 
+      ~ Value = 3
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = False
+      ~ NextSink = null
+    ~ FinalType = Clearance
+    [InitialSafeDistanceBuilder] : InheritableToolDepBuilder
+      ~ Intent = PartUnits
+      ~ ExpressionString = 
+      ~ Value = 3
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = False
+      ~ NextSink = null
+    ~ InitialType = Clearance
+    ~ LimitEngRetToCutRegion = False
+    [OverlapDistanceBuilder] : InheritableToolDepBuilder
+      ~ Intent = PartUnits
+      ~ ExpressionString = 
+      ~ Value = 0
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = False
+      ~ NextSink = null
+    [PredrillPointsEffectDistBuilder] : InheritableToolDepBuilder
+      ~ Intent = ToolDep
+      ~ ExpressionString = 
+      ~ Value = 500
+      ~ ValueIntent = Function
+      ~ InheritanceStatus = False
+      ~ NextSink = null
+    ~ PredrillPointsOutput = None
+    ~ PredrillPointsUseEffectDist = True
+    [RetractAreaBuilder] : NcmPlanarEngRetBuilder
+      ~ ArcAngle = 90
+      [DiameterBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 90
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [EffectDistBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 500
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ EngRetType = SameAsEngage
+      [ExtendAfterArc] : InheritableToolDepBuilder
+        ~ Intent = PartUnits
+        ~ ExpressionString = 
+        ~ Value = 0
+        ~ ValueIntent = PartUnits
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [ExtendBeforeArc] : InheritableToolDepBuilder
+        ~ Intent = PartUnits
+        ~ ExpressionString = 
+        ~ Value = 0
+        ~ ValueIntent = PartUnits
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [HeightBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 50
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ HeightFrom = PreviousLevel
+      [HelicalRampAngleBuilder] : InheritableDoubleBuilder
+        ~ ExpressionString = 
+        ~ Value = 0
+        ~ ValueIntent = PartUnits
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ IfEngageDoesNotFit = Skip
+      ~ IgnoreBlankOnTrimSide = False
+      [LengthBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 90
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [MaxWidthBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 500
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [MinClearanceBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 50
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [MinRampLengthBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 70
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ MinimumClearance = ExtendOnly
+      ~ Plane = null
+      [RadiusBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 90
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ RampAngle = 0
+      ~ StartAtArcCenter = False
+      ~ SwingAngle = 0
+      ~ Trim = False
+      ~ UseEffectDist = True
+      ~ UseMaxWidth = False
+      ~ Vector = null
+      ~ NextSink = null
+    [RetractFinalBuilder] : NcmPlanarEngRetBuilder
+      ~ ArcAngle = 90
+      [DiameterBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 90
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = True
+        ~ NextSink = null
+      [EffectDistBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 500
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ EngRetType = SameAsDefault
+      [ExtendAfterArc] : InheritableToolDepBuilder
+        ~ Intent = PartUnits
+        ~ ExpressionString = 
+        ~ Value = 0
+        ~ ValueIntent = PartUnits
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [ExtendBeforeArc] : InheritableToolDepBuilder
+        ~ Intent = PartUnits
+        ~ ExpressionString = 
+        ~ Value = 0
+        ~ ValueIntent = PartUnits
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [HeightBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 50
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ HeightFrom = PreviousLevel
+      [HelicalRampAngleBuilder] : InheritableDoubleBuilder
+        ~ ExpressionString = 
+        ~ Value = 15
+        ~ ValueIntent = PartUnits
+        ~ InheritanceStatus = True
+        ~ NextSink = null
+      ~ IfEngageDoesNotFit = Skip
+      ~ IgnoreBlankOnTrimSide = False
+      [LengthBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 90
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [MaxWidthBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 500
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [MinClearanceBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 50
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [MinRampLengthBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 70
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = True
+        ~ NextSink = null
+      ~ MinimumClearance = SameAsRetract
+      ~ Plane = null
+      [RadiusBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 90
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ RampAngle = 0
+      ~ StartAtArcCenter = False
+      ~ SwingAngle = 0
+      ~ Trim = False
+      ~ UseEffectDist = True
+      ~ UseMaxWidth = False
+      ~ Vector = null
+      ~ NextSink = null
+    [SmoothingBuilder] : NcmSmoothingBuilder
+      ~ ApplyCornersSmoothing = False
+      ~ ApplyCornersSmoothingTransfers = False
+      ~ EngRetMaxToolAxisChange = 0
+      ~ EngRetTolerance = 0.03
+      ~ EngRetToleranceSource = MinimizePoints
+      [MaxStepoverDistance] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 100
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ OverrideWithSmoothConnections = False
+      [PartSafeClearance] : InheritableToolDepBuilder
+        ~ Intent = PartUnits
+        ~ ExpressionString = 
+        ~ Value = 1
+        ~ ValueIntent = PartUnits
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [RegionDistance] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 1000
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [SmoothHeight] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 15
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [SmoothLength] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 50
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [SmoothingRadius] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 10
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ TransferMaxToolAxisChange = 0
+      ~ TransferTolerance = 0.03
+      ~ TransferToleranceSource = MinimizePoints
+      ~ NextSink = null
+    ~ SuppressCutcom = False
+    [TransferAvoidanceFromBuilder] : NcmAvoidancePointBuilder
+      ~ Point = null
+      ~ PointStatus = None
+      ~ ToolAxis = null
+      ~ ToolAxisStatus = 0
+      ~ ToolAxisUsage = None
+      ~ NextSink = null
+    [TransferAvoidanceGohomeBuilder] : NcmAvoidancePointBuilder
+      ~ Point = null
+      ~ PointStatus = None
+      ~ ToolAxis = null
+      ~ ToolAxisStatus = 0
+      ~ ToolAxisUsage = None
+      ~ NextSink = null
+    [TransferAvoidanceReturnBuilder] : NcmAvoidancePointBuilder
+      ~ Point = null
+      ~ PointStatus = None
+      ~ ToolAxis = null
+      ~ ToolAxisStatus = 0
+      ~ ToolAxisUsage = None
+      ~ NextSink = null
+    [TransferAvoidanceStartBuilder] : NcmAvoidancePointBuilder
+      ~ Point = null
+      ~ PointStatus = None
+      ~ ToolAxis = null
+      ~ ToolAxisStatus = 0
+      ~ ToolAxisUsage = None
+      ~ NextSink = null
+    ~ TransferBetweenLevelsSafeDistanceBuilder = null
+    ~ TransferBetweenLevelsType = PrevPlane
+    ~ TransferBetweenRegionsBuilder = [NcmTransfer]
+    [TransferBetweenRegionsSafeDistanceBuilder] : InheritableToolDepBuilder
+      ~ Intent = PartUnits
+      ~ ExpressionString = 
+      ~ Value = 3
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = False
+      ~ NextSink = null
+    ~ TransferBetweenRegionsType = Clearance
+    [TransferWithinLevelsHeightBuilder] : InheritableToolDepBuilder
+      ~ Intent = PartUnits
+      ~ ExpressionString = 
+      ~ Value = 3
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = False
+      ~ NextSink = null
+    [TransferWithinLevelsMaxFollowDistanceBuilder] : InheritableToolDepBuilder
+      ~ Intent = ToolDep
+      ~ ExpressionString = 
+      ~ Value = 500
+      ~ ValueIntent = Function
+      ~ InheritanceStatus = False
+      ~ NextSink = null
+    [TransferWithinLevelsSafeDistanceBuilder] : InheritableToolDepBuilder
+      ~ Intent = PartUnits
+      ~ ExpressionString = 
+      ~ Value = 3
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = False
+      ~ NextSink = null
+    ~ TransferWithinLevelsType = Clearance
+    ~ TransferWithinLevelsWith = UseEngret
+    ~ DefaultRegionStartType = MidPoint
+    [StartPointsEffectDistBuilder] : InheritableToolDepBuilder
+      ~ Intent = ToolDep
+      ~ ExpressionString = 
+      ~ Value = 500
+      ~ ValueIntent = Function
+      ~ InheritanceStatus = False
+      ~ NextSink = null
+    ~ StartPointsUseEffectDist = True
+    ~ NextSink = null
+  ~ PartGeometry = [Geometry]
+  ~ ToolAxisFix = [ToolAxisFixed]
+  ~ ToolMinimumLengthUsage = False
+  ~ CutParameters = [MillCutParameters]
+  ~ DrivePoint = 0
+  [FeedsBuilder] : FeedsBuilder
+    [CutGasPressure] : InheritableDoubleBuilder
+      ~ ExpressionString = 
+      ~ Value = 0
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [CutGasType] : InheritableIntBuilder
+      ~ Value = 0
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [CutLaserDelay] : InheritableDoubleBuilder
+      ~ ExpressionString = 
+      ~ Value = 0
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [CutLaserFrequency] : InheritableDoubleBuilder
+      ~ ExpressionString = 
+      ~ Value = 0
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [CutLaserPower] : InheritableDoubleBuilder
+      ~ ExpressionString = 
+      ~ Value = 0
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [FeedApproachBuilder] : InheritableFeedBuilder
+      ~ ExpressionString = 
+      ~ Unit = Rapid
+      ~ Value = 0
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [FeedCrossoverBuilder] : InheritableFeedBuilder
+      ~ ExpressionString = 
+      ~ Unit = CutPercent
+      ~ Value = 100
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [FeedCutBuilder] : InheritableFeedBuilder
+      ~ ExpressionString = 
+      ~ Unit = PerMinute
+      ~ Value = 250
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [FeedDepartureBuilder] : InheritableFeedBuilder
+      ~ ExpressionString = 
+      ~ Unit = Rapid
+      ~ Value = 0
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [FeedEngageBuilder] : InheritableFeedBuilder
+      ~ ExpressionString = 
+      ~ Unit = CutPercent
+      ~ Value = 100
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [FeedFirstCutBuilder] : InheritableFeedBuilder
+      ~ ExpressionString = 
+      ~ Unit = CutPercent
+      ~ Value = 100
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [FeedLastCutBuilder] : InheritableFeedBuilder
+      ~ ExpressionString = 
+      ~ Unit = CutPercent
+      ~ Value = 100
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [FeedPerToothBuilder] : InheritableDoubleBuilder
+      ~ ExpressionString = 
+      ~ Value = 0.1178
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = False
+      ~ NextSink = null
+    [FeedRapidBuilder] : InheritableFeedBuilder
+      ~ ExpressionString = 
+      ~ Unit = PerMinute
+      ~ Value = 0
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [FeedRapidOutput] : InheritableFeedModeBuilder
+      ~ Value = G0
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [FeedRetractBuilder] : InheritableFeedBuilder
+      ~ ExpressionString = 
+      ~ Unit = CutPercent
+      ~ Value = 100
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [FeedReturnBuilder] : InheritableFeedBuilder
+      ~ ExpressionString = 
+      ~ Unit = Rapid
+      ~ Value = 0
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [FeedSideCutBuilder] : InheritableFeedBuilder
+      ~ ExpressionString = 
+      ~ Unit = CutPercent
+      ~ Value = 100
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [FeedStepoverBuilder] : InheritableFeedBuilder
+      ~ ExpressionString = 
+      ~ Unit = CutPercent
+      ~ Value = 100
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [FeedTraversalBuilder] : InheritableFeedBuilder
+      ~ ExpressionString = 
+      ~ Unit = Rapid
+      ~ Value = 0
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    ~ FeedsOptimizationData = [FeedsOptimizationData]
+    ~ OptimizeFeedRateWhenGenerating = False
+    [PierceGasPressure] : InheritableDoubleBuilder
+      ~ ExpressionString = 
+      ~ Value = 0
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [PierceGasType] : InheritableIntBuilder
+      ~ Value = 0
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [PierceLaserDelay] : InheritableDoubleBuilder
+      ~ ExpressionString = 
+      ~ Value = 0
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [PierceLaserFrequency] : InheritableDoubleBuilder
+      ~ ExpressionString = 
+      ~ Value = 0
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [PierceLaserPower] : InheritableDoubleBuilder
+      ~ ExpressionString = 
+      ~ Value = 0
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [RetractSpeed] : InheritableDoubleBuilder
+      ~ ExpressionString = 
+      ~ Value = 0
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    ~ RetractSpeedToggle = 0
+    [SpindleModeBuilder] : InheritableIntBuilder
+      ~ Value = 0
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [SpindleRangeBuilder] : InheritableTextBuilder
+      ~ Value = 
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [SpindleRpmBuilder] : InheritableDoubleBuilder
+      ~ ExpressionString = 
+      ~ Value = 2400
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = False
+      ~ NextSink = null
+    ~ SpindleRpmToggle = 1
+    [SpindleTextBuilder] : InheritableTextBuilder
+      ~ Value = 
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [SurfaceSpeedBuilder] : InheritableDoubleBuilder
+      ~ ExpressionString = 
+      ~ Value = 100
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = False
+      ~ NextSink = null
+    [ToolDirectionBuilder] : InheritableIntBuilder
+      ~ Value = 1
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    ~ NextSink = null
+  [MinCutLength] : InheritableToolDepBuilder
+    ~ Intent = PartUnits
+    ~ ExpressionString = 
+    ~ Value = 0
+    ~ ValueIntent = PartUnits
+    ~ InheritanceStatus = True
+    ~ NextSink = null
+  [MotionOutput] : ArcOutputTypeCiBuilder
+    ~ NurbAngleTolerance = 1
+    ~ NurbFitTolerance = 0.03
+    ~ NurbJoinSegments = False
+    ~ OutputType = CirPerpToTaxis
+    ~ SplineArcOutputType = Spline
+    ~ SplineFitTolerance = 50
+    ~ SplineFitToleranceType = Percent
+    ~ SplineLineOutputType = Spline
+    ~ NextSink = null
+  ~ ReferenceTool = null
+  ~ WallCleanupType = Automatic
+  ~ ChannelName = null
+  ~ Description = 
+  [EndOfPath] : PostEventsCiBuilder
+    ~ PostEvent = False
+    ~ UdeSet = null
+    ~ NextSink = null
+  ~ EndUdeSet = [UdeSet]
+  ~ Geometry = [GeometryCiBuilder]
+  ~ GougeChecking = False
+  ~ HoleAxisType = Vector
+  [HoleDepth] : InheritableDoubleBuilder
+    ~ ExpressionString = 
+    ~ Value = 0
+    ~ ValueIntent = PartUnits
+    ~ InheritanceStatus = True
+    ~ NextSink = null
+  ~ HoleDepthType = Point
+  [LayoutAndLayer] : LayoutCiBuilder
+    ~ LayoutName = CAVITY_MILL_LAY1
+    ~ LayoutSaveSettings = 1
+    ~ NextSink = null
+  [MotionOutputBuilder] : ArcOutputTypeCiBuilder
+    ~ NurbAngleTolerance = 1
+    ~ NurbFitTolerance = 0.03
+    ~ NurbJoinSegments = False
+    ~ OutputType = CirPerpToTaxis
+    ~ SplineArcOutputType = Spline
+    ~ SplineFitTolerance = 50
+    ~ SplineFitToleranceType = Percent
+    ~ SplineLineOutputType = Spline
+    ~ NextSink = null
+  ~ Notes = [Notes]
+  ~ OptimizationBasedOn = Orient
+  ~ OptimizationDistanceMethod = Transition
+  ~ OptimizationLevel = Standard
+  [PathDisplayOptions] : OperationDisplayOptionsBuilder
+    ~ ArrowDisplayFlag = False
+    ~ DisplayCutRegionsFlag = False
+    ~ FeedDisplayFlag = False
+    ~ LineNumberDisplayFlag = False
+    ~ PaintDisplay = [DisplayPaint]
+    ~ PathDisplay = [DisplayPath]
+    ~ PathDisplayColors = [PathDisplayColors]
+    ~ PathDisplayType = SolidCenter
+    ~ PathNormalType = TypesToolAxis
+    ~ PathVector = [Direction]
+    ~ PatternDisplayFrequency = 1
+    ~ PatternDisplayType = None
+    ~ PatternFile = 
+    ~ PatternXOffset = 0
+    ~ PatternYOffset = 0
+    ~ PatternZOffset = 0
+    ~ PauseAfterDisplayFlag = False
+    ~ PercentOfTool = 100
+    ~ RefreshBeforeDisplayFlag = False
+    ~ ReplaySpeed = 10
+    ~ SaveContactDisplayDataFlag = False
+    ~ SilhouDisplay = [DisplaySilhouette]
+    ~ SuppressPathDisplayFlag = False
+    ~ ToolDisplay = [DisplayTool]
+    ~ ToolDisplayFrequency = 1
+    ~ ToolDisplayType = None
+    ~ NextSink = null
+  ~ PostToolPathExit = 
+  [RetractDistance] : InheritableDoubleBuilder
+    ~ ExpressionString = 
+    ~ Value = 0
+    ~ ValueIntent = PartUnits
+    ~ InheritanceStatus = True
+    ~ NextSink = null
+  [RetractDistanceOnToolAxisChange] : InheritableDoubleBuilder
+    ~ ExpressionString = 
+    ~ Value = 0
+    ~ ValueIntent = PartUnits
+    ~ InheritanceStatus = True
+    ~ NextSink = null
+  [SafeClearance] : InheritableDoubleBuilder
+    ~ ExpressionString = 
+    ~ Value = 0
+    ~ ValueIntent = PartUnits
+    ~ InheritanceStatus = True
+    ~ NextSink = null
+  ~ SelectToolFlag = False
+  [StartOfPath] : PostEventsCiBuilder
+    ~ PostEvent = False
+    ~ UdeSet = null
+    ~ NextSink = null
+  ~ StartUdeSet = [UdeSet]
+  [ToolChangeSetting] : ToolChangeCiBuilder
+    [AdjustRegister] : InheritableIntBuilder
+      ~ Value = 0
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    ~ AdjustRegisterToggle = False
+    [Angle] : InheritableDoubleBuilder
+      ~ ExpressionString = 
+      ~ Value = 0
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    ~ AngleToggle = False
+    [CutcomRegister] : InheritableIntBuilder
+      ~ Value = 0
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    ~ CutcomRegisterToggle = False
+    ~ HeadDesignation = None
+    [HolderNumber] : InheritableIntBuilder
+      ~ Value = 0
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    ~ HolderToggle = False
+    ~ ManualToolChange = False
+    [Number] : InheritableIntBuilder
+      ~ Value = 0
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    ~ NumberToggle = False
+    [Radius] : InheritableDoubleBuilder
+      ~ ExpressionString = 
+      ~ Value = 0
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    ~ RadiusToggle = False
+    ~ TextToggle = False
+    ~ TextValue = 
+    [Xoffset] : InheritableDoubleBuilder
+      ~ ExpressionString = 
+      ~ Value = 0
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    ~ XoffsetToggle = False
+    [Yoffset] : InheritableDoubleBuilder
+      ~ ExpressionString = 
+      ~ Value = 0
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    ~ YoffsetToggle = False
+    [Zoffset] : InheritableDoubleBuilder
+      ~ ExpressionString = 
+      ~ Value = 0
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    ~ ZoffsetToggle = False
+    ~ NextSink = null
+  [ToolPathEditor] : ToolPathEditorBuilder
+    ~ ArcAngle = 0
+    ~ ArcRadius = 0
+    ~ DeltaXC = 0
+    ~ DeltaYC = 0
+    ~ DeltaZC = 0
+    ~ ExtendDirection = null
+    ~ ExtendMethod = Linear
+    ~ FirstLinearDistance = 0
+    ~ GougeCheckClearanceMethod = Specify
+    ~ GougeCheckClearancePlane = null
+    ~ HolderCheck = False
+    ~ MotionMethod = Delta
+    ~ MoveStartPoint = False
+    ~ PermanentBoundary = null
+    ~ ReferencePoint = null
+    ~ SecondLinearDistance = 0
+    ~ ToPoint = null
+    ~ TransformCircles = False
+    ~ TrimClearanceMethod = Specify
+    ~ TrimClearancePlane = null
+    ~ TrimConnectionMethod = ClearancePlane
+    ~ TrimDirection = null
+    ~ TrimGeometry = Plane
+    ~ TrimLine = null
+    ~ TrimPlane = null
+    ~ TrimSide = Inside
+    ~ PreviewBuilder = null
+    ~ NextSink = null
+  [ToolPathSplitParametersBuilder] : ToolPathSplitParametersBuilder
+    [MinimumCutLength] : InheritableToolDepBuilder
+      ~ Intent = PartUnits
+      ~ ExpressionString = 
+      ~ Value = 0
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [OverlapDistance] : InheritableToolDepBuilder
+      ~ Intent = PartUnits
+      ~ ExpressionString = 
+      ~ Value = 0
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    ~ SplitType = ByCollision
+    ~ TransferHeight = 0
+    [TransferHeightBuilder] : InheritableToolDepBuilder
+      ~ Intent = PartUnits
+      ~ ExpressionString = 
+      ~ Value = 0
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    ~ TransferType = Direct
+    ~ TransferUsingMethod = None
+    ~ TrimmingSteepAngle = 0
+    ~ UseGlobalClearance = True
+    ~ PreviewBuilder = null
+    ~ NextSink = null
+  ~ CycleEvent = null
+  ~ CycleTable = null
+  ~ OptimizationMethod = None
+  ~ TargetPocket = null
+  ~ PreviewBuilder = null
+  ~ NextSink = null
+
+== op: CAVITY_MILL_COPY  pathT=27.246
+[b] : CavityMillingBuilder
+  ~ BlankGeometry = [Geometry]
+  [CutLevel] : CutLevel
+    ~ CutLevelType = Constant
+    [DistanceBelow] : InheritableToolDepBuilder
+      ~ Intent = ToolDep
+      ~ ExpressionString = 
+      ~ Value = 0
+      ~ ValueIntent = Function
+      ~ InheritanceStatus = False
+      ~ NextSink = null
+    [GlobalDepthPerCut] : StepoverBuilder
+      ~ AdditionalPasses = 0
+      ~ Angular = 0
+      ~ ApplyOn = OnPlane
+      ~ BlankContourDepth = null
+      ~ BlankContourNoLevels = 0
+      [DistanceBuilder] : InheritableToolDepBuilder
+        ~ Intent = PartUnits
+        ~ ExpressionString = 
+        ~ Value = 1
+        ~ ValueIntent = PartUnits
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ DistanceMaximumBuilder = null
+      ~ DistanceMinimumBuilder = null
+      ~ FirstDistance = null
+      ~ HorizontalLimitBuilder = null
+      ~ InheritableDistance = null
+      ~ MaximumAverage = 0
+      ~ MaximumAverageBuilder = null
+      ~ MaximumAverageOnlyBuilder = null
+      ~ MaximumBuilder = null
+      ~ MaximumPercentBuilder = null
+      ~ MinimumAverage = 0
+      ~ MinimumAverageBuilder = null
+      ~ MinimumDistance = null
+      ~ MinimumPercentBuilder = null
+      ~ MultipleBuilder = null
+      ~ NumberAtFirstDirection = 0
+      ~ NumberAtSecondDirection = 0
+      ~ NumberOfStepovers = 0
+      ~ PercentFluteLength = null
+      ~ PercentOfDegression = 0
+      ~ PercentOfRemainingBuilder = null
+      ~ PercentThreadLength = null
+      ~ PercentToolFlatBuilder = null
+      ~ PercentWireBuilder = null
+      [ScallopBuilder] : InheritableDoubleBuilder
+        ~ ExpressionString = 
+        ~ Value = 0.01
+        ~ ValueIntent = PartUnits
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ StepoverType = Constant
+      ~ StockPerPassBuilder = null
+      ~ UserDefined = null
+      ~ ValueOfDegression = null
+      ~ VariableMaximumBuilder = null
+      ~ VariableMaximumOnlyBuilder = null
+      ~ VariableMinimumBuilder = null
+      ~ VerticalLimitBuilder = null
+      ~ NextSink = null
+    ~ RangeType = Automatic
+    ~ TopOffCriticalDepths = False
+    ~ TopZc = 0
+    ~ NextSink = null
+  ~ TrimBoundary = [Boundary]
+  ~ AdditionalPasses = 0
+  ~ AutomaticPartBoundaryMethod = FollowWallTop
+  [AvoidanceMethods] : AvoidanceMethodsBuilder
+    ~ AvoidanceMethod = None
+    ~ NextSink = null
+  [BndStepover] : StepoverBuilder
+    ~ AdditionalPasses = 0
+    ~ Angular = 0
+    ~ ApplyOn = OnPlane
+    ~ BlankContourDepth = null
+    ~ BlankContourNoLevels = 0
+    [DistanceBuilder] : InheritableToolDepBuilder
+      ~ Intent = PartUnits
+      ~ ExpressionString = 
+      ~ Value = 15
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = False
+      ~ NextSink = null
+    ~ DistanceMaximumBuilder = null
+    ~ DistanceMinimumBuilder = null
+    ~ FirstDistance = null
+    ~ HorizontalLimitBuilder = null
+    ~ InheritableDistance = null
+    ~ MaximumAverage = 15
+    ~ MaximumAverageBuilder = null
+    ~ MaximumAverageOnlyBuilder = null
+    ~ MaximumBuilder = null
+    ~ MaximumPercentBuilder = null
+    ~ MinimumAverage = 15
+    ~ MinimumAverageBuilder = null
+    ~ MinimumDistance = null
+    ~ MinimumPercentBuilder = null
+    [MultipleBuilder] : MultipleStepoverBuilder
+      ~ PreviewBuilder = null
+      ~ NextSink = null
+    ~ NumberAtFirstDirection = 0
+    ~ NumberAtSecondDirection = 0
+    ~ NumberOfStepovers = 0
+    ~ PercentFluteLength = null
+    ~ PercentOfDegression = 0
+    ~ PercentOfRemainingBuilder = null
+    ~ PercentThreadLength = null
+    [PercentToolFlatBuilder] : InheritableDoubleBuilder
+      ~ ExpressionString = 
+      ~ Value = 70
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = False
+      ~ NextSink = null
+    ~ PercentWireBuilder = null
+    [ScallopBuilder] : InheritableDoubleBuilder
+      ~ ExpressionString = 
+      ~ Value = 0.3
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = False
+      ~ NextSink = null
+    ~ StepoverType = PercentToolFlat
+    ~ StockPerPassBuilder = null
+    ~ UserDefined = null
+    ~ ValueOfDegression = null
+    ~ VariableMaximumBuilder = null
+    ~ VariableMaximumOnlyBuilder = null
+    ~ VariableMinimumBuilder = null
+    ~ VerticalLimitBuilder = null
+    ~ NextSink = null
+  ~ CheckGeometry = [Geometry]
+  ~ CornerLoops = False
+  ~ CutAreaGeometry = [Geometry]
+  [CutPattern] : CutPatternBuilder
+    ~ CutPattern = Profile
+    ~ NextSink = null
+  ~ DeferCuttingStatus = False
+  [DepthPerCut] : InheritableDoubleBuilder
+    ~ ExpressionString = 
+    ~ Value = 0
+    ~ ValueIntent = PartUnits
+    ~ InheritanceStatus = False
+    ~ NextSink = null
+  ~ IslandCleanup = False
+  [NonCuttingBuilder] : NcmPlanarBuilder
+    ~ ApplySafetyToDirect = False
+    [ClearanceBuilder] : NcmClearanceBuilder
+      ~ Axis = null
+      ~ AxisObject = null
+      ~ Body = null
+      ~ BoundingBoxClearance = 3
+      ~ ClearanceType = UseCommon
+      ~ PlaneXform = null
+      ~ Point = null
+      ~ PointObject = null
+      ~ Radius = 0
+      ~ SafeDistance = 3
+      ~ SafeDistanceBuilder = [ExpressionDouble]
+      ~ NextSink = null
+    ~ CollisionCheck = True
+    ~ CutcomMinimumAngle = 10
+    [CutcomMinimumMoveBuilder] : InheritableToolDepBuilder
+      ~ Intent = PartUnits
+      ~ ExpressionString = 
+      ~ Value = 2.5
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = False
+      ~ NextSink = null
+    ~ CutcomOutputContactPoint = False
+    ~ CutcomOutputPlane = False
+    ~ CutcomTrackingPointType = 0
+    ~ CutcomType = None
+    [EngageClosedAreaBuilder] : NcmPlanarEngRetBuilder
+      ~ ArcAngle = 90
+      [DiameterBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 90
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [EffectDistBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 500
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ EngRetType = Helical
+      ~ ExtendAfterArc = null
+      ~ ExtendBeforeArc = null
+      [HeightBuilder] : InheritableToolDepBuilder
+        ~ Intent = PartUnits
+        ~ ExpressionString = 
+        ~ Value = 3
+        ~ ValueIntent = PartUnits
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ HeightFrom = PreviousLevel
+      [HelicalRampAngleBuilder] : InheritableDoubleBuilder
+        ~ ExpressionString = 
+        ~ Value = 15
+        ~ ValueIntent = PartUnits
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ IfEngageDoesNotFit = Skip
+      ~ IgnoreBlankOnTrimSide = True
+      [LengthBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 90
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [MaxWidthBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 500
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [MinClearanceBuilder] : InheritableToolDepBuilder
+        ~ Intent = PartUnits
+        ~ ExpressionString = 
+        ~ Value = 0
+        ~ ValueIntent = PartUnits
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [MinRampLengthBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 70
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ MinimumClearance = ExtendAndTrim
+      ~ Plane = null
+      [RadiusBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 90
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ RampAngle = 15
+      ~ StartAtArcCenter = False
+      ~ SwingAngle = 0
+      ~ Trim = True
+      ~ UseEffectDist = True
+      ~ UseMaxWidth = False
+      ~ Vector = null
+      ~ NextSink = null
+    [EngageInitialClosedBuilder] : NcmPlanarEngRetBuilder
+      ~ ArcAngle = 90
+      [DiameterBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 90
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = True
+        ~ NextSink = null
+      [EffectDistBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 500
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ EngRetType = SameAsDefault
+      ~ ExtendAfterArc = null
+      ~ ExtendBeforeArc = null
+      [HeightBuilder] : InheritableToolDepBuilder
+        ~ Intent = PartUnits
+        ~ ExpressionString = 
+        ~ Value = 3
+        ~ ValueIntent = PartUnits
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ HeightFrom = PreviousLevel
+      [HelicalRampAngleBuilder] : InheritableDoubleBuilder
+        ~ ExpressionString = 
+        ~ Value = 15
+        ~ ValueIntent = PartUnits
+        ~ InheritanceStatus = True
+        ~ NextSink = null
+      ~ IfEngageDoesNotFit = Skip
+      ~ IgnoreBlankOnTrimSide = True
+      [LengthBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 90
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [MaxWidthBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 500
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [MinClearanceBuilder] : InheritableToolDepBuilder
+        ~ Intent = PartUnits
+        ~ ExpressionString = 
+        ~ Value = 0
+        ~ ValueIntent = PartUnits
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [MinRampLengthBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 70
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = True
+        ~ NextSink = null
+      ~ MinimumClearance = ExtendAndTrim
+      ~ Plane = null
+      [RadiusBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 90
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ RampAngle = 15
+      ~ StartAtArcCenter = False
+      ~ SwingAngle = 0
+      ~ Trim = True
+      ~ UseEffectDist = True
+      ~ UseMaxWidth = False
+      ~ Vector = null
+      ~ NextSink = null
+    [EngageInitialOpenBuilder] : NcmPlanarEngRetBuilder
+      ~ ArcAngle = 90
+      [DiameterBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 90
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = True
+        ~ NextSink = null
+      [EffectDistBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 500
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ EngRetType = SameAsDefault
+      [ExtendAfterArc] : InheritableToolDepBuilder
+        ~ Intent = PartUnits
+        ~ ExpressionString = 
+        ~ Value = 0
+        ~ ValueIntent = PartUnits
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [ExtendBeforeArc] : InheritableToolDepBuilder
+        ~ Intent = PartUnits
+        ~ ExpressionString = 
+        ~ Value = 0
+        ~ ValueIntent = PartUnits
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [HeightBuilder] : InheritableToolDepBuilder
+        ~ Intent = PartUnits
+        ~ ExpressionString = 
+        ~ Value = 3
+        ~ ValueIntent = PartUnits
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ HeightFrom = PreviousLevel
+      [HelicalRampAngleBuilder] : InheritableDoubleBuilder
+        ~ ExpressionString = 
+        ~ Value = 15
+        ~ ValueIntent = PartUnits
+        ~ InheritanceStatus = True
+        ~ NextSink = null
+      ~ IfEngageDoesNotFit = Skip
+      ~ IgnoreBlankOnTrimSide = False
+      [LengthBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 50
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [MaxWidthBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 500
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [MinClearanceBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 50
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [MinRampLengthBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 70
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = True
+        ~ NextSink = null
+      ~ MinimumClearance = SameAsOpenEngage
+      ~ Plane = null
+      [RadiusBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 50
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ RampAngle = 0
+      ~ StartAtArcCenter = False
+      ~ SwingAngle = 0
+      ~ Trim = False
+      ~ UseEffectDist = True
+      ~ UseMaxWidth = False
+      ~ Vector = null
+      ~ NextSink = null
+    [EngageOpenAreaBuilder] : NcmPlanarEngRetBuilder
+      ~ ArcAngle = 90
+      [DiameterBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 90
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [EffectDistBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 500
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ EngRetType = Arc
+      [ExtendAfterArc] : InheritableToolDepBuilder
+        ~ Intent = PartUnits
+        ~ ExpressionString = 
+        ~ Value = 0
+        ~ ValueIntent = PartUnits
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [ExtendBeforeArc] : InheritableToolDepBuilder
+        ~ Intent = PartUnits
+        ~ ExpressionString = 
+        ~ Value = 0
+        ~ ValueIntent = PartUnits
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [HeightBuilder] : InheritableToolDepBuilder
+        ~ Intent = PartUnits
+        ~ ExpressionString = 
+        ~ Value = 3
+        ~ ValueIntent = PartUnits
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ HeightFrom = PreviousLevel
+      [HelicalRampAngleBuilder] : InheritableDoubleBuilder
+        ~ ExpressionString = 
+        ~ Value = 0
+        ~ ValueIntent = PartUnits
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ IfEngageDoesNotFit = Skip
+      ~ IgnoreBlankOnTrimSide = False
+      [LengthBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 50
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [MaxWidthBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 500
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [MinClearanceBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 50
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [MinRampLengthBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 70
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ MinimumClearance = ExtendAndTrim
+      ~ Plane = null
+      [RadiusBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 50
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ RampAngle = 0
+      ~ StartAtArcCenter = False
+      ~ SwingAngle = 0
+      ~ Trim = True
+      ~ UseEffectDist = True
+      ~ UseMaxWidth = False
+      ~ Vector = null
+      ~ NextSink = null
+    [FinalSafeDistanceBuilder] : InheritableToolDepBuilder
+      ~ Intent = PartUnits
+      ~ ExpressionString = 
+      ~ Value = 3
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = False
+      ~ NextSink = null
+    ~ FinalType = Clearance
+    [InitialSafeDistanceBuilder] : InheritableToolDepBuilder
+      ~ Intent = PartUnits
+      ~ ExpressionString = 
+      ~ Value = 3
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = False
+      ~ NextSink = null
+    ~ InitialType = Clearance
+    ~ LimitEngRetToCutRegion = False
+    [OverlapDistanceBuilder] : InheritableToolDepBuilder
+      ~ Intent = PartUnits
+      ~ ExpressionString = 
+      ~ Value = 0
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = False
+      ~ NextSink = null
+    [PredrillPointsEffectDistBuilder] : InheritableToolDepBuilder
+      ~ Intent = ToolDep
+      ~ ExpressionString = 
+      ~ Value = 500
+      ~ ValueIntent = Function
+      ~ InheritanceStatus = False
+      ~ NextSink = null
+    ~ PredrillPointsOutput = None
+    ~ PredrillPointsUseEffectDist = True
+    [RetractAreaBuilder] : NcmPlanarEngRetBuilder
+      ~ ArcAngle = 90
+      [DiameterBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 90
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [EffectDistBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 500
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ EngRetType = SameAsEngage
+      [ExtendAfterArc] : InheritableToolDepBuilder
+        ~ Intent = PartUnits
+        ~ ExpressionString = 
+        ~ Value = 0
+        ~ ValueIntent = PartUnits
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [ExtendBeforeArc] : InheritableToolDepBuilder
+        ~ Intent = PartUnits
+        ~ ExpressionString = 
+        ~ Value = 0
+        ~ ValueIntent = PartUnits
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [HeightBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 50
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ HeightFrom = PreviousLevel
+      [HelicalRampAngleBuilder] : InheritableDoubleBuilder
+        ~ ExpressionString = 
+        ~ Value = 0
+        ~ ValueIntent = PartUnits
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ IfEngageDoesNotFit = Skip
+      ~ IgnoreBlankOnTrimSide = False
+      [LengthBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 90
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [MaxWidthBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 500
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [MinClearanceBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 50
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [MinRampLengthBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 70
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ MinimumClearance = ExtendOnly
+      ~ Plane = null
+      [RadiusBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 90
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ RampAngle = 0
+      ~ StartAtArcCenter = False
+      ~ SwingAngle = 0
+      ~ Trim = False
+      ~ UseEffectDist = True
+      ~ UseMaxWidth = False
+      ~ Vector = null
+      ~ NextSink = null
+    [RetractFinalBuilder] : NcmPlanarEngRetBuilder
+      ~ ArcAngle = 90
+      [DiameterBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 90
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = True
+        ~ NextSink = null
+      [EffectDistBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 500
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ EngRetType = SameAsDefault
+      [ExtendAfterArc] : InheritableToolDepBuilder
+        ~ Intent = PartUnits
+        ~ ExpressionString = 
+        ~ Value = 0
+        ~ ValueIntent = PartUnits
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [ExtendBeforeArc] : InheritableToolDepBuilder
+        ~ Intent = PartUnits
+        ~ ExpressionString = 
+        ~ Value = 0
+        ~ ValueIntent = PartUnits
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [HeightBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 50
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ HeightFrom = PreviousLevel
+      [HelicalRampAngleBuilder] : InheritableDoubleBuilder
+        ~ ExpressionString = 
+        ~ Value = 15
+        ~ ValueIntent = PartUnits
+        ~ InheritanceStatus = True
+        ~ NextSink = null
+      ~ IfEngageDoesNotFit = Skip
+      ~ IgnoreBlankOnTrimSide = False
+      [LengthBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 90
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [MaxWidthBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 500
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [MinClearanceBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 50
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [MinRampLengthBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 70
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = True
+        ~ NextSink = null
+      ~ MinimumClearance = SameAsRetract
+      ~ Plane = null
+      [RadiusBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 90
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ RampAngle = 0
+      ~ StartAtArcCenter = False
+      ~ SwingAngle = 0
+      ~ Trim = False
+      ~ UseEffectDist = True
+      ~ UseMaxWidth = False
+      ~ Vector = null
+      ~ NextSink = null
+    [SmoothingBuilder] : NcmSmoothingBuilder
+      ~ ApplyCornersSmoothing = False
+      ~ ApplyCornersSmoothingTransfers = False
+      ~ EngRetMaxToolAxisChange = 0
+      ~ EngRetTolerance = 0.03
+      ~ EngRetToleranceSource = MinimizePoints
+      [MaxStepoverDistance] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 100
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ OverrideWithSmoothConnections = False
+      [PartSafeClearance] : InheritableToolDepBuilder
+        ~ Intent = PartUnits
+        ~ ExpressionString = 
+        ~ Value = 1
+        ~ ValueIntent = PartUnits
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [RegionDistance] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 1000
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [SmoothHeight] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 15
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [SmoothLength] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 50
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [SmoothingRadius] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 10
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ TransferMaxToolAxisChange = 0
+      ~ TransferTolerance = 0.03
+      ~ TransferToleranceSource = MinimizePoints
+      ~ NextSink = null
+    ~ SuppressCutcom = False
+    [TransferAvoidanceFromBuilder] : NcmAvoidancePointBuilder
+      ~ Point = null
+      ~ PointStatus = None
+      ~ ToolAxis = null
+      ~ ToolAxisStatus = 0
+      ~ ToolAxisUsage = None
+      ~ NextSink = null
+    [TransferAvoidanceGohomeBuilder] : NcmAvoidancePointBuilder
+      ~ Point = null
+      ~ PointStatus = None
+      ~ ToolAxis = null
+      ~ ToolAxisStatus = 0
+      ~ ToolAxisUsage = None
+      ~ NextSink = null
+    [TransferAvoidanceReturnBuilder] : NcmAvoidancePointBuilder
+      ~ Point = null
+      ~ PointStatus = None
+      ~ ToolAxis = null
+      ~ ToolAxisStatus = 0
+      ~ ToolAxisUsage = None
+      ~ NextSink = null
+    [TransferAvoidanceStartBuilder] : NcmAvoidancePointBuilder
+      ~ Point = null
+      ~ PointStatus = None
+      ~ ToolAxis = null
+      ~ ToolAxisStatus = 0
+      ~ ToolAxisUsage = None
+      ~ NextSink = null
+    ~ TransferBetweenLevelsSafeDistanceBuilder = null
+    ~ TransferBetweenLevelsType = PrevPlane
+    ~ TransferBetweenRegionsBuilder = [NcmTransfer]
+    [TransferBetweenRegionsSafeDistanceBuilder] : InheritableToolDepBuilder
+      ~ Intent = PartUnits
+      ~ ExpressionString = 
+      ~ Value = 3
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = False
+      ~ NextSink = null
+    ~ TransferBetweenRegionsType = Clearance
+    [TransferWithinLevelsHeightBuilder] : InheritableToolDepBuilder
+      ~ Intent = PartUnits
+      ~ ExpressionString = 
+      ~ Value = 3
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = False
+      ~ NextSink = null
+    [TransferWithinLevelsMaxFollowDistanceBuilder] : InheritableToolDepBuilder
+      ~ Intent = ToolDep
+      ~ ExpressionString = 
+      ~ Value = 500
+      ~ ValueIntent = Function
+      ~ InheritanceStatus = False
+      ~ NextSink = null
+    [TransferWithinLevelsSafeDistanceBuilder] : InheritableToolDepBuilder
+      ~ Intent = PartUnits
+      ~ ExpressionString = 
+      ~ Value = 3
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = False
+      ~ NextSink = null
+    ~ TransferWithinLevelsType = Clearance
+    ~ TransferWithinLevelsWith = UseEngret
+    ~ DefaultRegionStartType = MidPoint
+    [StartPointsEffectDistBuilder] : InheritableToolDepBuilder
+      ~ Intent = ToolDep
+      ~ ExpressionString = 
+      ~ Value = 500
+      ~ ValueIntent = Function
+      ~ InheritanceStatus = False
+      ~ NextSink = null
+    ~ StartPointsUseEffectDist = True
+    ~ NextSink = null
+  ~ PartGeometry = [Geometry]
+  ~ ToolAxisFix = [ToolAxisFixed]
+  ~ ToolMinimumLengthUsage = False
+  ~ CutParameters = [MillCutParameters]
+  ~ DrivePoint = 0
+  [FeedsBuilder] : FeedsBuilder
+    [CutGasPressure] : InheritableDoubleBuilder
+      ~ ExpressionString = 
+      ~ Value = 0
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [CutGasType] : InheritableIntBuilder
+      ~ Value = 0
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [CutLaserDelay] : InheritableDoubleBuilder
+      ~ ExpressionString = 
+      ~ Value = 0
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [CutLaserFrequency] : InheritableDoubleBuilder
+      ~ ExpressionString = 
+      ~ Value = 0
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [CutLaserPower] : InheritableDoubleBuilder
+      ~ ExpressionString = 
+      ~ Value = 0
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [FeedApproachBuilder] : InheritableFeedBuilder
+      ~ ExpressionString = 
+      ~ Unit = Rapid
+      ~ Value = 0
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [FeedCrossoverBuilder] : InheritableFeedBuilder
+      ~ ExpressionString = 
+      ~ Unit = CutPercent
+      ~ Value = 100
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [FeedCutBuilder] : InheritableFeedBuilder
+      ~ ExpressionString = 
+      ~ Unit = PerMinute
+      ~ Value = 250
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [FeedDepartureBuilder] : InheritableFeedBuilder
+      ~ ExpressionString = 
+      ~ Unit = Rapid
+      ~ Value = 0
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [FeedEngageBuilder] : InheritableFeedBuilder
+      ~ ExpressionString = 
+      ~ Unit = CutPercent
+      ~ Value = 100
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [FeedFirstCutBuilder] : InheritableFeedBuilder
+      ~ ExpressionString = 
+      ~ Unit = CutPercent
+      ~ Value = 100
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [FeedLastCutBuilder] : InheritableFeedBuilder
+      ~ ExpressionString = 
+      ~ Unit = CutPercent
+      ~ Value = 100
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [FeedPerToothBuilder] : InheritableDoubleBuilder
+      ~ ExpressionString = 
+      ~ Value = 0.1178
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = False
+      ~ NextSink = null
+    [FeedRapidBuilder] : InheritableFeedBuilder
+      ~ ExpressionString = 
+      ~ Unit = PerMinute
+      ~ Value = 0
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [FeedRapidOutput] : InheritableFeedModeBuilder
+      ~ Value = G0
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [FeedRetractBuilder] : InheritableFeedBuilder
+      ~ ExpressionString = 
+      ~ Unit = CutPercent
+      ~ Value = 100
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [FeedReturnBuilder] : InheritableFeedBuilder
+      ~ ExpressionString = 
+      ~ Unit = Rapid
+      ~ Value = 0
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [FeedSideCutBuilder] : InheritableFeedBuilder
+      ~ ExpressionString = 
+      ~ Unit = CutPercent
+      ~ Value = 100
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [FeedStepoverBuilder] : InheritableFeedBuilder
+      ~ ExpressionString = 
+      ~ Unit = CutPercent
+      ~ Value = 100
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [FeedTraversalBuilder] : InheritableFeedBuilder
+      ~ ExpressionString = 
+      ~ Unit = Rapid
+      ~ Value = 0
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    ~ FeedsOptimizationData = [FeedsOptimizationData]
+    ~ OptimizeFeedRateWhenGenerating = False
+    [PierceGasPressure] : InheritableDoubleBuilder
+      ~ ExpressionString = 
+      ~ Value = 0
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [PierceGasType] : InheritableIntBuilder
+      ~ Value = 0
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [PierceLaserDelay] : InheritableDoubleBuilder
+      ~ ExpressionString = 
+      ~ Value = 0
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [PierceLaserFrequency] : InheritableDoubleBuilder
+      ~ ExpressionString = 
+      ~ Value = 0
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [PierceLaserPower] : InheritableDoubleBuilder
+      ~ ExpressionString = 
+      ~ Value = 0
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [RetractSpeed] : InheritableDoubleBuilder
+      ~ ExpressionString = 
+      ~ Value = 0
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    ~ RetractSpeedToggle = 0
+    [SpindleModeBuilder] : InheritableIntBuilder
+      ~ Value = 0
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [SpindleRangeBuilder] : InheritableTextBuilder
+      ~ Value = 
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [SpindleRpmBuilder] : InheritableDoubleBuilder
+      ~ ExpressionString = 
+      ~ Value = 3000
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = False
+      ~ NextSink = null
+    ~ SpindleRpmToggle = 1
+    [SpindleTextBuilder] : InheritableTextBuilder
+      ~ Value = 
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [SurfaceSpeedBuilder] : InheritableDoubleBuilder
+      ~ ExpressionString = 
+      ~ Value = 100
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = False
+      ~ NextSink = null
+    [ToolDirectionBuilder] : InheritableIntBuilder
+      ~ Value = 1
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    ~ NextSink = null
+  [MinCutLength] : InheritableToolDepBuilder
+    ~ Intent = PartUnits
+    ~ ExpressionString = 
+    ~ Value = 0
+    ~ ValueIntent = PartUnits
+    ~ InheritanceStatus = True
+    ~ NextSink = null
+  [MotionOutput] : ArcOutputTypeCiBuilder
+    ~ NurbAngleTolerance = 1
+    ~ NurbFitTolerance = 0.03
+    ~ NurbJoinSegments = False
+    ~ OutputType = CirPerpToTaxis
+    ~ SplineArcOutputType = Spline
+    ~ SplineFitTolerance = 50
+    ~ SplineFitToleranceType = Percent
+    ~ SplineLineOutputType = Spline
+    ~ NextSink = null
+  ~ ReferenceTool = null
+  ~ WallCleanupType = Automatic
+  ~ ChannelName = null
+  ~ Description = 
+  [EndOfPath] : PostEventsCiBuilder
+    ~ PostEvent = False
+    ~ UdeSet = null
+    ~ NextSink = null
+  ~ EndUdeSet = [UdeSet]
+  ~ Geometry = [GeometryCiBuilder]
+  ~ GougeChecking = False
+  ~ HoleAxisType = Vector
+  [HoleDepth] : InheritableDoubleBuilder
+    ~ ExpressionString = 
+    ~ Value = 0
+    ~ ValueIntent = PartUnits
+    ~ InheritanceStatus = True
+    ~ NextSink = null
+  ~ HoleDepthType = Point
+  [LayoutAndLayer] : LayoutCiBuilder
+    ~ LayoutName = CAVITY_MILL_COPY_LAY1
+    ~ LayoutSaveSettings = 1
+    ~ NextSink = null
+  [MotionOutputBuilder] : ArcOutputTypeCiBuilder
+    ~ NurbAngleTolerance = 1
+    ~ NurbFitTolerance = 0.03
+    ~ NurbJoinSegments = False
+    ~ OutputType = CirPerpToTaxis
+    ~ SplineArcOutputType = Spline
+    ~ SplineFitTolerance = 50
+    ~ SplineFitToleranceType = Percent
+    ~ SplineLineOutputType = Spline
+    ~ NextSink = null
+  ~ Notes = [Notes]
+  ~ OptimizationBasedOn = Orient
+  ~ OptimizationDistanceMethod = Transition
+  ~ OptimizationLevel = Standard
+  [PathDisplayOptions] : OperationDisplayOptionsBuilder
+    ~ ArrowDisplayFlag = False
+    ~ DisplayCutRegionsFlag = False
+    ~ FeedDisplayFlag = False
+    ~ LineNumberDisplayFlag = False
+    ~ PaintDisplay = [DisplayPaint]
+    ~ PathDisplay = [DisplayPath]
+    ~ PathDisplayColors = [PathDisplayColors]
+    ~ PathDisplayType = SolidCenter
+    ~ PathNormalType = TypesToolAxis
+    ~ PathVector = [Direction]
+    ~ PatternDisplayFrequency = 1
+    ~ PatternDisplayType = None
+    ~ PatternFile = 
+    ~ PatternXOffset = 0
+    ~ PatternYOffset = 0
+    ~ PatternZOffset = 0
+    ~ PauseAfterDisplayFlag = False
+    ~ PercentOfTool = 100
+    ~ RefreshBeforeDisplayFlag = False
+    ~ ReplaySpeed = 10
+    ~ SaveContactDisplayDataFlag = False
+    ~ SilhouDisplay = [DisplaySilhouette]
+    ~ SuppressPathDisplayFlag = False
+    ~ ToolDisplay = [DisplayTool]
+    ~ ToolDisplayFrequency = 1
+    ~ ToolDisplayType = None
+    ~ NextSink = null
+  ~ PostToolPathExit = 
+  [RetractDistance] : InheritableDoubleBuilder
+    ~ ExpressionString = 
+    ~ Value = 0
+    ~ ValueIntent = PartUnits
+    ~ InheritanceStatus = True
+    ~ NextSink = null
+  [RetractDistanceOnToolAxisChange] : InheritableDoubleBuilder
+    ~ ExpressionString = 
+    ~ Value = 0
+    ~ ValueIntent = PartUnits
+    ~ InheritanceStatus = True
+    ~ NextSink = null
+  [SafeClearance] : InheritableDoubleBuilder
+    ~ ExpressionString = 
+    ~ Value = 0
+    ~ ValueIntent = PartUnits
+    ~ InheritanceStatus = True
+    ~ NextSink = null
+  ~ SelectToolFlag = False
+  [StartOfPath] : PostEventsCiBuilder
+    ~ PostEvent = False
+    ~ UdeSet = null
+    ~ NextSink = null
+  ~ StartUdeSet = [UdeSet]
+  [ToolChangeSetting] : ToolChangeCiBuilder
+    [AdjustRegister] : InheritableIntBuilder
+      ~ Value = 0
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    ~ AdjustRegisterToggle = False
+    [Angle] : InheritableDoubleBuilder
+      ~ ExpressionString = 
+      ~ Value = 0
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    ~ AngleToggle = False
+    [CutcomRegister] : InheritableIntBuilder
+      ~ Value = 0
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    ~ CutcomRegisterToggle = False
+    ~ HeadDesignation = None
+    [HolderNumber] : InheritableIntBuilder
+      ~ Value = 0
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    ~ HolderToggle = False
+    ~ ManualToolChange = False
+    [Number] : InheritableIntBuilder
+      ~ Value = 0
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    ~ NumberToggle = False
+    [Radius] : InheritableDoubleBuilder
+      ~ ExpressionString = 
+      ~ Value = 0
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    ~ RadiusToggle = False
+    ~ TextToggle = False
+    ~ TextValue = 
+    [Xoffset] : InheritableDoubleBuilder
+      ~ ExpressionString = 
+      ~ Value = 0
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    ~ XoffsetToggle = False
+    [Yoffset] : InheritableDoubleBuilder
+      ~ ExpressionString = 
+      ~ Value = 0
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    ~ YoffsetToggle = False
+    [Zoffset] : InheritableDoubleBuilder
+      ~ ExpressionString = 
+      ~ Value = 0
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    ~ ZoffsetToggle = False
+    ~ NextSink = null
+  [ToolPathEditor] : ToolPathEditorBuilder
+    ~ ArcAngle = 0
+    ~ ArcRadius = 0
+    ~ DeltaXC = 0
+    ~ DeltaYC = 0
+    ~ DeltaZC = 0
+    ~ ExtendDirection = null
+    ~ ExtendMethod = Linear
+    ~ FirstLinearDistance = 0
+    ~ GougeCheckClearanceMethod = Specify
+    ~ GougeCheckClearancePlane = null
+    ~ HolderCheck = False
+    ~ MotionMethod = Delta
+    ~ MoveStartPoint = False
+    ~ PermanentBoundary = null
+    ~ ReferencePoint = null
+    ~ SecondLinearDistance = 0
+    ~ ToPoint = null
+    ~ TransformCircles = False
+    ~ TrimClearanceMethod = Specify
+    ~ TrimClearancePlane = null
+    ~ TrimConnectionMethod = ClearancePlane
+    ~ TrimDirection = null
+    ~ TrimGeometry = Plane
+    ~ TrimLine = null
+    ~ TrimPlane = null
+    ~ TrimSide = Inside
+    ~ PreviewBuilder = null
+    ~ NextSink = null
+  [ToolPathSplitParametersBuilder] : ToolPathSplitParametersBuilder
+    [MinimumCutLength] : InheritableToolDepBuilder
+      ~ Intent = PartUnits
+      ~ ExpressionString = 
+      ~ Value = 0
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [OverlapDistance] : InheritableToolDepBuilder
+      ~ Intent = PartUnits
+      ~ ExpressionString = 
+      ~ Value = 0
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    ~ SplitType = ByCollision
+    ~ TransferHeight = 0
+    [TransferHeightBuilder] : InheritableToolDepBuilder
+      ~ Intent = PartUnits
+      ~ ExpressionString = 
+      ~ Value = 0
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    ~ TransferType = Direct
+    ~ TransferUsingMethod = None
+    ~ TrimmingSteepAngle = 0
+    ~ UseGlobalClearance = True
+    ~ PreviewBuilder = null
+    ~ NextSink = null
+  ~ CycleEvent = null
+  ~ CycleTable = null
+  ~ OptimizationMethod = None
+  ~ TargetPocket = null
+  ~ PreviewBuilder = null
+  ~ NextSink = null
+
+== op: CAVITY_MILL_COPY_COPY  pathT=0
+[b] : CavityMillingBuilder
+  ~ BlankGeometry = [Geometry]
+  [CutLevel] : CutLevel
+    ~ CutLevelType = Constant
+    [DistanceBelow] : InheritableToolDepBuilder
+      ~ Intent = ToolDep
+      ~ ExpressionString = 
+      ~ Value = 0
+      ~ ValueIntent = Function
+      ~ InheritanceStatus = False
+      ~ NextSink = null
+    [GlobalDepthPerCut] : StepoverBuilder
+      ~ AdditionalPasses = 0
+      ~ Angular = 0
+      ~ ApplyOn = OnPlane
+      ~ BlankContourDepth = null
+      ~ BlankContourNoLevels = 0
+      [DistanceBuilder] : InheritableToolDepBuilder
+        ~ Intent = PartUnits
+        ~ ExpressionString = 
+        ~ Value = 1
+        ~ ValueIntent = PartUnits
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ DistanceMaximumBuilder = null
+      ~ DistanceMinimumBuilder = null
+      ~ FirstDistance = null
+      ~ HorizontalLimitBuilder = null
+      ~ InheritableDistance = null
+      ~ MaximumAverage = 0
+      ~ MaximumAverageBuilder = null
+      ~ MaximumAverageOnlyBuilder = null
+      ~ MaximumBuilder = null
+      ~ MaximumPercentBuilder = null
+      ~ MinimumAverage = 0
+      ~ MinimumAverageBuilder = null
+      ~ MinimumDistance = null
+      ~ MinimumPercentBuilder = null
+      ~ MultipleBuilder = null
+      ~ NumberAtFirstDirection = 0
+      ~ NumberAtSecondDirection = 0
+      ~ NumberOfStepovers = 0
+      ~ PercentFluteLength = null
+      ~ PercentOfDegression = 0
+      ~ PercentOfRemainingBuilder = null
+      ~ PercentThreadLength = null
+      ~ PercentToolFlatBuilder = null
+      ~ PercentWireBuilder = null
+      [ScallopBuilder] : InheritableDoubleBuilder
+        ~ ExpressionString = 
+        ~ Value = 0.01
+        ~ ValueIntent = PartUnits
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ StepoverType = Constant
+      ~ StockPerPassBuilder = null
+      ~ UserDefined = null
+      ~ ValueOfDegression = null
+      ~ VariableMaximumBuilder = null
+      ~ VariableMaximumOnlyBuilder = null
+      ~ VariableMinimumBuilder = null
+      ~ VerticalLimitBuilder = null
+      ~ NextSink = null
+    ~ RangeType = Automatic
+    ~ TopOffCriticalDepths = False
+    ~ TopZc = 0
+    ~ NextSink = null
+  ~ TrimBoundary = [Boundary]
+  ~ AdditionalPasses = 0
+  ~ AutomaticPartBoundaryMethod = FollowWallTop
+  [AvoidanceMethods] : AvoidanceMethodsBuilder
+    ~ AvoidanceMethod = None
+    ~ NextSink = null
+  [BndStepover] : StepoverBuilder
+    ~ AdditionalPasses = 0
+    ~ Angular = 0
+    ~ ApplyOn = OnPlane
+    ~ BlankContourDepth = null
+    ~ BlankContourNoLevels = 0
+    [DistanceBuilder] : InheritableToolDepBuilder
+      ~ Intent = PartUnits
+      ~ ExpressionString = 
+      ~ Value = 15
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = False
+      ~ NextSink = null
+    ~ DistanceMaximumBuilder = null
+    ~ DistanceMinimumBuilder = null
+    ~ FirstDistance = null
+    ~ HorizontalLimitBuilder = null
+    ~ InheritableDistance = null
+    ~ MaximumAverage = 15
+    ~ MaximumAverageBuilder = null
+    ~ MaximumAverageOnlyBuilder = null
+    ~ MaximumBuilder = null
+    ~ MaximumPercentBuilder = null
+    ~ MinimumAverage = 15
+    ~ MinimumAverageBuilder = null
+    ~ MinimumDistance = null
+    ~ MinimumPercentBuilder = null
+    [MultipleBuilder] : MultipleStepoverBuilder
+      ~ PreviewBuilder = null
+      ~ NextSink = null
+    ~ NumberAtFirstDirection = 0
+    ~ NumberAtSecondDirection = 0
+    ~ NumberOfStepovers = 0
+    ~ PercentFluteLength = null
+    ~ PercentOfDegression = 0
+    ~ PercentOfRemainingBuilder = null
+    ~ PercentThreadLength = null
+    [PercentToolFlatBuilder] : InheritableDoubleBuilder
+      ~ ExpressionString = 
+      ~ Value = 70
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = False
+      ~ NextSink = null
+    ~ PercentWireBuilder = null
+    [ScallopBuilder] : InheritableDoubleBuilder
+      ~ ExpressionString = 
+      ~ Value = 0.3
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = False
+      ~ NextSink = null
+    ~ StepoverType = PercentToolFlat
+    ~ StockPerPassBuilder = null
+    ~ UserDefined = null
+    ~ ValueOfDegression = null
+    ~ VariableMaximumBuilder = null
+    ~ VariableMaximumOnlyBuilder = null
+    ~ VariableMinimumBuilder = null
+    ~ VerticalLimitBuilder = null
+    ~ NextSink = null
+  ~ CheckGeometry = [Geometry]
+  ~ CornerLoops = False
+  ~ CutAreaGeometry = [Geometry]
+  [CutPattern] : CutPatternBuilder
+    ~ CutPattern = FollowPeriphery
+    ~ NextSink = null
+  ~ DeferCuttingStatus = False
+  [DepthPerCut] : InheritableDoubleBuilder
+    ~ ExpressionString = 
+    ~ Value = 0
+    ~ ValueIntent = PartUnits
+    ~ InheritanceStatus = False
+    ~ NextSink = null
+  ~ IslandCleanup = False
+  [NonCuttingBuilder] : NcmPlanarBuilder
+    ~ ApplySafetyToDirect = False
+    [ClearanceBuilder] : NcmClearanceBuilder
+      ~ Axis = null
+      ~ AxisObject = null
+      ~ Body = null
+      ~ BoundingBoxClearance = 3
+      ~ ClearanceType = UseCommon
+      ~ PlaneXform = null
+      ~ Point = null
+      ~ PointObject = null
+      ~ Radius = 0
+      ~ SafeDistance = 3
+      ~ SafeDistanceBuilder = [ExpressionDouble]
+      ~ NextSink = null
+    ~ CollisionCheck = True
+    ~ CutcomMinimumAngle = 10
+    [CutcomMinimumMoveBuilder] : InheritableToolDepBuilder
+      ~ Intent = PartUnits
+      ~ ExpressionString = 
+      ~ Value = 2.5
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = False
+      ~ NextSink = null
+    ~ CutcomOutputContactPoint = False
+    ~ CutcomOutputPlane = False
+    ~ CutcomTrackingPointType = 0
+    ~ CutcomType = None
+    [EngageClosedAreaBuilder] : NcmPlanarEngRetBuilder
+      ~ ArcAngle = 90
+      [DiameterBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 90
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [EffectDistBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 500
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ EngRetType = Helical
+      ~ ExtendAfterArc = null
+      ~ ExtendBeforeArc = null
+      [HeightBuilder] : InheritableToolDepBuilder
+        ~ Intent = PartUnits
+        ~ ExpressionString = 
+        ~ Value = 3
+        ~ ValueIntent = PartUnits
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ HeightFrom = PreviousLevel
+      [HelicalRampAngleBuilder] : InheritableDoubleBuilder
+        ~ ExpressionString = 
+        ~ Value = 15
+        ~ ValueIntent = PartUnits
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ IfEngageDoesNotFit = Skip
+      ~ IgnoreBlankOnTrimSide = True
+      [LengthBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 90
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [MaxWidthBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 500
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [MinClearanceBuilder] : InheritableToolDepBuilder
+        ~ Intent = PartUnits
+        ~ ExpressionString = 
+        ~ Value = 0
+        ~ ValueIntent = PartUnits
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [MinRampLengthBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 70
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ MinimumClearance = ExtendAndTrim
+      ~ Plane = null
+      [RadiusBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 90
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ RampAngle = 15
+      ~ StartAtArcCenter = False
+      ~ SwingAngle = 0
+      ~ Trim = True
+      ~ UseEffectDist = True
+      ~ UseMaxWidth = False
+      ~ Vector = null
+      ~ NextSink = null
+    [EngageInitialClosedBuilder] : NcmPlanarEngRetBuilder
+      ~ ArcAngle = 90
+      [DiameterBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 90
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = True
+        ~ NextSink = null
+      [EffectDistBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 500
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ EngRetType = SameAsDefault
+      ~ ExtendAfterArc = null
+      ~ ExtendBeforeArc = null
+      [HeightBuilder] : InheritableToolDepBuilder
+        ~ Intent = PartUnits
+        ~ ExpressionString = 
+        ~ Value = 3
+        ~ ValueIntent = PartUnits
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ HeightFrom = PreviousLevel
+      [HelicalRampAngleBuilder] : InheritableDoubleBuilder
+        ~ ExpressionString = 
+        ~ Value = 15
+        ~ ValueIntent = PartUnits
+        ~ InheritanceStatus = True
+        ~ NextSink = null
+      ~ IfEngageDoesNotFit = Skip
+      ~ IgnoreBlankOnTrimSide = True
+      [LengthBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 90
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [MaxWidthBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 500
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [MinClearanceBuilder] : InheritableToolDepBuilder
+        ~ Intent = PartUnits
+        ~ ExpressionString = 
+        ~ Value = 0
+        ~ ValueIntent = PartUnits
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [MinRampLengthBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 70
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = True
+        ~ NextSink = null
+      ~ MinimumClearance = ExtendAndTrim
+      ~ Plane = null
+      [RadiusBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 90
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ RampAngle = 15
+      ~ StartAtArcCenter = False
+      ~ SwingAngle = 0
+      ~ Trim = True
+      ~ UseEffectDist = True
+      ~ UseMaxWidth = False
+      ~ Vector = null
+      ~ NextSink = null
+    [EngageInitialOpenBuilder] : NcmPlanarEngRetBuilder
+      ~ ArcAngle = 90
+      [DiameterBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 90
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = True
+        ~ NextSink = null
+      [EffectDistBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 500
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ EngRetType = SameAsDefault
+      [ExtendAfterArc] : InheritableToolDepBuilder
+        ~ Intent = PartUnits
+        ~ ExpressionString = 
+        ~ Value = 0
+        ~ ValueIntent = PartUnits
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [ExtendBeforeArc] : InheritableToolDepBuilder
+        ~ Intent = PartUnits
+        ~ ExpressionString = 
+        ~ Value = 0
+        ~ ValueIntent = PartUnits
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [HeightBuilder] : InheritableToolDepBuilder
+        ~ Intent = PartUnits
+        ~ ExpressionString = 
+        ~ Value = 3
+        ~ ValueIntent = PartUnits
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ HeightFrom = PreviousLevel
+      [HelicalRampAngleBuilder] : InheritableDoubleBuilder
+        ~ ExpressionString = 
+        ~ Value = 15
+        ~ ValueIntent = PartUnits
+        ~ InheritanceStatus = True
+        ~ NextSink = null
+      ~ IfEngageDoesNotFit = Skip
+      ~ IgnoreBlankOnTrimSide = False
+      [LengthBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 50
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [MaxWidthBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 500
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [MinClearanceBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 50
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [MinRampLengthBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 70
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = True
+        ~ NextSink = null
+      ~ MinimumClearance = SameAsOpenEngage
+      ~ Plane = null
+      [RadiusBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 50
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ RampAngle = 0
+      ~ StartAtArcCenter = False
+      ~ SwingAngle = 0
+      ~ Trim = False
+      ~ UseEffectDist = True
+      ~ UseMaxWidth = False
+      ~ Vector = null
+      ~ NextSink = null
+    [EngageOpenAreaBuilder] : NcmPlanarEngRetBuilder
+      ~ ArcAngle = 90
+      [DiameterBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 90
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [EffectDistBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 500
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ EngRetType = Arc
+      [ExtendAfterArc] : InheritableToolDepBuilder
+        ~ Intent = PartUnits
+        ~ ExpressionString = 
+        ~ Value = 0
+        ~ ValueIntent = PartUnits
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [ExtendBeforeArc] : InheritableToolDepBuilder
+        ~ Intent = PartUnits
+        ~ ExpressionString = 
+        ~ Value = 0
+        ~ ValueIntent = PartUnits
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [HeightBuilder] : InheritableToolDepBuilder
+        ~ Intent = PartUnits
+        ~ ExpressionString = 
+        ~ Value = 3
+        ~ ValueIntent = PartUnits
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ HeightFrom = PreviousLevel
+      [HelicalRampAngleBuilder] : InheritableDoubleBuilder
+        ~ ExpressionString = 
+        ~ Value = 0
+        ~ ValueIntent = PartUnits
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ IfEngageDoesNotFit = Skip
+      ~ IgnoreBlankOnTrimSide = False
+      [LengthBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 50
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [MaxWidthBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 500
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [MinClearanceBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 50
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [MinRampLengthBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 70
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ MinimumClearance = ExtendAndTrim
+      ~ Plane = null
+      [RadiusBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 50
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ RampAngle = 0
+      ~ StartAtArcCenter = False
+      ~ SwingAngle = 0
+      ~ Trim = True
+      ~ UseEffectDist = True
+      ~ UseMaxWidth = False
+      ~ Vector = null
+      ~ NextSink = null
+    [FinalSafeDistanceBuilder] : InheritableToolDepBuilder
+      ~ Intent = PartUnits
+      ~ ExpressionString = 
+      ~ Value = 3
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = False
+      ~ NextSink = null
+    ~ FinalType = Clearance
+    [InitialSafeDistanceBuilder] : InheritableToolDepBuilder
+      ~ Intent = PartUnits
+      ~ ExpressionString = 
+      ~ Value = 3
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = False
+      ~ NextSink = null
+    ~ InitialType = Clearance
+    ~ LimitEngRetToCutRegion = False
+    [OverlapDistanceBuilder] : InheritableToolDepBuilder
+      ~ Intent = PartUnits
+      ~ ExpressionString = 
+      ~ Value = 0
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = False
+      ~ NextSink = null
+    [PredrillPointsEffectDistBuilder] : InheritableToolDepBuilder
+      ~ Intent = ToolDep
+      ~ ExpressionString = 
+      ~ Value = 500
+      ~ ValueIntent = Function
+      ~ InheritanceStatus = False
+      ~ NextSink = null
+    ~ PredrillPointsOutput = None
+    ~ PredrillPointsUseEffectDist = True
+    [RetractAreaBuilder] : NcmPlanarEngRetBuilder
+      ~ ArcAngle = 90
+      [DiameterBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 90
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [EffectDistBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 500
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ EngRetType = SameAsEngage
+      [ExtendAfterArc] : InheritableToolDepBuilder
+        ~ Intent = PartUnits
+        ~ ExpressionString = 
+        ~ Value = 0
+        ~ ValueIntent = PartUnits
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [ExtendBeforeArc] : InheritableToolDepBuilder
+        ~ Intent = PartUnits
+        ~ ExpressionString = 
+        ~ Value = 0
+        ~ ValueIntent = PartUnits
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [HeightBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 50
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ HeightFrom = PreviousLevel
+      [HelicalRampAngleBuilder] : InheritableDoubleBuilder
+        ~ ExpressionString = 
+        ~ Value = 0
+        ~ ValueIntent = PartUnits
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ IfEngageDoesNotFit = Skip
+      ~ IgnoreBlankOnTrimSide = False
+      [LengthBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 90
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [MaxWidthBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 500
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [MinClearanceBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 50
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [MinRampLengthBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 70
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ MinimumClearance = ExtendOnly
+      ~ Plane = null
+      [RadiusBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 90
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ RampAngle = 0
+      ~ StartAtArcCenter = False
+      ~ SwingAngle = 0
+      ~ Trim = False
+      ~ UseEffectDist = True
+      ~ UseMaxWidth = False
+      ~ Vector = null
+      ~ NextSink = null
+    [RetractFinalBuilder] : NcmPlanarEngRetBuilder
+      ~ ArcAngle = 90
+      [DiameterBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 90
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = True
+        ~ NextSink = null
+      [EffectDistBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 500
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ EngRetType = SameAsDefault
+      [ExtendAfterArc] : InheritableToolDepBuilder
+        ~ Intent = PartUnits
+        ~ ExpressionString = 
+        ~ Value = 0
+        ~ ValueIntent = PartUnits
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [ExtendBeforeArc] : InheritableToolDepBuilder
+        ~ Intent = PartUnits
+        ~ ExpressionString = 
+        ~ Value = 0
+        ~ ValueIntent = PartUnits
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [HeightBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 50
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ HeightFrom = PreviousLevel
+      [HelicalRampAngleBuilder] : InheritableDoubleBuilder
+        ~ ExpressionString = 
+        ~ Value = 15
+        ~ ValueIntent = PartUnits
+        ~ InheritanceStatus = True
+        ~ NextSink = null
+      ~ IfEngageDoesNotFit = Skip
+      ~ IgnoreBlankOnTrimSide = False
+      [LengthBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 90
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [MaxWidthBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 500
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [MinClearanceBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 50
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [MinRampLengthBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 70
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = True
+        ~ NextSink = null
+      ~ MinimumClearance = SameAsRetract
+      ~ Plane = null
+      [RadiusBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 90
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ RampAngle = 0
+      ~ StartAtArcCenter = False
+      ~ SwingAngle = 0
+      ~ Trim = False
+      ~ UseEffectDist = True
+      ~ UseMaxWidth = False
+      ~ Vector = null
+      ~ NextSink = null
+    [SmoothingBuilder] : NcmSmoothingBuilder
+      ~ ApplyCornersSmoothing = False
+      ~ ApplyCornersSmoothingTransfers = False
+      ~ EngRetMaxToolAxisChange = 0
+      ~ EngRetTolerance = 0.03
+      ~ EngRetToleranceSource = MinimizePoints
+      [MaxStepoverDistance] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 100
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ OverrideWithSmoothConnections = False
+      [PartSafeClearance] : InheritableToolDepBuilder
+        ~ Intent = PartUnits
+        ~ ExpressionString = 
+        ~ Value = 1
+        ~ ValueIntent = PartUnits
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [RegionDistance] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 1000
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [SmoothHeight] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 15
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [SmoothLength] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 50
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [SmoothingRadius] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 10
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ TransferMaxToolAxisChange = 0
+      ~ TransferTolerance = 0.03
+      ~ TransferToleranceSource = MinimizePoints
+      ~ NextSink = null
+    ~ SuppressCutcom = False
+    [TransferAvoidanceFromBuilder] : NcmAvoidancePointBuilder
+      ~ Point = null
+      ~ PointStatus = None
+      ~ ToolAxis = null
+      ~ ToolAxisStatus = 0
+      ~ ToolAxisUsage = None
+      ~ NextSink = null
+    [TransferAvoidanceGohomeBuilder] : NcmAvoidancePointBuilder
+      ~ Point = null
+      ~ PointStatus = None
+      ~ ToolAxis = null
+      ~ ToolAxisStatus = 0
+      ~ ToolAxisUsage = None
+      ~ NextSink = null
+    [TransferAvoidanceReturnBuilder] : NcmAvoidancePointBuilder
+      ~ Point = null
+      ~ PointStatus = None
+      ~ ToolAxis = null
+      ~ ToolAxisStatus = 0
+      ~ ToolAxisUsage = None
+      ~ NextSink = null
+    [TransferAvoidanceStartBuilder] : NcmAvoidancePointBuilder
+      ~ Point = null
+      ~ PointStatus = None
+      ~ ToolAxis = null
+      ~ ToolAxisStatus = 0
+      ~ ToolAxisUsage = None
+      ~ NextSink = null
+    ~ TransferBetweenLevelsSafeDistanceBuilder = null
+    ~ TransferBetweenLevelsType = PrevPlane
+    ~ TransferBetweenRegionsBuilder = [NcmTransfer]
+    [TransferBetweenRegionsSafeDistanceBuilder] : InheritableToolDepBuilder
+      ~ Intent = PartUnits
+      ~ ExpressionString = 
+      ~ Value = 3
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = False
+      ~ NextSink = null
+    ~ TransferBetweenRegionsType = Clearance
+    [TransferWithinLevelsHeightBuilder] : InheritableToolDepBuilder
+      ~ Intent = PartUnits
+      ~ ExpressionString = 
+      ~ Value = 3
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = False
+      ~ NextSink = null
+    [TransferWithinLevelsMaxFollowDistanceBuilder] : InheritableToolDepBuilder
+      ~ Intent = ToolDep
+      ~ ExpressionString = 
+      ~ Value = 500
+      ~ ValueIntent = Function
+      ~ InheritanceStatus = False
+      ~ NextSink = null
+    [TransferWithinLevelsSafeDistanceBuilder] : InheritableToolDepBuilder
+      ~ Intent = PartUnits
+      ~ ExpressionString = 
+      ~ Value = 3
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = False
+      ~ NextSink = null
+    ~ TransferWithinLevelsType = Clearance
+    ~ TransferWithinLevelsWith = UseEngret
+    ~ DefaultRegionStartType = MidPoint
+    [StartPointsEffectDistBuilder] : InheritableToolDepBuilder
+      ~ Intent = ToolDep
+      ~ ExpressionString = 
+      ~ Value = 500
+      ~ ValueIntent = Function
+      ~ InheritanceStatus = False
+      ~ NextSink = null
+    ~ StartPointsUseEffectDist = True
+    ~ NextSink = null
+  ~ PartGeometry = [Geometry]
+  ~ ToolAxisFix = [ToolAxisFixed]
+  ~ ToolMinimumLengthUsage = False
+  ~ CutParameters = [MillCutParameters]
+  ~ DrivePoint = 0
+  [FeedsBuilder] : FeedsBuilder
+    [CutGasPressure] : InheritableDoubleBuilder
+      ~ ExpressionString = 
+      ~ Value = 0
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [CutGasType] : InheritableIntBuilder
+      ~ Value = 0
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [CutLaserDelay] : InheritableDoubleBuilder
+      ~ ExpressionString = 
+      ~ Value = 0
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [CutLaserFrequency] : InheritableDoubleBuilder
+      ~ ExpressionString = 
+      ~ Value = 0
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [CutLaserPower] : InheritableDoubleBuilder
+      ~ ExpressionString = 
+      ~ Value = 0
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [FeedApproachBuilder] : InheritableFeedBuilder
+      ~ ExpressionString = 
+      ~ Unit = Rapid
+      ~ Value = 0
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [FeedCrossoverBuilder] : InheritableFeedBuilder
+      ~ ExpressionString = 
+      ~ Unit = CutPercent
+      ~ Value = 100
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [FeedCutBuilder] : InheritableFeedBuilder
+      ~ ExpressionString = 
+      ~ Unit = PerMinute
+      ~ Value = 250
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [FeedDepartureBuilder] : InheritableFeedBuilder
+      ~ ExpressionString = 
+      ~ Unit = Rapid
+      ~ Value = 0
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [FeedEngageBuilder] : InheritableFeedBuilder
+      ~ ExpressionString = 
+      ~ Unit = CutPercent
+      ~ Value = 100
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [FeedFirstCutBuilder] : InheritableFeedBuilder
+      ~ ExpressionString = 
+      ~ Unit = CutPercent
+      ~ Value = 100
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [FeedLastCutBuilder] : InheritableFeedBuilder
+      ~ ExpressionString = 
+      ~ Unit = CutPercent
+      ~ Value = 100
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [FeedPerToothBuilder] : InheritableDoubleBuilder
+      ~ ExpressionString = 
+      ~ Value = 0.1178
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = False
+      ~ NextSink = null
+    [FeedRapidBuilder] : InheritableFeedBuilder
+      ~ ExpressionString = 
+      ~ Unit = PerMinute
+      ~ Value = 0
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [FeedRapidOutput] : InheritableFeedModeBuilder
+      ~ Value = G0
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [FeedRetractBuilder] : InheritableFeedBuilder
+      ~ ExpressionString = 
+      ~ Unit = CutPercent
+      ~ Value = 100
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [FeedReturnBuilder] : InheritableFeedBuilder
+      ~ ExpressionString = 
+      ~ Unit = Rapid
+      ~ Value = 0
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [FeedSideCutBuilder] : InheritableFeedBuilder
+      ~ ExpressionString = 
+      ~ Unit = CutPercent
+      ~ Value = 100
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [FeedStepoverBuilder] : InheritableFeedBuilder
+      ~ ExpressionString = 
+      ~ Unit = CutPercent
+      ~ Value = 100
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [FeedTraversalBuilder] : InheritableFeedBuilder
+      ~ ExpressionString = 
+      ~ Unit = Rapid
+      ~ Value = 0
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    ~ FeedsOptimizationData = [FeedsOptimizationData]
+    ~ OptimizeFeedRateWhenGenerating = False
+    [PierceGasPressure] : InheritableDoubleBuilder
+      ~ ExpressionString = 
+      ~ Value = 0
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [PierceGasType] : InheritableIntBuilder
+      ~ Value = 0
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [PierceLaserDelay] : InheritableDoubleBuilder
+      ~ ExpressionString = 
+      ~ Value = 0
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [PierceLaserFrequency] : InheritableDoubleBuilder
+      ~ ExpressionString = 
+      ~ Value = 0
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [PierceLaserPower] : InheritableDoubleBuilder
+      ~ ExpressionString = 
+      ~ Value = 0
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [RetractSpeed] : InheritableDoubleBuilder
+      ~ ExpressionString = 
+      ~ Value = 0
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    ~ RetractSpeedToggle = 0
+    [SpindleModeBuilder] : InheritableIntBuilder
+      ~ Value = 0
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [SpindleRangeBuilder] : InheritableTextBuilder
+      ~ Value = 
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [SpindleRpmBuilder] : InheritableDoubleBuilder
+      ~ ExpressionString = 
+      ~ Value = 1800
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = False
+      ~ NextSink = null
+    ~ SpindleRpmToggle = 1
+    [SpindleTextBuilder] : InheritableTextBuilder
+      ~ Value = 
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [SurfaceSpeedBuilder] : InheritableDoubleBuilder
+      ~ ExpressionString = 
+      ~ Value = 100
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = False
+      ~ NextSink = null
+    [ToolDirectionBuilder] : InheritableIntBuilder
+      ~ Value = 1
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    ~ NextSink = null
+  [MinCutLength] : InheritableToolDepBuilder
+    ~ Intent = PartUnits
+    ~ ExpressionString = 
+    ~ Value = 0
+    ~ ValueIntent = PartUnits
+    ~ InheritanceStatus = True
+    ~ NextSink = null
+  [MotionOutput] : ArcOutputTypeCiBuilder
+    ~ NurbAngleTolerance = 1
+    ~ NurbFitTolerance = 0.03
+    ~ NurbJoinSegments = False
+    ~ OutputType = CirPerpToTaxis
+    ~ SplineArcOutputType = Spline
+    ~ SplineFitTolerance = 50
+    ~ SplineFitToleranceType = Percent
+    ~ SplineLineOutputType = Spline
+    ~ NextSink = null
+  ~ ReferenceTool = null
+  ~ WallCleanupType = Automatic
+  ~ ChannelName = null
+  ~ Description = 
+  [EndOfPath] : PostEventsCiBuilder
+    ~ PostEvent = False
+    ~ UdeSet = null
+    ~ NextSink = null
+  ~ EndUdeSet = [UdeSet]
+  ~ Geometry = [GeometryCiBuilder]
+  ~ GougeChecking = False
+  ~ HoleAxisType = Vector
+  [HoleDepth] : InheritableDoubleBuilder
+    ~ ExpressionString = 
+    ~ Value = 0
+    ~ ValueIntent = PartUnits
+    ~ InheritanceStatus = True
+    ~ NextSink = null
+  ~ HoleDepthType = Point
+  [LayoutAndLayer] : LayoutCiBuilder
+    ~ LayoutName = CAVITY_MILL_COPY_COPY_LAY1
+    ~ LayoutSaveSettings = 1
+    ~ NextSink = null
+  [MotionOutputBuilder] : ArcOutputTypeCiBuilder
+    ~ NurbAngleTolerance = 1
+    ~ NurbFitTolerance = 0.03
+    ~ NurbJoinSegments = False
+    ~ OutputType = CirPerpToTaxis
+    ~ SplineArcOutputType = Spline
+    ~ SplineFitTolerance = 50
+    ~ SplineFitToleranceType = Percent
+    ~ SplineLineOutputType = Spline
+    ~ NextSink = null
+  ~ Notes = [Notes]
+  ~ OptimizationBasedOn = Orient
+  ~ OptimizationDistanceMethod = Transition
+  ~ OptimizationLevel = Standard
+  [PathDisplayOptions] : OperationDisplayOptionsBuilder
+    ~ ArrowDisplayFlag = False
+    ~ DisplayCutRegionsFlag = False
+    ~ FeedDisplayFlag = False
+    ~ LineNumberDisplayFlag = False
+    ~ PaintDisplay = [DisplayPaint]
+    ~ PathDisplay = [DisplayPath]
+    ~ PathDisplayColors = [PathDisplayColors]
+    ~ PathDisplayType = SolidCenter
+    ~ PathNormalType = TypesToolAxis
+    ~ PathVector = [Direction]
+    ~ PatternDisplayFrequency = 1
+    ~ PatternDisplayType = None
+    ~ PatternFile = 
+    ~ PatternXOffset = 0
+    ~ PatternYOffset = 0
+    ~ PatternZOffset = 0
+    ~ PauseAfterDisplayFlag = False
+    ~ PercentOfTool = 100
+    ~ RefreshBeforeDisplayFlag = False
+    ~ ReplaySpeed = 10
+    ~ SaveContactDisplayDataFlag = False
+    ~ SilhouDisplay = [DisplaySilhouette]
+    ~ SuppressPathDisplayFlag = False
+    ~ ToolDisplay = [DisplayTool]
+    ~ ToolDisplayFrequency = 1
+    ~ ToolDisplayType = None
+    ~ NextSink = null
+  ~ PostToolPathExit = 
+  [RetractDistance] : InheritableDoubleBuilder
+    ~ ExpressionString = 
+    ~ Value = 0
+    ~ ValueIntent = PartUnits
+    ~ InheritanceStatus = True
+    ~ NextSink = null
+  [RetractDistanceOnToolAxisChange] : InheritableDoubleBuilder
+    ~ ExpressionString = 
+    ~ Value = 0
+    ~ ValueIntent = PartUnits
+    ~ InheritanceStatus = True
+    ~ NextSink = null
+  [SafeClearance] : InheritableDoubleBuilder
+    ~ ExpressionString = 
+    ~ Value = 0
+    ~ ValueIntent = PartUnits
+    ~ InheritanceStatus = True
+    ~ NextSink = null
+  ~ SelectToolFlag = False
+  [StartOfPath] : PostEventsCiBuilder
+    ~ PostEvent = False
+    ~ UdeSet = null
+    ~ NextSink = null
+  ~ StartUdeSet = [UdeSet]
+  [ToolChangeSetting] : ToolChangeCiBuilder
+    [AdjustRegister] : InheritableIntBuilder
+      ~ Value = 0
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    ~ AdjustRegisterToggle = False
+    [Angle] : InheritableDoubleBuilder
+      ~ ExpressionString = 
+      ~ Value = 0
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    ~ AngleToggle = False
+    [CutcomRegister] : InheritableIntBuilder
+      ~ Value = 0
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    ~ CutcomRegisterToggle = False
+    ~ HeadDesignation = None
+    [HolderNumber] : InheritableIntBuilder
+      ~ Value = 0
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    ~ HolderToggle = False
+    ~ ManualToolChange = False
+    [Number] : InheritableIntBuilder
+      ~ Value = 0
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    ~ NumberToggle = False
+    [Radius] : InheritableDoubleBuilder
+      ~ ExpressionString = 
+      ~ Value = 0
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    ~ RadiusToggle = False
+    ~ TextToggle = False
+    ~ TextValue = 
+    [Xoffset] : InheritableDoubleBuilder
+      ~ ExpressionString = 
+      ~ Value = 0
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    ~ XoffsetToggle = False
+    [Yoffset] : InheritableDoubleBuilder
+      ~ ExpressionString = 
+      ~ Value = 0
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    ~ YoffsetToggle = False
+    [Zoffset] : InheritableDoubleBuilder
+      ~ ExpressionString = 
+      ~ Value = 0
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    ~ ZoffsetToggle = False
+    ~ NextSink = null
+  [ToolPathEditor] : ToolPathEditorBuilder
+    ~ ArcAngle = 0
+    ~ ArcRadius = 0
+    ~ DeltaXC = 0
+    ~ DeltaYC = 0
+    ~ DeltaZC = 0
+    ~ ExtendDirection = null
+    ~ ExtendMethod = Linear
+    ~ FirstLinearDistance = 0
+    ~ GougeCheckClearanceMethod = Specify
+    ~ GougeCheckClearancePlane = null
+    ~ HolderCheck = False
+    ~ MotionMethod = Delta
+    ~ MoveStartPoint = False
+    ~ PermanentBoundary = null
+    ~ ReferencePoint = null
+    ~ SecondLinearDistance = 0
+    ~ ToPoint = null
+    ~ TransformCircles = False
+    ~ TrimClearanceMethod = Specify
+    ~ TrimClearancePlane = null
+    ~ TrimConnectionMethod = ClearancePlane
+    ~ TrimDirection = null
+    ~ TrimGeometry = Plane
+    ~ TrimLine = null
+    ~ TrimPlane = null
+    ~ TrimSide = Inside
+    ~ PreviewBuilder = null
+    ~ NextSink = null
+  [ToolPathSplitParametersBuilder] : ToolPathSplitParametersBuilder
+    [MinimumCutLength] : InheritableToolDepBuilder
+      ~ Intent = PartUnits
+      ~ ExpressionString = 
+      ~ Value = 0
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [OverlapDistance] : InheritableToolDepBuilder
+      ~ Intent = PartUnits
+      ~ ExpressionString = 
+      ~ Value = 0
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    ~ SplitType = ByCollision
+    ~ TransferHeight = 0
+    [TransferHeightBuilder] : InheritableToolDepBuilder
+      ~ Intent = PartUnits
+      ~ ExpressionString = 
+      ~ Value = 0
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    ~ TransferType = Direct
+    ~ TransferUsingMethod = None
+    ~ TrimmingSteepAngle = 0
+    ~ UseGlobalClearance = True
+    ~ PreviewBuilder = null
+    ~ NextSink = null
+  ~ CycleEvent = null
+  ~ CycleTable = null
+  ~ OptimizationMethod = None
+  ~ TargetPocket = null
+  ~ PreviewBuilder = null
+  ~ NextSink = null
+
+== op: CAVITY_MILL_COPY_COPY_COPY  pathT=220.1114
+[b] : CavityMillingBuilder
+  ~ BlankGeometry = [Geometry]
+  [CutLevel] : CutLevel
+    ~ CutLevelType = Constant
+    [DistanceBelow] : InheritableToolDepBuilder
+      ~ Intent = ToolDep
+      ~ ExpressionString = 
+      ~ Value = 0
+      ~ ValueIntent = Function
+      ~ InheritanceStatus = False
+      ~ NextSink = null
+    [GlobalDepthPerCut] : StepoverBuilder
+      ~ AdditionalPasses = 0
+      ~ Angular = 0
+      ~ ApplyOn = OnPlane
+      ~ BlankContourDepth = null
+      ~ BlankContourNoLevels = 0
+      [DistanceBuilder] : InheritableToolDepBuilder
+        ~ Intent = PartUnits
+        ~ ExpressionString = 
+        ~ Value = 1
+        ~ ValueIntent = PartUnits
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ DistanceMaximumBuilder = null
+      ~ DistanceMinimumBuilder = null
+      ~ FirstDistance = null
+      ~ HorizontalLimitBuilder = null
+      ~ InheritableDistance = null
+      ~ MaximumAverage = 0
+      ~ MaximumAverageBuilder = null
+      ~ MaximumAverageOnlyBuilder = null
+      ~ MaximumBuilder = null
+      ~ MaximumPercentBuilder = null
+      ~ MinimumAverage = 0
+      ~ MinimumAverageBuilder = null
+      ~ MinimumDistance = null
+      ~ MinimumPercentBuilder = null
+      ~ MultipleBuilder = null
+      ~ NumberAtFirstDirection = 0
+      ~ NumberAtSecondDirection = 0
+      ~ NumberOfStepovers = 0
+      ~ PercentFluteLength = null
+      ~ PercentOfDegression = 0
+      ~ PercentOfRemainingBuilder = null
+      ~ PercentThreadLength = null
+      ~ PercentToolFlatBuilder = null
+      ~ PercentWireBuilder = null
+      [ScallopBuilder] : InheritableDoubleBuilder
+        ~ ExpressionString = 
+        ~ Value = 0.01
+        ~ ValueIntent = PartUnits
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ StepoverType = Constant
+      ~ StockPerPassBuilder = null
+      ~ UserDefined = null
+      ~ ValueOfDegression = null
+      ~ VariableMaximumBuilder = null
+      ~ VariableMaximumOnlyBuilder = null
+      ~ VariableMinimumBuilder = null
+      ~ VerticalLimitBuilder = null
+      ~ NextSink = null
+    ~ RangeType = Automatic
+    ~ TopOffCriticalDepths = False
+    ~ TopZc = 0
+    ~ NextSink = null
+  ~ TrimBoundary = [Boundary]
+  ~ AdditionalPasses = 0
+  ~ AutomaticPartBoundaryMethod = FollowWallTop
+  [AvoidanceMethods] : AvoidanceMethodsBuilder
+    ~ AvoidanceMethod = None
+    ~ NextSink = null
+  [BndStepover] : StepoverBuilder
+    ~ AdditionalPasses = 0
+    ~ Angular = 0
+    ~ ApplyOn = OnPlane
+    ~ BlankContourDepth = null
+    ~ BlankContourNoLevels = 0
+    [DistanceBuilder] : InheritableToolDepBuilder
+      ~ Intent = PartUnits
+      ~ ExpressionString = 
+      ~ Value = 15
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = False
+      ~ NextSink = null
+    ~ DistanceMaximumBuilder = null
+    ~ DistanceMinimumBuilder = null
+    ~ FirstDistance = null
+    ~ HorizontalLimitBuilder = null
+    ~ InheritableDistance = null
+    ~ MaximumAverage = 15
+    ~ MaximumAverageBuilder = null
+    ~ MaximumAverageOnlyBuilder = null
+    ~ MaximumBuilder = null
+    ~ MaximumPercentBuilder = null
+    ~ MinimumAverage = 15
+    ~ MinimumAverageBuilder = null
+    ~ MinimumDistance = null
+    ~ MinimumPercentBuilder = null
+    [MultipleBuilder] : MultipleStepoverBuilder
+      ~ PreviewBuilder = null
+      ~ NextSink = null
+    ~ NumberAtFirstDirection = 0
+    ~ NumberAtSecondDirection = 0
+    ~ NumberOfStepovers = 0
+    ~ PercentFluteLength = null
+    ~ PercentOfDegression = 0
+    ~ PercentOfRemainingBuilder = null
+    ~ PercentThreadLength = null
+    [PercentToolFlatBuilder] : InheritableDoubleBuilder
+      ~ ExpressionString = 
+      ~ Value = 70
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = False
+      ~ NextSink = null
+    ~ PercentWireBuilder = null
+    [ScallopBuilder] : InheritableDoubleBuilder
+      ~ ExpressionString = 
+      ~ Value = 0.3
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = False
+      ~ NextSink = null
+    ~ StepoverType = PercentToolFlat
+    ~ StockPerPassBuilder = null
+    ~ UserDefined = null
+    ~ ValueOfDegression = null
+    ~ VariableMaximumBuilder = null
+    ~ VariableMaximumOnlyBuilder = null
+    ~ VariableMinimumBuilder = null
+    ~ VerticalLimitBuilder = null
+    ~ NextSink = null
+  ~ CheckGeometry = [Geometry]
+  ~ CornerLoops = False
+  ~ CutAreaGeometry = [Geometry]
+  [CutPattern] : CutPatternBuilder
+    ~ CutPattern = FollowPeriphery
+    ~ NextSink = null
+  ~ DeferCuttingStatus = False
+  [DepthPerCut] : InheritableDoubleBuilder
+    ~ ExpressionString = 
+    ~ Value = 0
+    ~ ValueIntent = PartUnits
+    ~ InheritanceStatus = False
+    ~ NextSink = null
+  ~ IslandCleanup = False
+  [NonCuttingBuilder] : NcmPlanarBuilder
+    ~ ApplySafetyToDirect = False
+    [ClearanceBuilder] : NcmClearanceBuilder
+      ~ Axis = null
+      ~ AxisObject = null
+      ~ Body = null
+      ~ BoundingBoxClearance = 3
+      ~ ClearanceType = UseCommon
+      ~ PlaneXform = null
+      ~ Point = null
+      ~ PointObject = null
+      ~ Radius = 0
+      ~ SafeDistance = 3
+      ~ SafeDistanceBuilder = [ExpressionDouble]
+      ~ NextSink = null
+    ~ CollisionCheck = True
+    ~ CutcomMinimumAngle = 10
+    [CutcomMinimumMoveBuilder] : InheritableToolDepBuilder
+      ~ Intent = PartUnits
+      ~ ExpressionString = 
+      ~ Value = 2.5
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = False
+      ~ NextSink = null
+    ~ CutcomOutputContactPoint = False
+    ~ CutcomOutputPlane = False
+    ~ CutcomTrackingPointType = 0
+    ~ CutcomType = None
+    [EngageClosedAreaBuilder] : NcmPlanarEngRetBuilder
+      ~ ArcAngle = 90
+      [DiameterBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 90
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [EffectDistBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 500
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ EngRetType = Helical
+      ~ ExtendAfterArc = null
+      ~ ExtendBeforeArc = null
+      [HeightBuilder] : InheritableToolDepBuilder
+        ~ Intent = PartUnits
+        ~ ExpressionString = 
+        ~ Value = 3
+        ~ ValueIntent = PartUnits
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ HeightFrom = PreviousLevel
+      [HelicalRampAngleBuilder] : InheritableDoubleBuilder
+        ~ ExpressionString = 
+        ~ Value = 15
+        ~ ValueIntent = PartUnits
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ IfEngageDoesNotFit = Skip
+      ~ IgnoreBlankOnTrimSide = True
+      [LengthBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 90
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [MaxWidthBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 500
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [MinClearanceBuilder] : InheritableToolDepBuilder
+        ~ Intent = PartUnits
+        ~ ExpressionString = 
+        ~ Value = 0
+        ~ ValueIntent = PartUnits
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [MinRampLengthBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 70
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ MinimumClearance = ExtendAndTrim
+      ~ Plane = null
+      [RadiusBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 90
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ RampAngle = 15
+      ~ StartAtArcCenter = False
+      ~ SwingAngle = 0
+      ~ Trim = True
+      ~ UseEffectDist = True
+      ~ UseMaxWidth = False
+      ~ Vector = null
+      ~ NextSink = null
+    [EngageInitialClosedBuilder] : NcmPlanarEngRetBuilder
+      ~ ArcAngle = 90
+      [DiameterBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 90
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = True
+        ~ NextSink = null
+      [EffectDistBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 500
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ EngRetType = SameAsDefault
+      ~ ExtendAfterArc = null
+      ~ ExtendBeforeArc = null
+      [HeightBuilder] : InheritableToolDepBuilder
+        ~ Intent = PartUnits
+        ~ ExpressionString = 
+        ~ Value = 3
+        ~ ValueIntent = PartUnits
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ HeightFrom = PreviousLevel
+      [HelicalRampAngleBuilder] : InheritableDoubleBuilder
+        ~ ExpressionString = 
+        ~ Value = 15
+        ~ ValueIntent = PartUnits
+        ~ InheritanceStatus = True
+        ~ NextSink = null
+      ~ IfEngageDoesNotFit = Skip
+      ~ IgnoreBlankOnTrimSide = True
+      [LengthBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 90
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [MaxWidthBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 500
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [MinClearanceBuilder] : InheritableToolDepBuilder
+        ~ Intent = PartUnits
+        ~ ExpressionString = 
+        ~ Value = 0
+        ~ ValueIntent = PartUnits
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [MinRampLengthBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 70
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = True
+        ~ NextSink = null
+      ~ MinimumClearance = ExtendAndTrim
+      ~ Plane = null
+      [RadiusBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 90
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ RampAngle = 15
+      ~ StartAtArcCenter = False
+      ~ SwingAngle = 0
+      ~ Trim = True
+      ~ UseEffectDist = True
+      ~ UseMaxWidth = False
+      ~ Vector = null
+      ~ NextSink = null
+    [EngageInitialOpenBuilder] : NcmPlanarEngRetBuilder
+      ~ ArcAngle = 90
+      [DiameterBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 90
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = True
+        ~ NextSink = null
+      [EffectDistBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 500
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ EngRetType = SameAsDefault
+      [ExtendAfterArc] : InheritableToolDepBuilder
+        ~ Intent = PartUnits
+        ~ ExpressionString = 
+        ~ Value = 0
+        ~ ValueIntent = PartUnits
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [ExtendBeforeArc] : InheritableToolDepBuilder
+        ~ Intent = PartUnits
+        ~ ExpressionString = 
+        ~ Value = 0
+        ~ ValueIntent = PartUnits
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [HeightBuilder] : InheritableToolDepBuilder
+        ~ Intent = PartUnits
+        ~ ExpressionString = 
+        ~ Value = 3
+        ~ ValueIntent = PartUnits
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ HeightFrom = PreviousLevel
+      [HelicalRampAngleBuilder] : InheritableDoubleBuilder
+        ~ ExpressionString = 
+        ~ Value = 15
+        ~ ValueIntent = PartUnits
+        ~ InheritanceStatus = True
+        ~ NextSink = null
+      ~ IfEngageDoesNotFit = Skip
+      ~ IgnoreBlankOnTrimSide = False
+      [LengthBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 50
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [MaxWidthBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 500
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [MinClearanceBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 50
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [MinRampLengthBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 70
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = True
+        ~ NextSink = null
+      ~ MinimumClearance = SameAsOpenEngage
+      ~ Plane = null
+      [RadiusBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 50
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ RampAngle = 0
+      ~ StartAtArcCenter = False
+      ~ SwingAngle = 0
+      ~ Trim = False
+      ~ UseEffectDist = True
+      ~ UseMaxWidth = False
+      ~ Vector = null
+      ~ NextSink = null
+    [EngageOpenAreaBuilder] : NcmPlanarEngRetBuilder
+      ~ ArcAngle = 90
+      [DiameterBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 90
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [EffectDistBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 500
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ EngRetType = Arc
+      [ExtendAfterArc] : InheritableToolDepBuilder
+        ~ Intent = PartUnits
+        ~ ExpressionString = 
+        ~ Value = 0
+        ~ ValueIntent = PartUnits
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [ExtendBeforeArc] : InheritableToolDepBuilder
+        ~ Intent = PartUnits
+        ~ ExpressionString = 
+        ~ Value = 0
+        ~ ValueIntent = PartUnits
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [HeightBuilder] : InheritableToolDepBuilder
+        ~ Intent = PartUnits
+        ~ ExpressionString = 
+        ~ Value = 3
+        ~ ValueIntent = PartUnits
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ HeightFrom = PreviousLevel
+      [HelicalRampAngleBuilder] : InheritableDoubleBuilder
+        ~ ExpressionString = 
+        ~ Value = 0
+        ~ ValueIntent = PartUnits
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ IfEngageDoesNotFit = Skip
+      ~ IgnoreBlankOnTrimSide = False
+      [LengthBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 50
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [MaxWidthBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 500
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [MinClearanceBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 50
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [MinRampLengthBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 70
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ MinimumClearance = ExtendAndTrim
+      ~ Plane = null
+      [RadiusBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 50
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ RampAngle = 0
+      ~ StartAtArcCenter = False
+      ~ SwingAngle = 0
+      ~ Trim = True
+      ~ UseEffectDist = True
+      ~ UseMaxWidth = False
+      ~ Vector = null
+      ~ NextSink = null
+    [FinalSafeDistanceBuilder] : InheritableToolDepBuilder
+      ~ Intent = PartUnits
+      ~ ExpressionString = 
+      ~ Value = 3
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = False
+      ~ NextSink = null
+    ~ FinalType = Clearance
+    [InitialSafeDistanceBuilder] : InheritableToolDepBuilder
+      ~ Intent = PartUnits
+      ~ ExpressionString = 
+      ~ Value = 3
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = False
+      ~ NextSink = null
+    ~ InitialType = Clearance
+    ~ LimitEngRetToCutRegion = False
+    [OverlapDistanceBuilder] : InheritableToolDepBuilder
+      ~ Intent = PartUnits
+      ~ ExpressionString = 
+      ~ Value = 0
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = False
+      ~ NextSink = null
+    [PredrillPointsEffectDistBuilder] : InheritableToolDepBuilder
+      ~ Intent = ToolDep
+      ~ ExpressionString = 
+      ~ Value = 500
+      ~ ValueIntent = Function
+      ~ InheritanceStatus = False
+      ~ NextSink = null
+    ~ PredrillPointsOutput = None
+    ~ PredrillPointsUseEffectDist = True
+    [RetractAreaBuilder] : NcmPlanarEngRetBuilder
+      ~ ArcAngle = 90
+      [DiameterBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 90
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [EffectDistBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 500
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ EngRetType = SameAsEngage
+      [ExtendAfterArc] : InheritableToolDepBuilder
+        ~ Intent = PartUnits
+        ~ ExpressionString = 
+        ~ Value = 0
+        ~ ValueIntent = PartUnits
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [ExtendBeforeArc] : InheritableToolDepBuilder
+        ~ Intent = PartUnits
+        ~ ExpressionString = 
+        ~ Value = 0
+        ~ ValueIntent = PartUnits
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [HeightBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 50
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ HeightFrom = PreviousLevel
+      [HelicalRampAngleBuilder] : InheritableDoubleBuilder
+        ~ ExpressionString = 
+        ~ Value = 0
+        ~ ValueIntent = PartUnits
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ IfEngageDoesNotFit = Skip
+      ~ IgnoreBlankOnTrimSide = False
+      [LengthBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 90
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [MaxWidthBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 500
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [MinClearanceBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 50
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [MinRampLengthBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 70
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ MinimumClearance = ExtendOnly
+      ~ Plane = null
+      [RadiusBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 90
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ RampAngle = 0
+      ~ StartAtArcCenter = False
+      ~ SwingAngle = 0
+      ~ Trim = False
+      ~ UseEffectDist = True
+      ~ UseMaxWidth = False
+      ~ Vector = null
+      ~ NextSink = null
+    [RetractFinalBuilder] : NcmPlanarEngRetBuilder
+      ~ ArcAngle = 90
+      [DiameterBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 90
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = True
+        ~ NextSink = null
+      [EffectDistBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 500
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ EngRetType = SameAsDefault
+      [ExtendAfterArc] : InheritableToolDepBuilder
+        ~ Intent = PartUnits
+        ~ ExpressionString = 
+        ~ Value = 0
+        ~ ValueIntent = PartUnits
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [ExtendBeforeArc] : InheritableToolDepBuilder
+        ~ Intent = PartUnits
+        ~ ExpressionString = 
+        ~ Value = 0
+        ~ ValueIntent = PartUnits
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [HeightBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 50
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ HeightFrom = PreviousLevel
+      [HelicalRampAngleBuilder] : InheritableDoubleBuilder
+        ~ ExpressionString = 
+        ~ Value = 15
+        ~ ValueIntent = PartUnits
+        ~ InheritanceStatus = True
+        ~ NextSink = null
+      ~ IfEngageDoesNotFit = Skip
+      ~ IgnoreBlankOnTrimSide = False
+      [LengthBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 90
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [MaxWidthBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 500
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [MinClearanceBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 50
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [MinRampLengthBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 70
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = True
+        ~ NextSink = null
+      ~ MinimumClearance = SameAsRetract
+      ~ Plane = null
+      [RadiusBuilder] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 90
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ RampAngle = 0
+      ~ StartAtArcCenter = False
+      ~ SwingAngle = 0
+      ~ Trim = False
+      ~ UseEffectDist = True
+      ~ UseMaxWidth = False
+      ~ Vector = null
+      ~ NextSink = null
+    [SmoothingBuilder] : NcmSmoothingBuilder
+      ~ ApplyCornersSmoothing = False
+      ~ ApplyCornersSmoothingTransfers = False
+      ~ EngRetMaxToolAxisChange = 0
+      ~ EngRetTolerance = 0.03
+      ~ EngRetToleranceSource = MinimizePoints
+      [MaxStepoverDistance] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 100
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ OverrideWithSmoothConnections = False
+      [PartSafeClearance] : InheritableToolDepBuilder
+        ~ Intent = PartUnits
+        ~ ExpressionString = 
+        ~ Value = 1
+        ~ ValueIntent = PartUnits
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [RegionDistance] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 1000
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [SmoothHeight] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 15
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [SmoothLength] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 50
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      [SmoothingRadius] : InheritableToolDepBuilder
+        ~ Intent = ToolDep
+        ~ ExpressionString = 
+        ~ Value = 10
+        ~ ValueIntent = Function
+        ~ InheritanceStatus = False
+        ~ NextSink = null
+      ~ TransferMaxToolAxisChange = 0
+      ~ TransferTolerance = 0.03
+      ~ TransferToleranceSource = MinimizePoints
+      ~ NextSink = null
+    ~ SuppressCutcom = False
+    [TransferAvoidanceFromBuilder] : NcmAvoidancePointBuilder
+      ~ Point = null
+      ~ PointStatus = None
+      ~ ToolAxis = null
+      ~ ToolAxisStatus = 0
+      ~ ToolAxisUsage = None
+      ~ NextSink = null
+    [TransferAvoidanceGohomeBuilder] : NcmAvoidancePointBuilder
+      ~ Point = null
+      ~ PointStatus = None
+      ~ ToolAxis = null
+      ~ ToolAxisStatus = 0
+      ~ ToolAxisUsage = None
+      ~ NextSink = null
+    [TransferAvoidanceReturnBuilder] : NcmAvoidancePointBuilder
+      ~ Point = null
+      ~ PointStatus = None
+      ~ ToolAxis = null
+      ~ ToolAxisStatus = 0
+      ~ ToolAxisUsage = None
+      ~ NextSink = null
+    [TransferAvoidanceStartBuilder] : NcmAvoidancePointBuilder
+      ~ Point = null
+      ~ PointStatus = None
+      ~ ToolAxis = null
+      ~ ToolAxisStatus = 0
+      ~ ToolAxisUsage = None
+      ~ NextSink = null
+    ~ TransferBetweenLevelsSafeDistanceBuilder = null
+    ~ TransferBetweenLevelsType = PrevPlane
+    ~ TransferBetweenRegionsBuilder = [NcmTransfer]
+    [TransferBetweenRegionsSafeDistanceBuilder] : InheritableToolDepBuilder
+      ~ Intent = PartUnits
+      ~ ExpressionString = 
+      ~ Value = 3
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = False
+      ~ NextSink = null
+    ~ TransferBetweenRegionsType = Clearance
+    [TransferWithinLevelsHeightBuilder] : InheritableToolDepBuilder
+      ~ Intent = PartUnits
+      ~ ExpressionString = 
+      ~ Value = 3
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = False
+      ~ NextSink = null
+    [TransferWithinLevelsMaxFollowDistanceBuilder] : InheritableToolDepBuilder
+      ~ Intent = ToolDep
+      ~ ExpressionString = 
+      ~ Value = 500
+      ~ ValueIntent = Function
+      ~ InheritanceStatus = False
+      ~ NextSink = null
+    [TransferWithinLevelsSafeDistanceBuilder] : InheritableToolDepBuilder
+      ~ Intent = PartUnits
+      ~ ExpressionString = 
+      ~ Value = 3
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = False
+      ~ NextSink = null
+    ~ TransferWithinLevelsType = Clearance
+    ~ TransferWithinLevelsWith = UseEngret
+    ~ DefaultRegionStartType = MidPoint
+    [StartPointsEffectDistBuilder] : InheritableToolDepBuilder
+      ~ Intent = ToolDep
+      ~ ExpressionString = 
+      ~ Value = 500
+      ~ ValueIntent = Function
+      ~ InheritanceStatus = False
+      ~ NextSink = null
+    ~ StartPointsUseEffectDist = True
+    ~ NextSink = null
+  ~ PartGeometry = [Geometry]
+  ~ ToolAxisFix = [ToolAxisFixed]
+  ~ ToolMinimumLengthUsage = False
+  ~ CutParameters = [MillCutParameters]
+  ~ DrivePoint = 0
+  [FeedsBuilder] : FeedsBuilder
+    [CutGasPressure] : InheritableDoubleBuilder
+      ~ ExpressionString = 
+      ~ Value = 0
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [CutGasType] : InheritableIntBuilder
+      ~ Value = 0
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [CutLaserDelay] : InheritableDoubleBuilder
+      ~ ExpressionString = 
+      ~ Value = 0
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [CutLaserFrequency] : InheritableDoubleBuilder
+      ~ ExpressionString = 
+      ~ Value = 0
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [CutLaserPower] : InheritableDoubleBuilder
+      ~ ExpressionString = 
+      ~ Value = 0
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [FeedApproachBuilder] : InheritableFeedBuilder
+      ~ ExpressionString = 
+      ~ Unit = Rapid
+      ~ Value = 0
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [FeedCrossoverBuilder] : InheritableFeedBuilder
+      ~ ExpressionString = 
+      ~ Unit = CutPercent
+      ~ Value = 100
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [FeedCutBuilder] : InheritableFeedBuilder
+      ~ ExpressionString = 
+      ~ Unit = PerMinute
+      ~ Value = 250
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [FeedDepartureBuilder] : InheritableFeedBuilder
+      ~ ExpressionString = 
+      ~ Unit = Rapid
+      ~ Value = 0
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [FeedEngageBuilder] : InheritableFeedBuilder
+      ~ ExpressionString = 
+      ~ Unit = CutPercent
+      ~ Value = 100
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [FeedFirstCutBuilder] : InheritableFeedBuilder
+      ~ ExpressionString = 
+      ~ Unit = CutPercent
+      ~ Value = 100
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [FeedLastCutBuilder] : InheritableFeedBuilder
+      ~ ExpressionString = 
+      ~ Unit = CutPercent
+      ~ Value = 100
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [FeedPerToothBuilder] : InheritableDoubleBuilder
+      ~ ExpressionString = 
+      ~ Value = 0.1178
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = False
+      ~ NextSink = null
+    [FeedRapidBuilder] : InheritableFeedBuilder
+      ~ ExpressionString = 
+      ~ Unit = PerMinute
+      ~ Value = 0
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [FeedRapidOutput] : InheritableFeedModeBuilder
+      ~ Value = G0
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [FeedRetractBuilder] : InheritableFeedBuilder
+      ~ ExpressionString = 
+      ~ Unit = CutPercent
+      ~ Value = 100
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [FeedReturnBuilder] : InheritableFeedBuilder
+      ~ ExpressionString = 
+      ~ Unit = Rapid
+      ~ Value = 0
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [FeedSideCutBuilder] : InheritableFeedBuilder
+      ~ ExpressionString = 
+      ~ Unit = CutPercent
+      ~ Value = 100
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [FeedStepoverBuilder] : InheritableFeedBuilder
+      ~ ExpressionString = 
+      ~ Unit = CutPercent
+      ~ Value = 100
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [FeedTraversalBuilder] : InheritableFeedBuilder
+      ~ ExpressionString = 
+      ~ Unit = Rapid
+      ~ Value = 0
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    ~ FeedsOptimizationData = [FeedsOptimizationData]
+    ~ OptimizeFeedRateWhenGenerating = False
+    [PierceGasPressure] : InheritableDoubleBuilder
+      ~ ExpressionString = 
+      ~ Value = 0
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [PierceGasType] : InheritableIntBuilder
+      ~ Value = 0
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [PierceLaserDelay] : InheritableDoubleBuilder
+      ~ ExpressionString = 
+      ~ Value = 0
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [PierceLaserFrequency] : InheritableDoubleBuilder
+      ~ ExpressionString = 
+      ~ Value = 0
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [PierceLaserPower] : InheritableDoubleBuilder
+      ~ ExpressionString = 
+      ~ Value = 0
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [RetractSpeed] : InheritableDoubleBuilder
+      ~ ExpressionString = 
+      ~ Value = 0
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    ~ RetractSpeedToggle = 0
+    [SpindleModeBuilder] : InheritableIntBuilder
+      ~ Value = 0
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [SpindleRangeBuilder] : InheritableTextBuilder
+      ~ Value = 
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [SpindleRpmBuilder] : InheritableDoubleBuilder
+      ~ ExpressionString = 
+      ~ Value = 1800
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = False
+      ~ NextSink = null
+    ~ SpindleRpmToggle = 1
+    [SpindleTextBuilder] : InheritableTextBuilder
+      ~ Value = 
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [SurfaceSpeedBuilder] : InheritableDoubleBuilder
+      ~ ExpressionString = 
+      ~ Value = 100
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = False
+      ~ NextSink = null
+    [ToolDirectionBuilder] : InheritableIntBuilder
+      ~ Value = 1
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    ~ NextSink = null
+  [MinCutLength] : InheritableToolDepBuilder
+    ~ Intent = PartUnits
+    ~ ExpressionString = 
+    ~ Value = 0
+    ~ ValueIntent = PartUnits
+    ~ InheritanceStatus = True
+    ~ NextSink = null
+  [MotionOutput] : ArcOutputTypeCiBuilder
+    ~ NurbAngleTolerance = 1
+    ~ NurbFitTolerance = 0.03
+    ~ NurbJoinSegments = False
+    ~ OutputType = CirPerpToTaxis
+    ~ SplineArcOutputType = Spline
+    ~ SplineFitTolerance = 50
+    ~ SplineFitToleranceType = Percent
+    ~ SplineLineOutputType = Spline
+    ~ NextSink = null
+  ~ ReferenceTool = null
+  ~ WallCleanupType = Automatic
+  ~ ChannelName = null
+  ~ Description = 
+  [EndOfPath] : PostEventsCiBuilder
+    ~ PostEvent = False
+    ~ UdeSet = null
+    ~ NextSink = null
+  ~ EndUdeSet = [UdeSet]
+  ~ Geometry = [GeometryCiBuilder]
+  ~ GougeChecking = False
+  ~ HoleAxisType = Vector
+  [HoleDepth] : InheritableDoubleBuilder
+    ~ ExpressionString = 
+    ~ Value = 0
+    ~ ValueIntent = PartUnits
+    ~ InheritanceStatus = True
+    ~ NextSink = null
+  ~ HoleDepthType = Point
+  [LayoutAndLayer] : LayoutCiBuilder
+    ~ LayoutName = CAVITY_MILL_COPY_COPY_COPY_LAY1
+    ~ LayoutSaveSettings = 1
+    ~ NextSink = null
+  [MotionOutputBuilder] : ArcOutputTypeCiBuilder
+    ~ NurbAngleTolerance = 1
+    ~ NurbFitTolerance = 0.03
+    ~ NurbJoinSegments = False
+    ~ OutputType = CirPerpToTaxis
+    ~ SplineArcOutputType = Spline
+    ~ SplineFitTolerance = 50
+    ~ SplineFitToleranceType = Percent
+    ~ SplineLineOutputType = Spline
+    ~ NextSink = null
+  ~ Notes = [Notes]
+  ~ OptimizationBasedOn = Orient
+  ~ OptimizationDistanceMethod = Transition
+  ~ OptimizationLevel = Standard
+  [PathDisplayOptions] : OperationDisplayOptionsBuilder
+    ~ ArrowDisplayFlag = False
+    ~ DisplayCutRegionsFlag = False
+    ~ FeedDisplayFlag = False
+    ~ LineNumberDisplayFlag = False
+    ~ PaintDisplay = [DisplayPaint]
+    ~ PathDisplay = [DisplayPath]
+    ~ PathDisplayColors = [PathDisplayColors]
+    ~ PathDisplayType = SolidCenter
+    ~ PathNormalType = TypesToolAxis
+    ~ PathVector = [Direction]
+    ~ PatternDisplayFrequency = 1
+    ~ PatternDisplayType = None
+    ~ PatternFile = 
+    ~ PatternXOffset = 0
+    ~ PatternYOffset = 0
+    ~ PatternZOffset = 0
+    ~ PauseAfterDisplayFlag = False
+    ~ PercentOfTool = 100
+    ~ RefreshBeforeDisplayFlag = False
+    ~ ReplaySpeed = 10
+    ~ SaveContactDisplayDataFlag = False
+    ~ SilhouDisplay = [DisplaySilhouette]
+    ~ SuppressPathDisplayFlag = False
+    ~ ToolDisplay = [DisplayTool]
+    ~ ToolDisplayFrequency = 1
+    ~ ToolDisplayType = None
+    ~ NextSink = null
+  ~ PostToolPathExit = 
+  [RetractDistance] : InheritableDoubleBuilder
+    ~ ExpressionString = 
+    ~ Value = 0
+    ~ ValueIntent = PartUnits
+    ~ InheritanceStatus = True
+    ~ NextSink = null
+  [RetractDistanceOnToolAxisChange] : InheritableDoubleBuilder
+    ~ ExpressionString = 
+    ~ Value = 0
+    ~ ValueIntent = PartUnits
+    ~ InheritanceStatus = True
+    ~ NextSink = null
+  [SafeClearance] : InheritableDoubleBuilder
+    ~ ExpressionString = 
+    ~ Value = 0
+    ~ ValueIntent = PartUnits
+    ~ InheritanceStatus = True
+    ~ NextSink = null
+  ~ SelectToolFlag = False
+  [StartOfPath] : PostEventsCiBuilder
+    ~ PostEvent = False
+    ~ UdeSet = null
+    ~ NextSink = null
+  ~ StartUdeSet = [UdeSet]
+  [ToolChangeSetting] : ToolChangeCiBuilder
+    [AdjustRegister] : InheritableIntBuilder
+      ~ Value = 0
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    ~ AdjustRegisterToggle = False
+    [Angle] : InheritableDoubleBuilder
+      ~ ExpressionString = 
+      ~ Value = 0
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    ~ AngleToggle = False
+    [CutcomRegister] : InheritableIntBuilder
+      ~ Value = 0
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    ~ CutcomRegisterToggle = False
+    ~ HeadDesignation = None
+    [HolderNumber] : InheritableIntBuilder
+      ~ Value = 0
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    ~ HolderToggle = False
+    ~ ManualToolChange = False
+    [Number] : InheritableIntBuilder
+      ~ Value = 0
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    ~ NumberToggle = False
+    [Radius] : InheritableDoubleBuilder
+      ~ ExpressionString = 
+      ~ Value = 0
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    ~ RadiusToggle = False
+    ~ TextToggle = False
+    ~ TextValue = 
+    [Xoffset] : InheritableDoubleBuilder
+      ~ ExpressionString = 
+      ~ Value = 0
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    ~ XoffsetToggle = False
+    [Yoffset] : InheritableDoubleBuilder
+      ~ ExpressionString = 
+      ~ Value = 0
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    ~ YoffsetToggle = False
+    [Zoffset] : InheritableDoubleBuilder
+      ~ ExpressionString = 
+      ~ Value = 0
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    ~ ZoffsetToggle = False
+    ~ NextSink = null
+  [ToolPathEditor] : ToolPathEditorBuilder
+    ~ ArcAngle = 0
+    ~ ArcRadius = 0
+    ~ DeltaXC = 0
+    ~ DeltaYC = 0
+    ~ DeltaZC = 0
+    ~ ExtendDirection = null
+    ~ ExtendMethod = Linear
+    ~ FirstLinearDistance = 0
+    ~ GougeCheckClearanceMethod = Specify
+    ~ GougeCheckClearancePlane = null
+    ~ HolderCheck = False
+    ~ MotionMethod = Delta
+    ~ MoveStartPoint = False
+    ~ PermanentBoundary = null
+    ~ ReferencePoint = null
+    ~ SecondLinearDistance = 0
+    ~ ToPoint = null
+    ~ TransformCircles = False
+    ~ TrimClearanceMethod = Specify
+    ~ TrimClearancePlane = null
+    ~ TrimConnectionMethod = ClearancePlane
+    ~ TrimDirection = null
+    ~ TrimGeometry = Plane
+    ~ TrimLine = null
+    ~ TrimPlane = null
+    ~ TrimSide = Inside
+    ~ PreviewBuilder = null
+    ~ NextSink = null
+  [ToolPathSplitParametersBuilder] : ToolPathSplitParametersBuilder
+    [MinimumCutLength] : InheritableToolDepBuilder
+      ~ Intent = PartUnits
+      ~ ExpressionString = 
+      ~ Value = 0
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    [OverlapDistance] : InheritableToolDepBuilder
+      ~ Intent = PartUnits
+      ~ ExpressionString = 
+      ~ Value = 0
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    ~ SplitType = ByCollision
+    ~ TransferHeight = 0
+    [TransferHeightBuilder] : InheritableToolDepBuilder
+      ~ Intent = PartUnits
+      ~ ExpressionString = 
+      ~ Value = 0
+      ~ ValueIntent = PartUnits
+      ~ InheritanceStatus = True
+      ~ NextSink = null
+    ~ TransferType = Direct
+    ~ TransferUsingMethod = None
+    ~ TrimmingSteepAngle = 0
+    ~ UseGlobalClearance = True
+    ~ PreviewBuilder = null
+    ~ NextSink = null
+  ~ CycleEvent = null
+  ~ CycleTable = null
+  ~ OptimizationMethod = None
+  ~ TargetPocket = null
+  ~ PreviewBuilder = null
+  ~ NextSink = null
+== 结束 ==

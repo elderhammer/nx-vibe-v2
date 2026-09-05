@@ -1,0 +1,10 @@
+== CamProbeV2Body（体/面几何保真核对）==
+label=reb  件: C:\Users\21505\Code\nx-vibe-v2\samples\v2.rebuilt-20260905-191437.prt
+打开 OK: v2.rebuilt-20260905-191437  camSession=True
+body area=0.1681 vol=0.0031 COF=(24.5141,0.075,-0.0624)
+body faces=26 edges=68
+OP-003 面数=3
+  face edges=4 ftype=22 rep=(98,54.5,100) r=0
+  face edges=4 ftype=22 rep=(52,54.5,100) r=0
+  face edges=4 ftype=22 rep=(75,-135.625,100) r=0
+== 结束 ==

@@ -125,8 +125,10 @@ I-2）同 API 面，全部已实证，零新探针；几何/刀路维度显式�
 > 参数面残余与 200339 清单同源（PTP 4 + tool#4 1）；v2 三维残余 = 腔 16 = OP-001/002/004 ×4
 > （刀路 time/length + 区域数/面积和——归因 = feed_cut 写面缺口（注册表 #15 未测写 → 写面探针
 > 候选，gt 2000/500 vs rebuilt 默认 250 为时间差主因）+ 区域分割粒度（gt 80/36/2 vs rebuilt
-> 24×3））+ OP-003 ×4（空刀路待诊——判别读探针 camprobe-v2op-191955/192013 排除集属性/DPC/feed
-> 假设，零化参数待 BuilderProperties 双档 diff，见 nx-v2-geom-spec.md §7）；PTP 刀路单侧缺 ×4
+> 24×3））+ OP-003 ×4（空刀路——判别读探针 camprobe-v2op-191955/192013 + 七探针链 γ 定案：
+> rebuilt（STEP 回导）体上下文上的引擎区域形成差异，非复刻缺口 → **永久校准条目**，详见
+> nx-v2-geom-spec.md §7；副产品：腔 stepdown 实为 CutLevel.GlobalDepthPerCut，导出深度键
+> 读成员修正候选）；PTP 刀路单侧缺 ×4
 > 为 v2 范围缺席（PTP 无面指派）→ 由维 gate 排除不计；sigfaceset=4/4 零 SIG_FACE_DIFF。
 > ③ **新增校准条目**：区域维同面复刻仍敏感（gt 80 vs rebuilt 24）→ v2.5 区域几何配对（而非
 > 计数）；feed_cut 写面探针（v2.5 写面扩展候选）。2026-09-05 早两跑（comparer-run-191118/191558，

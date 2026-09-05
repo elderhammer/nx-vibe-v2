@@ -1,0 +1,13 @@
+== CamProbeV2Sel（rebuilt 侧选择集内容判别）==
+time: 2026-09-05 19:59:58
+件: C:\Users\21505\Code\nx-vibe-v2\samples\v2.rebuilt-20260905-191437.prt
+打开 OK: v2.rebuilt-20260905-191437  camSession=True
+OP-001 set faces=13  OP-003 set faces=3
+S2 候选（13 minus 3）= 10
+  [S0 还原自身 3 面] time=0 length=0 regions=0
+  [S1 = OP-001 13 面全集] time=220.1114 length=57103.1073 regions=24  <<< 非零
+  [S1 对照 OP-001（未动）] time=129.8219 length=34591.7309 regions=24  <<< 非零
+  [S2 = 13 minus 3（10 面）] time=220.1102 length=57102.8064 regions=24  <<< 非零
+  [S3 = 还原自身 3 面（0 可复现对照）] time=220.1102 length=57102.8064 regions=24  <<< 非零
+== 结束（全程未 Save）==
+== 结束 ==

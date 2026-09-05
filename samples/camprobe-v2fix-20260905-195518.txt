@@ -1,0 +1,32 @@
+== CamProbeV2Fix（OP-003 候选写回 + 重生成判别）==
+time: 2026-09-05 19:55:18
+件: C:\Users\21505\Code\nx-vibe-v2\samples\v2.rebuilt-20260905-191437.prt
+打开 OK: v2.rebuilt-20260905-191437  camSession=True
+== 基线（未改）==
+  [基线] time=0 length=0 regions=0
+
+== C1 CutLevel.GlobalDepthPerCut.Distance=20 ==
+  [C1 CutLevel.GlobalDepthPerCut.Distance=20] time=0 length=0 regions=0
+  （已还原）
+
+== C2 b.DepthPerCut=20 ==
+  [C2 b.DepthPerCut=20] time=0 length=0 regions=0
+  （已还原）
+
+== C3 Stepover.PercentToolFlat=65 ==
+  [C3 Stepover.PercentToolFlat=65] time=0 length=0 regions=0
+  （已还原）
+
+== C4 CutAreaExtensionDistance=2 ==
+  [C4 CutAreaExtensionDistance=2] time=0 length=0 regions=0
+  （已还原）
+
+== C5 C1+C2 组合 ==
+  [C5 C1+C2 组合] time=0 length=0 regions=0
+  （已还原）
+
+== C6 BlankStock=0.2 ==
+  [C6 BlankStock=0.2] time=0 length=0 regions=0
+  （已还原）
+== 结束（全程未 Save）==
+== 结束 ==

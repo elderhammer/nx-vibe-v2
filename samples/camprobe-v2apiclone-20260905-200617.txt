@@ -1,0 +1,13 @@
+== CamProbeV2ApiClone（同 3 面 API 新建 op 判别）==
+time: 2026-09-05 20:06:17
+件: C:\Users\21505\Code\nx-vibe-v2\samples\v2.rebuilt-20260905-191437.prt
+打开 OK: v2.rebuilt-20260905-191437  camSession=True
+OP-003 面数=3
+锚点: prog=A01 method=METHOD tool=T-003 geom=WORKPIECE
+APICLONE 创建 OK: CAVITY_MILL_1
+面指派 3 → ok
+== APICLONE(默认参数+3 面) time=0 length=0 regions=0
+== 对照 gt OP-003（工程师复制件，同 3 面） ===
+  OP-003 time=0 length=0 regions=0
+== 结束（全程未 Save）==
+== 结束 ==
