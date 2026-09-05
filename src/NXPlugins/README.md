@@ -8,7 +8,10 @@
 > 官方 4.8 Dev Pack 安装器在沙箱挂起、4.8.1 pack 已就位且运行时 4.8.1；语义兼容 4.8 代码）；
 > 代码全部在本目录（sln 在仓库根 `Autocam.Plugins.sln`）。
 
-## 当前状态（2026-09-05 晚）：实证收官——v1 三步闭环 + v1.5-①③④ 参数面扩展 + STEP 资产收口（索引 §3 全划勾）+ **v2 几何重建一体收官**（[nx-v2-geom-spec.md](../docs/nx-v2-geom-spec.md)：STEP 导入→签名面指派→带几何刀路→Comparer 三维 + 腔铣维 gate；[I] 实录 190859/191001/191434/192158/192456，comparer 192456 issues=21=预测、sigfaceset=4/4 验收关闭）+ **v1.5-⑤ feed_cut 写面贯通**（探针三跑持久 → 白名单/采集/写适配器，[U] 102/102；[I] 三连跑待 GUI Execute——见 nx-param-registry-spec.md §2 #15）
+## 当前状态（2026-09-05 晚）：实证收官——v1 三步闭环 + v1.5-①③④ 参数面扩展 + STEP 资产收口（索引 §3 全划勾）+ **v2 几何重建一体收官**（[nx-v2-geom-spec.md](../docs/nx-v2-geom-spec.md)：STEP 导入→签名面指派→带几何刀路→Comparer 三维 + 腔铣维 gate；[I] 实录 190859/191001/191434/192158/192456，comparer 192456 issues=21=预测、sigfaceset=4/4 验收关闭）+ **v1.5-⑤ feed_cut 写面贯通 + tool#4 收口**（feed_cut 探针三跑持久 → 白名单/采集/写适配器，
+  [U] 102/102 + [I] 验收关闭 203400/203514：issues 21→20、tool=6/6、feed 键双侧 PASS；T-004 走
+  (mill_planar,CHAMFER_MILL) + ChamferLength=D/2 预置修复 4bc32fa——见 nx-param-registry-spec.md
+  §2 #15 与 nx-tool-type-enum-spec.md §5b）
 
 - `NXPlugins.csproj`：类库工程，已引用 NXOpen / NXOpen.UF / NXOpen.Utilities
   （HintPath 指向 `$(NX_DIR)\NXBIN\managed\`，默认

@@ -179,6 +179,21 @@ STEP 资产；评分规格固化（决策④遗留，随本批校准记录后另
    > ——已回填（2026-09-05 收尾，见 nx-plan-comparer-spec.md §3 增补记录；与 comparer spec
    > 双份记录，本 §7 实录 + comparer spec 校准清单为准）。
 
+> **v1.5-⑤/tool#4 [I] 实录收尾（2026-09-05 晚 20:34-20:35，executor-run-203400 / comparer-run-203514，
+> 资产 v2.rebuilt-20260905-203402.prt）——v1.5-⑤ 验收关闭**：
+> I-2（203400，ok=19/fail=0）：T-004 走 CHAMFER_MILL 注册对 + ChamferLength=D/2 预置修复
+> （4bc32fa）→ 直径 6 写入持久、回读 PASS、无 INFERRED；FeedCut 全写入（腔 2000/1200/500/500 +
+> PTP 80/35）→ 重开回读对照 PASS（feed 持久终判 = [I] 级）；OP-001/002/004 刀路 16.42/5.79/110.16s
+> （长度与 192456 批完全一致 → 同长度下 time 比例 ≈ feed 反比 8×（129.8/16.4），feed 复刻生效的
+> 物理级验证）；OP-003 仍 0（γ 永久校准项）。
+> I-3（203514，issues=**20**，192456 的 21 -1）：tool#4 条目消除（T-004 两侧均 Mill|MillChamfer、
+> 直径 6=6 PASS，tool=6/6）；sigfaceset=4/4；param=48/52（feed 键双侧全 PASS、残余 4 = PTP
+> hole_depth↔bottom_stock 键错位）；**腔 16 残余归因升级**：时间差已随 feed 收敛后仍存 = 长度差
+> 驱动（gt 118746 vs reb 34591 等，区域 80/36/2 vs 24×3）→ 主因 = **CutLevel.GlobalDepthPerCut
+> 未复刻**（gt 0.3/0.2/20/20 vs reb 模板默认 1，OP-003 判别副产品已记）→ v2.5 深度键修正候选
+> （导出读面改 CutLevel 子树 + 写面白名单验证）为区域/长度维收敛路径；PTP 4 键错位保持已知。
+> 无新增未解释项 → **v1.5-⑤ + tool#4 收口批验收关闭**（校准记录见 comparer spec §3 追加）。
+
 > 实现侧执行记录（2026-09-05）：spec 落档 → schema/Model/Doc/ExporterCore/NxCollect 扩展 →
 > ExecutorCore 解析+匹配器 → ExecutorAdapter v2 链 → ComparerCore 三维 + 渲染 → V2GeomTests
 > 七条红线入测试（100/100）→ 三适配器 csc 编译通过 → sln 构建通过。[I] 实录已随 §7 收官

@@ -111,7 +111,8 @@ schema `tool.type` 词集从"零出处 14 CAPP 词"（D-2 违例根源）替换�
 > radius 交叉中心线"，s1-s3 全复现）；预置 **ChamferLength=D/2（90° 尖角中心钻语义）** 后写
 > 直径 6 → commit 持久、类型保持 (Mill,MillChamfer)（s4/s5；ChamferLengthBuilder 仅运行时面，
 > 编译期 MillingToolBuilder 无此成员 → ExecutorAdapter 刀具写块按 subtype==CHAMFER_MILL 反射
-> 预写）。[I] 三跑复验待 GUI Execute（预期 T-004 直径 6 回读 PASS、comparer tool#4 条目全消）。
+> 预写）。**[I] 复跑验收关闭（203400/203514）**：T-004 直径 6 写入持久回读 PASS、无 INFERRED；
+> comparer tool=6/6（tool#4 类型+直径条目全消），issues 21→20。
 
 ## 6. 冲突与文档回填点
 
