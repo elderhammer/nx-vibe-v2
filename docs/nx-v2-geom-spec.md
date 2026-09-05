@@ -9,8 +9,12 @@
 > Doc{FaceSignatureJson} + ExporterCore 映射 + NxCollect{CollectV2/BodyFaceSignatures} +
 > ExecutorCore{AppendSignatures/MatchSignatures} + RebuildPlan{OpCommand.Signatures/FaceMatchResult}
 > + ExecutorAdapter{v2 导入前置/指派/刀路/原地 Save} + ComparerCore{CompareV2 三维} +
-> ComparerAdapter 渲染 + V2GeomTests。**残余 = [I] GUI Execute 三连跑实录（§3 I-1..I-4），
-> 清单见 §7**。
+> ComparerAdapter 渲染 + V2GeomTests。**[I] GUI Execute 实录收官（2026-09-05 晚，§3 I-1..I-4
+> + §7）：I-1 190859 重导带签名 13/6/3/13；I-2 首跑 191001 两缺陷（组级 part 指派缺失 + comparer
+> B 件选错）→ eecc71c/da3fd80 修复 → 191434 ok=19/fail=0（OP-003 刀路 0 待诊，判别读探针
+> camprobe-v2op-191955/192013 排除集属性/DPC/feed 假设）；I-3 192158（issues=25，sigfaceset=4/4）
+> → ComparerCore CompareV2 维 gate 后 192456（issues=21=预测，toolpath=0/8 region=0/8
+> sigfaceset=4/4）验收关闭；I-4 校准清单回填 comparer spec §3（2026-09-05）**。
 > 需求源：docs/nx-plugin-design.md §1 步骤②（v2 目标路径"打开原始 STEP 文件"）+ §7 尾注
 > （2026-09-05 第二波：STEP 批处理实证闭环、v2 前置齐备）+ §2.2 维度表（几何/刀路 v1.5 缺席注记）。
 > 预检实证（2026-09-05 入库 6f4f5fb，索引 §2.1 v2 增补段）：
@@ -122,6 +126,7 @@ STEP 资产；评分规格固化（决策④遗留，随本批校准记录后另
 1. **I-1 导出重导（ExporterAdapter.exe，args = 输出 test.plan.json 路径）**：test.prt → plan
    含腔 op `cut_area_signatures`（13 条，与 camprobe-v2face-A-033810 档签名一致）+ schema
    落盘复验 PASS（validator 词集无违例）。验收 grep：`"cut_area_signatures"` 出现且含 13 元素。
+   > 实录：adapter-run-20260905-190859.txt（ExporterAdapter v11，schema 校验+落盘复验 PASS）。
 2. **I-2 v2 重建（ExecutorAdapter-v2b.exe，args = plan 路径 [可选 prj 目标]）**：plan.input_ref
    = test.prt → 自动推导 samples\test.step → 导入（验 1 body/26 面）→ 组/op 照 v1 → 签名
    匹配指派 → 刀路 time>0 → 原地 Save（v2.rebuilt-<ts>.prt）。验收：日志含
@@ -129,9 +134,14 @@ STEP 资产；评分规格固化（决策④遗留，随本批校准记录后另
    > 实录 191001（首跑）：op 面指派全中但刀路 0——缺组级 part 指派 → eecc71c 补
    > （gt 结构 = 组级 set0 Body + op 级面）。实录 191434（修复后）：OP-001 129.8s / OP-002
    > 27.2s / OP-004 220.1s 全出；**OP-003（COPY_COPY，3 面）仍 0**——面签名 3/3、组级/参数
-   > 与 gt 全同仍空刀路（gt 8.03s/3 区）→ 待诊校准条目：候选判别 = 几何集属性
-   > （GeometrySet.MaterialSide/Stock 等，不在复刻面）或 op 级 CutLevel/区域设置——需一次
-   > gt vs rebuilt 同 op builder 只读对照探针（探针待批）。
+   > 与 gt 全同仍空刀路（gt 8.03s/3 区）→ 待诊校准条目。
+   > **判别读探针已跑（camprobe-v2op-191955 = gt 档 / 192013 = rebuilt 档，源
+   > CamProbeV2OpDiag.cs）**：几何集属性项两侧全同（MaterialSide/Stock/Offset/Reversed；
+   > 仅 Intol 0.02 vs 0.03 差，但同差的 OP-002 gt 侧有刀路 → 非判别）；DepthPerCut 继承态
+   > （gt True vs rebuilt False）与 feed 缺口（gt 500 vs rebuilt 250，同缺口 OP-002 正常出
+   > 刀路）均非零化判别项 → **集属性/DPC/feed 三候选假设排除（136504a）**。零化参数仍未定位：
+   > 下续 = BuilderProperties 双档 JSON diff（OP-003 + OP-001 对照），v2.5 待续；OP-003 的 4 条
+   > FAIL 以已知校准条目暂挂（192456 验收无新增未解释项）。
 3. **I-3 对比终跑（ComparerAdapter-v2.exe，无参 → B 防呆自动最新 v2.rebuilt-*.prt）**：
    > 实录 192158（正确 B = v2.rebuilt-191437）：**v2 汇总 sigfaceset=4/4（面复刻维全 PASS，
    > 零 SIG_FACE_DIFF）**；issues 43→25 全可归因（腔刀路/区域差 ×16 = feed_cut 白名单缺口 +
@@ -143,7 +153,10 @@ STEP 资产；评分规格固化（决策④遗留，随本批校准记录后另
    > ② feed_cut（注册表 #15 未测写）成为写面探针候选——gt feedCut 2000/500 与 rebuilt 默认 250
    > 是腔刀路时间差主因。
 4. **I-4 校准清单更新**：终跑 diff 全条目与校准记录对照后回填 comparer spec §3 记录。
+   > ——已回填（2026-09-05 收尾，见 nx-plan-comparer-spec.md §3 增补记录；与 comparer spec
+   > 双份记录，本 §7 实录 + comparer spec 校准清单为准）。
 
 > 实现侧执行记录（2026-09-05）：spec 落档 → schema/Model/Doc/ExporterCore/NxCollect 扩展 →
 > ExecutorCore 解析+匹配器 → ExecutorAdapter v2 链 → ComparerCore 三维 + 渲染 → V2GeomTests
-> 七条红线入测试（100/100）→ 三适配器 csc 编译通过 → sln 构建通过。本清单待 NX GUI 实录。
+> 七条红线入测试（100/100）→ 三适配器 csc 编译通过 → sln 构建通过。[I] 实录已随 §7 收官
+> （I-1..I-4，2026-09-05 晚：190859 / 191001 / 191434 / 192158 / 192456）。

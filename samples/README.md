@@ -1,6 +1,6 @@
 # samples — 测试资产（Plan 双向验证闭环）
 
-> 状态盘点（2026-09-03 初检；2026-09-05 STEP 收口更新，按 docs/nx2406-install-index.md §1 检索）：
+> 状态盘点（2026-09-03 初检；2026-09-05 STEP 收口 + v2 几何重建收尾更新，按 docs/nx2406-install-index.md §1 检索）：
 > NX2406 安装目录**没有**现成的手编 ground truth（含 CAMSetup 工序的 .prt）与**带 CAM 的** STEP
 > 样例；纯几何官方 STEP 样件 1 件（sim_final2.stp，CAMSetupImport 样例库）于 2026-09-05 收口时
 > 命中并就地引用（不入库，见下方素材表与 09-05 小节）。可参考素材表见下。决策③：**首件由用户
@@ -26,7 +26,7 @@
 | `test.rebuilt-132130.prt`（**已入库**，2026-09-04） | D-4 后按新形状 plan 重建的 prj′（PlanExecutor [I] 产物） | 重建闭环回归基准/对比件（Comparer 输入） |
 | `test.rebuilt.prt`（**已入库**，2026-09-04，141K） | U-7 词集 plan 重建的 prj′（ExecutorAdapter [I] 产物，13:55） | U-7 重建回归基准/对比件 |
 | `test.rebuilt-143432.prt`（**已入库**，2026-09-04） | fixture 补读链重建件（plan 带 fixture_offset=1 后 ExecutorAdapter 复跑产物，14:34） | fixture 对照闭环回归件 |
-| `test.plan.json`（**已入库**，2026-09-04，v1.5-③ S1 重导 19:49） | 由 test.prt 导出的 plan（ExporterAdapter-v15 产物，schema 落盘复验 PASS；U-7 形状：tools type/subtype = NX Tool.Types/Subtypes 原文；D-4 形状：无 machines/geometry_ref；**v1.5-③ 形状**：strategy KV Value 为 {N}/{S} 包装——腔 op 9 键（cut_pattern/cut_order/cut_direction NX 原文串 + finish/boundary×2/part/floor/depth）、六 op technology.spindle_rpm） | 合同冒烟/导出回归基线 |
+| `test.plan.json`（**已入库**，2026-09-05 晚 v2 重导 19:08） | 由 test.prt 导出的 plan（ExporterAdapter v11 产物，schema 落盘复验 PASS；U-7 形状：tools type/subtype = NX Tool.Types/Subtypes 原文；D-4 形状：无 machines/geometry_ref；v1.5-③ 形状：strategy KV Value 为 {N}/{S} 包装——腔 op 9 键（cut_pattern/cut_order/cut_direction NX 原文串 + finish/boundary×2/part/floor/depth）、六 op technology.spindle_rpm；**v2 形状（2026-09-05 19:08 重导，见下方证据表 adapter-run-190859）**：腔 op 增 `cut_area_signatures`（OP-001 13 / OP-002 6 / OP-003 3 / OP-004 13，F1 签名）） | 合同冒烟/导出回归基线（v2 重建输入） |
 
 ## test.prt 盘点记录（2026-09-03，NX2406 会话 + dump journal 实证）
 
@@ -87,6 +87,23 @@
 |---|---|
 | `camprobe-steprebuild-20260905-012104.txt`（+`_1.log`） | **导入 α 终证（官方资产）**：资产 = CAMSetupImport 样例库 `sample/library/parts/sim_final2.stp`（NX 12.0 ST-DEVELOPER 真导出 AP214，**就地引用不入库**，探针内硬编码路径）；APP_NONE + step214ug.def + FileOpenFlag=false → Bodies=1/solidFaces=31（= 文件实体计数），P1 α + P2 CAM 共存 α。坐实：手写 probe-box-214.step 失败 = 资产级 brep 结构缺陷（"new workflow" 拒绝），非环境/API |
 | `camprobe-stepexport-20260905-012205.txt`（+`_1.log` 回导 translator 档 + `_export.log` 导出 translator 档） | **导出 + 回导闭环 α**：test.prt → StepCreator（ExportAs=Ap214/ExportFrom=DisplayPart/ObjectTypes.Solids/SelectionScope=EntirePart/FileSaveFlag=false/OutputFile 全路径含 .step/NativeFileSystem + **ugstep214.def 导出向 def**）→ samples/test.step（33322B）；回导 Step214Importer → Bodies=1/solidFaces=26 = 源件 1/26 一致（导出保真）。导出侧早前 "solids input=0" 首因 = def 方向错配（step214ug.def = 导入向 STEP→UG，见索引 §2.1） |
+
+### 2026-09-05 v2 几何重建证据档（预检 + [I] 实录；验收关闭 = comparer-run-192456）
+
+| 文件 | 内容 |
+|---|---|
+| `camprobe-v2geom-20260905-{033422,033944}.txt`、`camprobe-v2gt-20260905-033332.txt` | v2 预检实证（G1 几何指派机制 / G2 带几何刀路 α / G3 CutRegionsData 区域读回）+ gt 对照组，结论入索引 §2.1 v2 增补段 |
+| `camprobe-v2face-A-20260905-033810.txt`、`-B-034035.txt` | F1 面身份签名对齐：gt 腔 op 13 面签名在 STEP 回导件 26 面中 13/13 唯一命中零歧义（U-5 质心/面积禁令的替代通道） |
+| `v2geom-rebuild-20260905-033945.prt` | v2 预检重建件（G2 全选 26 面 242 区域对照） |
+| `adapter-run-20260905-190859.txt` | **v2 I-1 导出重导**（ExporterAdapter v11）：test.prt → test.plan.json 带 `cut_area_signatures`（腔 op 13/6/3/13），schema 内存+落盘复验 PASS |
+| `executor-run-20260905-191001.txt` | **v2 I-2 首跑**：面指派全中但刀路 0（缺组级 part 指派）→ eecc71c 修复；产物 v2.rebuilt-20260905-191002.prt |
+| `executor-run-20260905-191434.txt` | **v2 I-2 终版**（ok=19 fail=0）：组级 body + op 级面指派 13/6/3/13 → 刀路 time>0（OP-001 129.8s / OP-002 27.2s / OP-004 220.1s），**OP-003（3 面）仍 0 待诊**；原地 Save 持久 → v2.rebuilt-20260905-191437.prt |
+| `camprobe-v2op-20260905-191955.txt`（gt 档）、`-192013.txt`（rebuilt 档） | OP-003 空刀路判别读（CamProbeV2OpDiag）：几何集属性（除 Intol 0.02 vs 0.03 非判别）/DPC/feed 三假设排除；零化参数待 BuilderProperties 双档 diff（136504a） |
+| `comparer-run-20260905-191118.txt`、`-191558.txt` | ⚠ **无效档**：B=test.rebuilt.prt（v1 空件）系 Comparer B 防呆修复（da3fd80）前错选件，issues=43 全为无几何/刀路假差异，**非验收证据** |
+| `comparer-run-20260905-192158.txt` | **v2 I-3 gate 前终跑**（B=v2.rebuilt-191437）：issues=25 全可归因、sigfaceset=4/4 零 SIG_FACE_DIFF；PTP 刀路单侧缺 ×4 噪音 → 维 gate 修正（CompareV2 = v2 三维仅腔铣族） |
+| `comparer-run-20260905-192456.txt` | **v2 I-3 gate 终跑（验收关闭）**：issues=21 与 gate 预测一致，v2 汇总 toolpath=0/8 region=0/8 sigfaceset=4/4；残余 21 全为已知校准条目（feed_cut 缺口 / 区域粒度 / OP-003 待诊 / PTP 键错位 ×4 / tool#4）——校准记录回填 comparer spec §3（2026-09-05 增补） |
+
+产物 prt：`v2.rebuilt-20260905-191002.prt`、`v2.rebuilt-20260905-191437.prt`（v2 I-2 重建件：STEP 几何 1 body/26 面 + 面指派 + 刀路存档，均带 `_1.log` translator 档）。
 
 > 注意：西门子安装目录内文件（模板/样例/程序集）受许可约束，**只引用、不复制进 git**；
 > 自建件由本仓库维护。

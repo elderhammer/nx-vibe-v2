@@ -85,3 +85,8 @@ MCS 回读: origin=(75,0,100) z=(0,0,1)
 == 汇总: issues=43 op=6/6 param=28/46 tool=5/6 mcs=1/1 fixture=1/1 template=6/6 ==
 == v2 汇总: toolpath=0/12 region=0/8 sigfaceset=0/4 ==
 == 结束 ==
+
+== 归档附注（2026-09-05 收尾）==
+本档 B=test.rebuilt.prt（v1 空件）系 Comparer B 防呆修复（da3fd80，19:17）前错选档；
+issues=43 全为无几何/刀路的假差异，非验收证据。验收以 comparer-run-20260905-192158
+（gate 前）/ comparer-run-20260905-192456（gate 终跑，issues=21）为准。

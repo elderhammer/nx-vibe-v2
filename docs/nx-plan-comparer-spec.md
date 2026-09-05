@@ -6,6 +6,14 @@
 > adapter-run-143344/142216（重导回归）、executor-run-143426（ok=17，fixture 真对照）。
 > 范围决策 D-1（对比维度）= A（结构/刀具/MCS/白名单参数）与输入形态 C（单会话双件轮换采集）、
 > 采集层共享 NxCollect、首跑工具链+变异校准（§5）。设计 §7 步骤 3 完成——三步闭环 v1 收官。
+>
+> 2026-09-05 增补（v1.5-③ 与 v2 三维收官）：v1.5-③ 终跑 comparer-run-20260904-200339（issues
+> 19→5 全校准可解释，technology 维首亮，见 nx-params-v15-spec.md）；v2 带几何重建后对比三维
+> （刀路 time/length、区域区数/面积和、签名面集 sigfaceset）接入，实测暴露无几何 B 件噪音与
+> PTP 家族 v2 范围缺席 → CompareCore CompareV2 维 gate（三维仅腔铣族，2530c6d）；终跑
+> comparer-run-20260905-192456：issues=21 与 gate 预测一致、sigfaceset=4/4、toolpath=0/8
+> region=0/8，残余全为已知校准条目（I-3 验收关闭，见 nx-v2-geom-spec.md §7）。
+> [U] 现为全量 100/100（93 回归 + v2 七条，含 V15 union 与 CompareV2 门控断言）。
 > 需求源：docs/nx-plugin-design.md §7 步骤 3 / §2.2（维度表与输出口径）；前置范围：nx-plan-executor-spec.md
 > §0/§7 D-1（重建 v1 空件无几何无刀路 → 对比维度显式声明）；事实源：nx2406-install-index.md §2.1。
 > 上游共享：ExportSnapshot（PlanExporter/Model.cs，导出与对比共用采集口径）+ WhiteList / ToolFamilyMap 归一思想。
@@ -106,6 +114,23 @@ I-2）同 API 面，全部已实证，零新探针；几何/刀路维度显式�
 > 组（workplan 根语义，v1.5 对齐）；6× 刀名差 note（gt 直径名 vs rebuilt T-id，非致命按序对）。
 > 该清单即决策④首样校准输出：容差判据（0.01mm/5%/1e-6）首跑验证可检出上述全部真实差异且无非预期
 > 噪音；评分规格以本清单为基准随 v1.5 维度扩展固化。
+
+> **校准记录追加（2026-09-05；I-4 兑现 = v1.5-③ 与 v2 双承诺回填，源 comparer-run-20260904-200339
+> /20260905-192456 + 各批 spec 记录）**：
+> ① **v1.5-③**（comparer-run-20260904-200339，残余 issues 19→**5**）：195504 首跑为错 B 件（旧主名
+> test.rebuilt.prt）无效、200022 参数语义失败 → ComparerAdapter 改单参 B 覆盖修复；终跑残余 5 =
+> PTP 键错位 4（hole_depth↔bottom_stock，重建近似可见面不静默）+ tool#4 类型 1（U-7 已知）；
+> 腔对腔 cut_*/finish/boundary/rpm 由"键缺席"转全 PASS = 写入持久终判 + technology 维首亮。
+> ② **v2 gate 终跑**（comparer-run-20260905-192456，issues=**21** = 预测）：结构/刀具/MCS/白名单
+> 参数面残余与 200339 清单同源（PTP 4 + tool#4 1）；v2 三维残余 = 腔 16 = OP-001/002/004 ×4
+> （刀路 time/length + 区域数/面积和——归因 = feed_cut 写面缺口（注册表 #15 未测写 → 写面探针
+> 候选，gt 2000/500 vs rebuilt 默认 250 为时间差主因）+ 区域分割粒度（gt 80/36/2 vs rebuilt
+> 24×3））+ OP-003 ×4（空刀路待诊——判别读探针 camprobe-v2op-191955/192013 排除集属性/DPC/feed
+> 假设，零化参数待 BuilderProperties 双档 diff，见 nx-v2-geom-spec.md §7）；PTP 刀路单侧缺 ×4
+> 为 v2 范围缺席（PTP 无面指派）→ 由维 gate 排除不计；sigfaceset=4/4 零 SIG_FACE_DIFF。
+> ③ **新增校准条目**：区域维同面复刻仍敏感（gt 80 vs rebuilt 24）→ v2.5 区域几何配对（而非
+> 计数）；feed_cut 写面探针（v2.5 写面扩展候选）。2026-09-05 早两跑（comparer-run-191118/191558，
+> B=test.rebuilt.prt v1 空件）为 B 防呆修复（da3fd80）前错选件，issues=43 无效、不构成校准。
 
 ## 4. 算法（步骤 → 性质映射）
 
