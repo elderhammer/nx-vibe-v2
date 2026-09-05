@@ -1,0 +1,22 @@
+== ExporterAdapter v11 ==
+UF 已装载部件数=0
+OpenDisplay: test
+已设工作部件
+前置闸门通过（部件+CAMSetup+cam_base 许可）
+  tool 17.0 → type=Mill subtype=Mill5
+  tool 13.94 → type=Mill subtype=Mill5
+  tool 9.96 → type=Mill subtype=Mill5
+  tool D6.0X90中心钻 → type=Mill subtype=MillChamfer
+  tool 8.5 → type=Drill subtype=DrillStandard
+  tool 17.5 → type=Drill subtype=DrillStandard
+MCS 回读: origin=(75,0,100) z=(0,0,1)
+  PTP op 打点_COPY_COPY_COPY 参数面细分待后续批（cycle/细分 U-1 负证；rpm 已扩读）
+  PTP op 钻头G83_COPY_3_COPY_COPY_COPY_1 参数面细分待后续批（cycle/细分 U-1 负证；rpm 已扩读）
+快照: tools=6 setups=1 ops=6
+schema 校验通过（内存）: ops=6 ws=6 diag=2
+已落盘: C:\Users\21505\Code\nx-vibe-v2\samples\test.plan.json
+落盘复验: PASS
+  diag[warning] TPL_AMBIGUOUS 模板对为默认项（歧义/未知），需人工/识别侧复核: 打点_COPY_COPY_COPY op=打点_COPY_COPY_COPY
+  diag[warning] TPL_AMBIGUOUS 模板对为默认项（歧义/未知），需人工/识别侧复核: 钻头G83_COPY_3_COPY_COPY_COPY_1 op=钻头G83_COPY_3_COPY_COPY_COPY_1
+完成
+== 结束 ==

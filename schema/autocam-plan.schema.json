@@ -305,7 +305,8 @@
                 "depth_per_cut": {
                     "type": "number",
                     "exclusiveMinimum": 0,
-                    "description": "每刀深度 mm（NX: PlanarOperationBuilder.DepthPerCut / CavityMillingBuilder.DepthPerCut — 不在 CutParameters 下）"
+                    "description": "每刀深度 mm（NX 落点 2026-09-05 实证：平面 = PlanarOperationBuilder.DepthPerCut；腔铣 = CavityMillingBuilder.CutLevel.GlobalDepthPerCut.DistanceBuilder — 引擎消费成员，op 级 DepthPerCut 惰性）",
+                    "$comment": "2026-09-05 v2.5 修正：腔真实每刀深度在 CutLevel 子树（camprobe-v2depth-211011 写面验证：持久 + 刀路长度按深度反比收敛）；重建侧 0/缺失 = 继承语义不写保持默认。见 nx-param-registry-spec.md #12"
                 },
                 "multi_depth_cut": { "type": "boolean", "description": "多层切削开关（NX: MultiDepthCut.Toggle）", "$comment": "2026-09-04 负结案：MultiDepthCut 整对象（Toggle/StepMethod）写入 commit 后必还原模板默认（camprobe-params2 三跑 E2/E3，docs/nx-param-registry-spec.md）——读面可读（导出可用），重建侧不可直写，拒收+diag" },
                 "finish_passes": {

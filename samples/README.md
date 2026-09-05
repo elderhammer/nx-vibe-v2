@@ -26,7 +26,7 @@
 | `test.rebuilt-132130.prt`（**已入库**，2026-09-04） | D-4 后按新形状 plan 重建的 prj′（PlanExecutor [I] 产物） | 重建闭环回归基准/对比件（Comparer 输入） |
 | `test.rebuilt.prt`（**已入库**，2026-09-04，141K） | U-7 词集 plan 重建的 prj′（ExecutorAdapter [I] 产物，13:55） | U-7 重建回归基准/对比件 |
 | `test.rebuilt-143432.prt`（**已入库**，2026-09-04） | fixture 补读链重建件（plan 带 fixture_offset=1 后 ExecutorAdapter 复跑产物，14:34） | fixture 对照闭环回归件 |
-| `test.plan.json`（**已入库**，2026-09-05 晚 v2 重导 19:08） | 由 test.prt 导出的 plan（ExporterAdapter v11 产物，schema 落盘复验 PASS；U-7 形状：tools type/subtype = NX Tool.Types/Subtypes 原文；D-4 形状：无 machines/geometry_ref；v1.5-③ 形状：strategy KV Value 为 {N}/{S} 包装——腔 op 9 键（cut_pattern/cut_order/cut_direction NX 原文串 + finish/boundary×2/part/floor/depth）、六 op technology.spindle_rpm；**v2 形状（2026-09-05 19:08 重导，见下方证据表 adapter-run-190859）**：腔 op 增 `cut_area_signatures`（OP-001 13 / OP-002 6 / OP-003 3 / OP-004 13，F1 签名）） | 合同冒烟/导出回归基线（v2 重建输入） |
+| `test.plan.json`（**已入库**，2026-09-05 晚 v2 重导 19:08；**v2.5 重导 21:48**） | 由 test.prt 导出的 plan（ExporterAdapter v11 产物，schema 落盘复验 PASS；U-7 形状：tools type/subtype = NX Tool.Types/Subtypes 原文；D-4 形状：无 machines/geometry_ref；v1.5-③ 形状：strategy KV Value 为 {N}/{S} 包装——腔 op 9 键（cut_pattern/cut_order/cut_direction NX 原文串 + finish/boundary×2/part/floor/depth）、六 op technology.spindle_rpm；**v2 形状（2026-09-05 19:08 重导，见下方证据表 adapter-run-190859）**：腔 op 增 `cut_area_signatures`（OP-001 13 / OP-002 6 / OP-003 3 / OP-004 13，F1 签名）；**v2.5 形状（2026-09-05 21:48 重导，见证据表 adapter-run-214847）**：腔 op `depth_per_cut` = **0.3/0.2/20/20**（CutLevel.GlobalDepthPerCut 子树真值，不再 op 级惰性 0）） | 合同冒烟/导出回归基线（v2/v2.5 重建输入） |
 
 ## test.prt 盘点记录（2026-09-03，NX2406 会话 + dump journal 实证）
 
@@ -104,11 +104,20 @@
 | `camprobe-chamfer-20260905-201406.txt` | **MillChamfer 注册对全模板扫描（tool#4 收口）**：`(mill_planar, CHAMFER_MILL)` 读回 (Mill, **MillChamfer**)（CHAMFER_MILL 对 9 模板通用）；锚点 (mill_planar,MILL)→Mill5、(hole_making,STD_DRILL)→DrillStandard 回归 ✓ → 重建注册对表加行（[U] 103/103） |
 | `camprobe-chamferwrite-20260905-203052.txt` | **CHAMFER_MILL 直径写缺陷判定 + 修复（202730 复跑暴露）**：模板默认 ChamferLength=4（D16 型）→ D6 写直径被 NX 校验拒（s1-s3 全复现"交叉中心线"）；**预置 ChamferLength=D/2（90° 尖角）→ 写 D6 持久 ✓ 类型保持 MillChamfer**（s4/s5；ChamferLengthBuilder 为运行时反射面）→ ExecutorAdapter 按 subtype==CHAMFER_MILL 反射预写修复（4bc32fa） |
 | `executor-run-20260905-203400.txt`、`comparer-run-20260905-203514.txt` | **v1.5-⑤/tool#4 [I] 验收（2026-09-05 晚）**：I-2 ok=19/fail=0（T-004 CHAMFER_MILL 直径 6 持久回读 PASS、FeedCut 全写入持久；OP-003 0 = γ 永久校准）；I-3 issues **21→20** 无新增未解释——tool#4 消除（tool=6/6）、sigfaceset=4/4、feed 键双侧 PASS；腔 16 残余归因 = CutLevel.GlobalDepthPerCut 未复刻（gt 0.3/0.2/20/20 vs reb 1，时间已随 feed 收敛=同长度下 feed 反比 8× 物理验证），v2.5 深度键修正候选；资产 v2.rebuilt-20260905-203402.prt |
+| `adapter-run-20260905-201759.txt`、`executor-run-20260905-201829.txt`、`comparer-run-20260905-202031.txt`（+ 资产 `v2.rebuilt-20260905-201829.prt`/`_1.log`、`v2.rebuilt-20260905-202730.prt`/`_1.log`） | ⚠ **tool#4 修复期复跑档（修复前，20:17-20:27）**：I-2（201829）T-004 仍走 TOOL_TYPE_INFERRED 旧表态（注册对未覆盖）、comparer（202031）toolpath=12/12 + sigfaceset=0/4 失败态 → 复跑暴露 CHAMFER_MILL 直径写缺陷（配套 txt 见已入库 `executor-run-20260905-202730.txt`，4bc32fa/上行 chamferwrite 引用同源）；**非验收证据，验收以 203400/203514 为准** |
 | `comparer-run-20260905-191118.txt`、`-191558.txt` | ⚠ **无效档**：B=test.rebuilt.prt（v1 空件）系 Comparer B 防呆修复（da3fd80）前错选件，issues=43 全为无几何/刀路假差异，**非验收证据** |
 | `comparer-run-20260905-192158.txt` | **v2 I-3 gate 前终跑**（B=v2.rebuilt-191437）：issues=25 全可归因、sigfaceset=4/4 零 SIG_FACE_DIFF；PTP 刀路单侧缺 ×4 噪音 → 维 gate 修正（CompareV2 = v2 三维仅腔铣族） |
 | `comparer-run-20260905-192456.txt` | **v2 I-3 gate 终跑（验收关闭）**：issues=21 与 gate 预测一致，v2 汇总 toolpath=0/8 region=0/8 sigfaceset=4/4；残余 21 全为已知校准条目（feed_cut 缺口 / 区域粒度 / OP-003 待诊 / PTP 键错位 ×4 / tool#4）——校准记录回填 comparer spec §3（2026-09-05 增补） |
 
 产物 prt：`v2.rebuilt-20260905-191002.prt`、`v2.rebuilt-20260905-191437.prt`（v2 I-2 重建件：STEP 几何 1 body/26 面 + 面指派 + 刀路存档，均带 `_1.log` translator 档）。
+
+### 2026-09-05 v2.5 深度键修正证据档（写面验证 + [I] 实录；验收关闭 = comparer-run-215209）
+
+| 文件 | 内容 |
+|---|---|
+| `camprobe-v2depth-20260905-211011.txt` | **写面验证（rebuilt 侧，件 = v2.rebuilt-203402）**：非 γ 三 op ① op 级 DepthPerCut 写对照**零变化**（惰性坐实）② CutLevel.GlobalDepthPerCut.DistanceBuilder 写 gt 值 → commit 新 builder 读回全持久 ✓ + 刀路长度按深度反比收敛（0.3→×3.32 = 114682 vs gt 118746 ≈ 96.6%、0.2→×4.85、20→×0.063 = 区域 2=2 全同）；γ op 写 20 仍 0 稳定。源：`src/NXPlugins/Journal/CamProbeV2DepthWrite.cs`（CAMSIG_PRT 可换件） |
+| `camprobe-v2depth-20260905-215614.txt` | **gt 侧判别（件 = test.prt）**：gt 四腔 op CutLevel 现值 0.3/0.2/20/20 确认 + **regen = 存档逐位一致（全部新鲜）**——OP-002 0.515s/929.6/36 区为 gt 真实产物，同参 rebuilt 39850/118 = 43× → **OP-002 = 体上下文 γ 类第二实例（OP-003 判别⑦ 同款机制，超密而非零）**，203514"深度差驱动"系错归因 |
+| `adapter-run-20260905-214847.txt`、`executor-run-20260905-215028.txt`、`comparer-run-20260905-215209.txt` | **v2.5 深度键修正 [I] 三连跑验收**：I-1 重导 plan depth = 0.3/0.2/20/20（schema+落盘复验 PASS）；I-2 重建写行 = `CutLevel.GlobalDepthPerCut.DistanceBuilder=…`，ok=19/fail=0，刀路与探针值逐位一致；I-3 issues **20→15**——OP-004 4 条全消、OP-001 长度 70.9%→3.4% PASS（余 time 6.3%/区域 80 vs 79 = stepover 60/65 vs 70 不可写 + 粒度已知残余）、OP-002 4 条 γ 类（见上）、OP-003 γ 4 + PTP 键错位 4 保持；零新增未解释；资产 `v2.rebuilt-20260905-215029.prt`（+`_1.log`） |
 
 > 注意：西门子安装目录内文件（模板/样例/程序集）受许可约束，**只引用、不复制进 git**；
 > 自建件由本仓库维护。

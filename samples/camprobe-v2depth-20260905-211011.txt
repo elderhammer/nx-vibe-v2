@@ -1,0 +1,66 @@
+== CamProbeV2DepthWrite（rebuilt 侧 CutLevel DPC 写面验证）==
+time: 2026-09-05 21:10:11
+件: C:\Users\21505\Code\nx-vibe-v2\samples\v2.rebuilt-20260905-203402.prt
+打开 OK: v2.rebuilt-20260905-203402  camSession=True
+腔 op 数=4
+
+== slot0 op: CAVITY_MILL ==
+  op 级 DepthPerCut = 0
+  op 级 DepthPerCut status = False
+CutLevel.GlobalDepthPerCut.DistanceBuilder = 1
+  [基线] time=16.4194 length=34591.7309 regions=24  <<< 非零
+（gt 值 = 0.3，d0=1）
+-- ① op 级对照：b.DepthPerCut=0.3 --
+  [op 级写后] time=16.4194 length=34591.7309 regions=24  <<< 非零
+-- ② CutLevel DPC=0.3 --
+  commit 后新 builder 读回 = 0.3  <<< 写持久 ✓
+  [CutLevel 写后（gt 值）] time=54.6309 length=114682.4545 regions=79  <<< 非零
+  判定[CAVITY_MILL] 深度 1→0.3，length 比 = 3.315 regions=79/24  <<< 消费 ✓（方向符合深度反比）
+-- 还原 CutLevel DPC=1 --
+  （已还原）
+
+== slot1 op: CAVITY_MILL_COPY ==
+  op 级 DepthPerCut = 0
+  op 级 DepthPerCut status = False
+CutLevel.GlobalDepthPerCut.DistanceBuilder = 1
+  [基线] time=5.7898 length=8210.6269 regions=24  <<< 非零
+（gt 值 = 0.2，d0=1）
+-- ① op 级对照：b.DepthPerCut=0.2 --
+  [op 级写后] time=5.7898 length=8210.6269 regions=24  <<< 非零
+-- ② CutLevel DPC=0.2 --
+  commit 后新 builder 读回 = 0.2  <<< 写持久 ✓
+  [CutLevel 写后（gt 值）] time=28.3736 length=39849.6843 regions=118  <<< 非零
+  判定[CAVITY_MILL_COPY] 深度 1→0.2，length 比 = 4.853 regions=118/24  <<< 消费 ✓（方向符合深度反比）
+-- 还原 CutLevel DPC=1 --
+  （已还原）
+
+== slot2 op: CAVITY_MILL_COPY_COPY  [γ 阴性对照] ==
+  op 级 DepthPerCut = 0
+  op 级 DepthPerCut status = False
+CutLevel.GlobalDepthPerCut.DistanceBuilder = 1
+  [基线] time=0 length=0 regions=0
+  !! 基线长度 0/无 → 消费判别不可用（记录写持久即可）
+（gt 值 = 20，d0=1）
+-- ② CutLevel DPC=20 --
+  commit 后新 builder 读回 = 20  <<< 写持久 ✓
+  [CutLevel 写后（gt 值）] time=0 length=0 regions=0
+  判定[CAVITY_MILL_COPY_COPY] γ 对照: time=0  <<< 仍 0 ✓（γ 稳定，写机制未改其行为）
+-- 还原 CutLevel DPC=1 --
+  （已还原）
+
+== slot3 op: CAVITY_MILL_COPY_COPY_COPY ==
+  op 级 DepthPerCut = 0
+  op 级 DepthPerCut status = False
+CutLevel.GlobalDepthPerCut.DistanceBuilder = 1
+  [基线] time=110.1621 length=57103.1073 regions=24  <<< 非零
+（gt 值 = 20，d0=1）
+-- ① op 级对照：b.DepthPerCut=20 --
+  [op 级写后] time=110.1621 length=57103.1073 regions=24  <<< 非零
+-- ② CutLevel DPC=20 --
+  commit 后新 builder 读回 = 20  <<< 写持久 ✓
+  [CutLevel 写后（gt 值）] time=6.6255 length=3576.5261 regions=2  <<< 非零
+  判定[CAVITY_MILL_COPY_COPY_COPY] 深度 1→20，length 比 = 0.063 regions=2/24  <<< 消费 ✓（方向符合深度反比）
+-- 还原 CutLevel DPC=1 --
+  （已还原）
+== 结束（全程未 Save；已逐 op 还原）==
+== 结束 ==

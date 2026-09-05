@@ -30,7 +30,9 @@ namespace NXPlugins.PlanExecutor
             { "part_stock",    new ParamTarget("CutParameters.PartStock", ParamKind.Number) },
             { "floor_stock",   new ParamTarget("CutParameters.FloorStock", ParamKind.Number) },
             { "wall_stock",    new ParamTarget("CutParameters.WallStock", ParamKind.Number) },
-            { "depth_per_cut", new ParamTarget("DepthPerCut", ParamKind.Number) },
+            { "depth_per_cut", new ParamTarget("CutLevel.GlobalDepthPerCut.DistanceBuilder", ParamKind.Number) },
+            // v2.5（2026-09-05 camprobe-v2depth-211011 实证）：腔写面目标改 CutLevel 子树（引擎消费成员）；
+            // op 级 DepthPerCut 写持久但惰性（写对照刀路零变化）——旧键行原指该惰性成员。
             { "hole_depth",    new ParamTarget("HoleDepth", ParamKind.Number) },   // OperationBuilder 级（PTP/钻孔均可达）
             // v1.5-③ S1：注册表 4 持久键（E1/E7 锚定；E3 cut_order/cut_direction v1 单跑——I-2 [I] 复跑点亮）
             { "cut_pattern",   new ParamTarget("CutPattern.CutPattern", ParamKind.Enum) },

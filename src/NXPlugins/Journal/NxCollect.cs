@@ -220,7 +220,10 @@ public static class NxCollect
                     TryParam(b, o, "tech:feed_cut", () => b.FeedsBuilder.FeedCutBuilder.Value);   // v1.5-⑤（注册表 #15 读面既有；写面三跑持久实证）
                     TryParam(b, o, "part_stock", () => b.CutParameters.PartStock.Value);
                     TryParam(b, o, "floor_stock", () => b.CutParameters.FloorStock.Value);
-                    TryParam(b, o, "depth_per_cut", () => b.DepthPerCut.Value);
+                    // v2.5 深度键（2026-09-05 camprobe-v2depth 实证）：op 级 b.DepthPerCut 惰性（引擎不消费、
+                    // gt 恒 0）；腔真实每刀深度 = CutLevel.GlobalDepthPerCut.DistanceBuilder（模板默认 1）。
+                    // 读不到（CutLevel null 等）→ 抛 → 不落假 0，仅记 diag
+                    TryParam(b, o, "depth_per_cut", () => CavityDepthPerCut(b));
                 }
                 finally { b.Destroy(); }
             }
@@ -361,6 +364,16 @@ public static class NxCollect
     {
         try { o.Params[key] = new ParamValue(getter()); }
         catch (Exception e) { o.ReadbackErrors.Add("参数 " + key + " 回读失败: " + e.Message); }
+    }
+
+    /// <summary>腔真实每刀深度（引擎消费成员）：CutLevel.GlobalDepthPerCut.DistanceBuilder。
+    /// 实证 2026-09-05 camprobe-v2depth-211011：写该成员 commit → 新 builder 读回持久 + 刀路长度按
+    /// 深度反比移动（0.3→×3.32、0.2→×4.85、20→×0.063）；op 级 DepthPerCut 写对照零变化（惰性）。</summary>
+    private static double CavityDepthPerCut(CavityMillingBuilder b)
+    {
+        NXOpen.CAM.CutLevel cl = b.CutLevel;
+        if (cl == null) throw new Exception("CutLevel null（腔无切削层）");
+        return cl.GlobalDepthPerCut.DistanceBuilder.Value;
     }
 
     // v1.5-③：枚举键读 NX 枚举 ToString 原文（词 = schema 词集，语言无关）

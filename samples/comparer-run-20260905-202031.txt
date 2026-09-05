@@ -1,0 +1,56 @@
+== ComparerAdapter ==
+time: 2026-09-05 20:20:31
+A=C:\Users\21505\Code\nx-vibe-v2\samples\test.prt  B=C:\Users\21505\Code\nx-vibe-v2\samples\v2.rebuilt-20260905-201829.prt
+OpenDisplay 失败(文件已存在)——尝试 UF 已载枚举复用
+  候选[0] name=test.rebuilt
+复用已装载: test.rebuilt
+SetDisplayPart: test.rebuilt
+SetWork: test.rebuilt
+== 采集 A: test.rebuilt ==
+  tool T-001 → type=Mill subtype=Mill5
+  tool T-002 → type=Mill subtype=Mill5
+  tool T-003 → type=Mill subtype=Mill5
+  tool T-004 → type=Mill subtype=Mill5
+  tool T-005 → type=Drill subtype=DrillStandard
+  tool T-006 → type=Drill subtype=DrillStandard
+MCS 回读: origin=(75,0,100) z=(0,0,1)
+OpenDisplay 失败(文件已存在)——尝试 UF 已载枚举复用
+  候选[0] name=test.rebuilt
+  候选[1] name=hole_making
+  候选[2] name=v2.rebuilt-20260905-201829
+复用已装载: v2.rebuilt-20260905-201829
+SetDisplayPart: v2.rebuilt-20260905-201829
+SetWork: v2.rebuilt-20260905-201829
+== 采集 B: v2.rebuilt-20260905-201829 ==
+  tool T-001 → type=Mill subtype=Mill5
+  tool T-002 → type=Mill subtype=Mill5
+  tool T-003 → type=Mill subtype=Mill5
+  tool T-004 → type=Mill subtype=Mill5
+  tool T-005 → type=Drill subtype=DrillStandard
+  tool T-006 → type=Drill subtype=DrillStandard
+MCS 回读: origin=(75,0,100) z=(0,0,1)
+快照 A: ops=6 tools=6 setups=1  快照 B: ops=6 tools=6 setups=1
+== 结构 ==
+  op 配对=6 仅A(重建缺)=0 仅B(重建多)=0  刀具 A=6 B=6  setup A=1 B=1
+== 逐项（非 PASS） ==
+  [FAIL] OP_PARAM_DIFF@CAVITY_MILL 参数 cut_pattern（枚举）: A=FollowPart B=FollowPeriphery
+  [FAIL] OP_PARAM_DIFF@CAVITY_MILL 参数 cut_order（枚举）: A=LevelFirst B=DepthFirst
+  [FAIL] OP_PARAM_DIFF@CAVITY_MILL 参数 tech:spindle_rpm: A=1061 B=2400 |差|=1339（超绝对容差 0.01）
+  [FAIL] SIG_FACE_DIFF@CAVITY_MILL cut-area 签名面集差: A-only=0 B-only=13（A=0 B=13）
+  [FAIL] OP_PARAM_DIFF@CAVITY_MILL_COPY 参数 cut_pattern（枚举）: A=FollowPart B=Profile
+  [FAIL] OP_PARAM_DIFF@CAVITY_MILL_COPY 参数 cut_order（枚举）: A=LevelFirst B=DepthFirst
+  [FAIL] OP_PARAM_DIFF@CAVITY_MILL_COPY 参数 tech:spindle_rpm: A=1061 B=3000 |差|=1939（超绝对容差 0.01）
+  [FAIL] SIG_FACE_DIFF@CAVITY_MILL_COPY cut-area 签名面集差: A-only=0 B-only=6（A=0 B=6）
+  [FAIL] OP_PARAM_DIFF@CAVITY_MILL_COPY_COPY 参数 cut_pattern（枚举）: A=FollowPart B=FollowPeriphery
+  [FAIL] OP_PARAM_DIFF@CAVITY_MILL_COPY_COPY 参数 cut_order（枚举）: A=LevelFirst B=DepthFirst
+  [FAIL] OP_PARAM_DIFF@CAVITY_MILL_COPY_COPY 参数 tech:spindle_rpm: A=1061 B=1800 |差|=739（超绝对容差 0.01）
+  [FAIL] SIG_FACE_DIFF@CAVITY_MILL_COPY_COPY cut-area 签名面集差: A-only=0 B-only=3（A=0 B=3）
+  [FAIL] OP_PARAM_DIFF@CAVITY_MILL_COPY_COPY_COPY 参数 cut_pattern（枚举）: A=FollowPart B=FollowPeriphery
+  [FAIL] OP_PARAM_DIFF@CAVITY_MILL_COPY_COPY_COPY 参数 cut_order（枚举）: A=LevelFirst B=DepthFirst
+  [FAIL] OP_PARAM_DIFF@CAVITY_MILL_COPY_COPY_COPY 参数 tech:spindle_rpm: A=1061 B=1800 |差|=739（超绝对容差 0.01）
+  [FAIL] SIG_FACE_DIFF@CAVITY_MILL_COPY_COPY_COPY cut-area 签名面集差: A-only=0 B-only=13（A=0 B=13）
+  [FAIL] OP_PARAM_DIFF@打点_COPY_COPY_COPY 参数 tech:spindle_rpm: A=0 B=3000 |差|=3000（超绝对容差 0.01）
+  [FAIL] OP_PARAM_DIFF@钻头G83_COPY_3_COPY_COPY_COPY_1 参数 tech:spindle_rpm: A=0 B=500 |差|=500（超绝对容差 0.01）
+== 汇总: issues=18 op=6/6 param=30/44 tool=6/6 mcs=1/1 fixture=1/1 template=6/6 ==
+== v2 汇总: toolpath=12/12 region=8/8 sigfaceset=0/4 ==
+== 结束 ==

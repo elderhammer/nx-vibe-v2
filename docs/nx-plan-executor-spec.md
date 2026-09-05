@@ -42,7 +42,9 @@ nx-plan-contract-cleanup-spec.md）；⑥ 每 op 经 workingstep 1:1 挂 setup_r
   diag+MILL_METHOD 族占位）或根名("METHOD"/空)挂方法根；**Tool**=按 tool_ref 建的刀具组；
   **Geometry**=op 的 ws.setup_ref → 该 setup 的 MCS/WORKPIECE 链。
 - 参数指令 = **(NX 成员路径, 取值形态, 值)** 三元组，仅含**写入面白名单**（实证可写：PartStock/
-  FloorStock/DepthPerCut `.Value`；fixture_offset 待 [I] 证）；**stepover 拒收 → diag**（U-6）。
+  FloorStock/DepthPerCut（腔写面目标 = `CutLevel.GlobalDepthPerCut.DistanceBuilder`——2026-09-05 v2.5
+  实证：op 级 DepthPerCut 惰性，camprobe-v2depth-211011）`.Value`；fixture_offset 待 [I] 证）；
+  **stepover 拒收 → diag**（U-6）。
 - 刀具重建对（D-2 决策前以推荐 A 表述；实证补记见 §5b）：关键词表「铣刀*→(mill_planar,MILL)；
   钻刀/倒斜铣刀→(hole_making,STD_DRILL)；未知→(mill_planar,MILL)+warning」。**CutterSubtype 库刀具
   读回已证可行（§5b）→ U-7 无技术障碍**，导出侧补 schema 枚举后 Executor 可按枚举映射重建。

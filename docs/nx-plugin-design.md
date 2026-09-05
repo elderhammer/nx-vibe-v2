@@ -98,6 +98,8 @@
 > `OperationCollection` 上；④ 组/操作创建的第 4/7 参是 `UseDefaultName` 枚举。
 > 另：`MillCutParameters.DepthPerCut` 不存在（在 `PlanarOperationBuilder`/`CavityMillingBuilder`
 > 直接成员上）；孔加工无 `Cycle` 属性（用 `CycleTable`）——均勿写入 plan 映射表。
+> （2026-09-05 v2.5 修正：腔铣 op 级 `DepthPerCut` 成员存在但**惰性**——引擎消费成员 =
+> `CutLevel.GlobalDepthPerCut.DistanceBuilder`，camprobe-v2depth-211011 实证，见 nx-param-registry-spec #12）
 
 ### 2.2 PlanComparer（新增，偏差量化）
 

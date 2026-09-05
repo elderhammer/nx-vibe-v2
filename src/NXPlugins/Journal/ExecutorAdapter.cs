@@ -456,7 +456,17 @@ public class ExecutorAdapter
                         case "CutParameters.PartStock": b.CutParameters.PartStock.Value = pi.N.Value; break;
                         case "CutParameters.FloorStock": b.CutParameters.FloorStock.Value = pi.N.Value; break;
                         case "CutParameters.WallStock": b.CutParameters.WallStock.Value = pi.N.Value; break;
-                        case "DepthPerCut": b.DepthPerCut.Value = pi.N.Value; break;
+                        case "CutLevel.GlobalDepthPerCut.DistanceBuilder":
+                            // v2.5 深度键（camprobe-v2depth-211011 实证）：引擎消费成员在 CutLevel 子树，
+                            // op 级 DepthPerCut 写惰性；0/缺失 = 继承语义 → 不写保持模板默认（旧 plan 兼容）
+                            if (pi.N.Value > 0)
+                            {
+                                NXOpen.CAM.CutLevel cl = b.CutLevel;
+                                if (cl == null) { Log("    " + op.Name + " CutLevel null → depth_per_cut 拒写保持默认"); break; }
+                                cl.GlobalDepthPerCut.DistanceBuilder.Value = pi.N.Value;
+                            }
+                            else Log("    " + op.Name + " depth_per_cut<=0（继承语义）→ 不写保持默认");
+                            break;
                         case "HoleDepth": b.HoleDepth.Value = pi.N.Value; break;
                         case "FeedsBuilder.SpindleRpmBuilder": b.FeedsBuilder.SpindleRpmBuilder.Value = pi.N.Value; break;
                         case "FeedsBuilder.FeedCutBuilder": b.FeedsBuilder.FeedCutBuilder.Value = pi.N.Value; break;  // v1.5-⑤ feed_cut（注册表 #15 三跑持久）
