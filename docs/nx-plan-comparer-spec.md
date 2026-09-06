@@ -206,6 +206,19 @@ I-2）同 API 面，全部已实证，零新探针；几何/刀路维度显式�
 > Direct 修对后现形——校准条目，非本批回归）；OP-002 残余 time 44.4%/length 28.5% = 进刀族未写
 > （方案 B 排队）；OP-003 γ 4 条保持。
 
+> **方案 B 判别⑨ 关闭注记（2026-09-06，源 samples/camprobe-v2ncmgap-20260906-153101.txt +
+> 探针源 CamProbeV2NcmGap.cs；前置审查 = 头文件/样例/XML：Trim 废弃 NX10.0.3 → 活键 =
+> MinimumClearance 扩展形态；Withs.UseEngret = "Use engage and retract defs" hxx:91）**：
+> B1/B3 哨兵精确复现（1379.9/0.934、1141.9/0.694）；**G1-G7 补漏键（Withs=UseEngret、
+> 6×EngRetType 按 gt、6×MinimumClearance 扩展、6×MinRampLength=70、6×HeightFrom=PreviousLevel、
+> 6×ExtendBefore/AfterArc、MinimizeNumberOfEngages=False）全部写入持久（读回断言 ✓）但
+> regen 逐位零贡献（0.6942/1141.8544 = B3 值）**——Type=Direct 语义下（或模板默认已同）
+> EngRet 差键引擎不消费 → B3 = 公开 Ncm 键面复刻上限。**方案 B 实施批关闭（无可写键）**；
+> OP-002 残余 213mm（time 44.4%/length 28.5%）归因转移 = 层内转移高度**内部值**差驱动假设
+> （gt 0.5 vs 模板 3，#19 API 不可写；2.5mm×~85 转移事件 ≈ 213mm 量级吻合，无 API 通道可证）
+> → **转永久校准候选**，残余 2 条维持 FAIL 哨兵（若未来找到高度内部值写入通道 → 复开）。
+> 校准池更新：OP-002 由"排队待开发"转"永久候选"；残余 9 条画像不变（2 条性质变更，无数量变更）。
+
 > **2026-09-06 静态审查 + γ 定档补记（头文件/样例/XML 三语料审查 + 判别⑧ 双会话，证据详见
 > nx-v2-geom-spec.md §7 判别⑧ 与索引 §2.1/§2.5）**：
 > ① **OP-003 γ 从"候选开关缺检"闭合**：五候选（RegionSequencing Optimize/RegionPoints、
@@ -215,12 +228,19 @@ I-2）同 API 面，全部已实证，零新探针；几何/刀路维度显式�
 > StepoverConnection（NX2406.0.0）零宿主零工厂零样例 = 公开面不可达；全库 372 官方源文件唯一
 > stepover 写面（CornerSetRadiusAndLimitCycleAll.vb:105）写的是模板默认值 150 = 与 U-6 P3
 > "界内写回填"自洽，样例存在不构成反例 → OP-001 残余归因维持。
-> ③ **方案 B（进刀族）键集静态面清单化**：腔铣进刀族 = NcmPlanarBuilder 子树 6 EngRet builder
-> （NcmPlanarEngRetBuilder 型，NX5.0.0/cam_base，CanWrite=True）+ 光顺族；官方样例双写范
-> （PlanarOpsSetNCMCycleAll.vb:100-114 op builder Commit、MillingOpsSetAngleAnglePlaneCycleAll.vb:185-192
-> EngRetType+角度）；C3 判别实为漏写 Trim(bool)/5×EngRetType/MinRampLength/TransferWithinLevelsWith
-> /LimitEngRetToCutRegion/MinimizeNumberOfEngages/FeedEngage 等差键 → 17% 收敛非全键上限；
-> 持久性全部待批内 [T] 实测（#19 Height 教训）。**OP-002 残余 2 条维持方案 B 排队。**
+> ③ **方案 B（进刀族）键集静态面清单化（2026-09-06 头文件/样例审查修正版）**：腔铣进刀族 =
+> NcmPlanarBuilder 子树 6 EngRet builder（NcmPlanarEngRetBuilder 型，CanWrite=True）+ 光顺族；
+> 官方样例写范仅两处 = PlanarOpsSetNCMCycleAll.vb:100-114（MinClearanceBuilder.Value/Intent → op
+> builder Commit）与 MillingOpsSetAngleAnglePlaneCycleAll.vb:185-192（EngRetType+角度）——其余
+> 补漏键（TransferWithinLevelsWith/MinRampLength/HeightFrom/ExtendBeforeArc/…）全库零样例，仅
+> 静态面。**hxx 注释级关键事实**：`Trim` 自 **NX10.0.3 起废弃**（CAM_NcmPlanarEngRetBuilder.hxx:331-344
+> "Use MinimumClearance instead"）→ 早前"C3 漏写 Trim"改判 = Trim 是遗留别名、活通道 =
+> `MinimumClearance` 扩展形态（ExtendAndTrim/ExtendOnly…）；`TransferWithinLevelsWith`=
+> **UseEngret = "Use engage and retract defs"**（hxx:91）= 层内转移启用进/退刀动作定义的总开关，
+> C1/C3 均未写过 → 第一号判别候选。C3 之上候选集 = Withs/5×EngRetType(按 gt 读值)/MinimumClearance
+> 扩展/MinRampLength/HeightFrom/ExtendBeforeArc/ExtendAfterArc/MinimizeNumberOfEngages(bool)。
+> **【判别⑨ 已关闭本候选集：上述键全写持久但引擎逐位零消费（2026-09-06 camprobe-v2ncmgap），
+> 方案 B 实施批取消，见上段判别⑨ 关闭注记。】**
 
 ## 4. 算法（步骤 → 性质映射）
 

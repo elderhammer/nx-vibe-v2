@@ -1,0 +1,62 @@
+== CamProbeV2NcmGap（OP-002 补漏键单键贡献判别）==
+time: 2026-09-06 15:31:01
+件: C:\Users\21505\Code\nx-vibe-v2\samples\test.prt
+打开 OK: test  camSession=True
+OP-002 面数=6 参考刀具=17.0
+
+== 写前读数（gt 现值，G 系列取值源）==
+   gt With=UseEngret MinimizeNumberOfEngages=False
+   gt[Closed] EngRetType=SameAsEngage IfEngage=Plunge MinClear=ExtendAndTrim HFrom=PreviousLevel
+       Height=0.5 Ramp=3 MinClrVal=0 MinRamp=70 ExtArc=-/-
+   gt[InitClsd] EngRetType=SameAsDefault IfEngage=Plunge MinClear=ExtendAndTrim HFrom=PreviousLevel
+       Height=0.5 Ramp=15 MinClrVal=0 MinRamp=70 ExtArc=-/-
+   gt[InitOpen] EngRetType=SameAsDefault IfEngage=Plunge MinClear=None HFrom=PreviousLevel
+       Height=0.3 Ramp=15 MinClrVal=0 MinRamp=70 ExtArc=0/0
+   gt[OpenArea] EngRetType=Arc IfEngage=Plunge MinClear=None HFrom=PreviousLevel
+       Height=0.3 Ramp=0 MinClrVal=0 MinRamp=70 ExtArc=0/0
+   gt[RetArea] EngRetType=SameAsEngage IfEngage=Plunge MinClear=None HFrom=PreviousLevel
+       Height=20 Ramp=0 MinClrVal=0 MinRamp=70 ExtArc=0/0
+   gt[RetFinal] EngRetType=SameAsDefault IfEngage=Plunge MinClear=None HFrom=PreviousLevel
+       Height=20 Ramp=15 MinClrVal=0 MinRamp=70 ExtArc=0/0
+
+== B1 哨兵（ref + Type=Direct，C1 等价）==
+  克隆创建 OK: CAVITY_MILL_1
+  [B1 哨兵(预期 1379.9/0.934)] time=0.9342 length=1379.9491 regions=36
+
+== B3 哨兵（ref + C3 全集）==
+  克隆创建 OK: CAVITY_MILL_2
+  [B3 哨兵(预期 1141.9/0.694)] time=0.6942 length=1141.8544 regions=36
+
+== G1 TransferWithinLevelsWith=UseEngret ==
+  克隆创建 OK: CAVITY_MILL_3
+   读回 With=UseEngret
+  [G1_WITHS] time=0.6942 length=1141.8544 regions=36
+
+== G2 6×EngRetType 按 gt ==
+  克隆创建 OK: CAVITY_MILL_4
+  [G2_ENGRETTYPE] time=0.6942 length=1141.8544 regions=36
+
+== G3 6×MinimumClearance 扩展形态按 gt ==
+  克隆创建 OK: CAVITY_MILL_5
+  [G3_MINCLR] time=0.6942 length=1141.8544 regions=36
+
+== G4 6×MinRampLengthBuilder 按 gt ==
+  克隆创建 OK: CAVITY_MILL_6
+   读回 MinRamp[0]=70
+  [G4_MINRAMP] time=0.6942 length=1141.8544 regions=36
+
+== G5 6×HeightFrom 按 gt ==
+  克隆创建 OK: CAVITY_MILL_7
+  [G5_HFROM] time=0.6942 length=1141.8544 regions=36
+
+== G6 6×ExtendBeforeArc/ExtendAfterArc 按 gt ==
+  克隆创建 OK: CAVITY_MILL_8
+  [G6_EXTARC] time=0.6942 length=1141.8544 regions=36
+
+== G7 MinimizeNumberOfEngages 按 gt ==
+  克隆创建 OK: CAVITY_MILL_9
+   读回 MinimizeNumberOfEngages=False
+  [G7_MINENG] time=0.6942 length=1141.8544 regions=36
+对照: C1 1379.9/0.934 → C3 1141.9/0.694 → gt 本体 928.8/0.515（36 区同构）
+== 结束（全程未 Save）==
+== 结束 ==
