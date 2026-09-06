@@ -20,7 +20,8 @@ fixture=1/1、template=6/6、sigfaceset=4/4，全部可解释）+ **残余归因
 E5v2 区组通道零）→ OP-003 γ 定档引擎内部行为；方案 B 判别⑨ 关闭（be03deb：七补漏键写持久但
 引擎逐位零消费 → B3=公开 Ncm 键面复刻上限、实施批取消）→ **残余 9 条全部为"已解释 + 无可写
 通道"永久校准性质**（OP-001 stepover ×3 / OP-002 转移高度内部值 ×2 / OP-003 γ ×4，清单见
-[nx-plan-comparer-spec.md](../docs/nx-plan-comparer-spec.md) §3 校准记录）。[U] 全量 **116/116**。
+[nx-plan-comparer-spec.md](../docs/nx-plan-comparer-spec.md) §3 校准记录）。[U] 全量 **118/118**
+（2026-09-06 审计批 +2：POST-2 真实文件原子替换 + INV-4 正向去重）。
 
 - `NXPlugins.csproj`：类库工程，已引用 NXOpen / NXOpen.UF / NXOpen.Utilities
   （HintPath 指向 `$(NX_DIR)\NXBIN\managed\`，默认
@@ -41,7 +42,7 @@ E5v2 区组通道零）→ OP-003 γ 定档引擎内部行为；方案 B 判别�
 - **2026-09-05 STEP 资产收口（索引 §3 项 6 划勾）**：导入（官方 sim_final2.stp 就地引用 →
   1 body/31 面 α）+ 导出（ugstep214.def 导出向修正 → samples/test.step，回导 1/26 = 源件一致）
   批处理实证闭环，v2 前置齐备（证据：samples/camprobe-steprebuild-012104*、camprobe-stepexport-012205*）。
-- `PlanExporter/` + `PlanExecutor/` + `PlanComparer/`：纯逻辑核心（spec 各落档；[U] 红线 **116/116**
+- `PlanExporter/` + `PlanExecutor/` + `PlanComparer/`：纯逻辑核心（spec 各落档；[U] 红线 **118/118**
   全绿——历次全量回归含 U-7 A′ 词集、V15 union 值通道、CompareCore 双快照 diff、CompareV2
   三维/门控与 **RegionPairing 分层配对 12 条**（v2.5），见 docs/nx-plan-comparer-spec.md 与
   docs/nx-v2-geom-spec.md）；`PlanExporterTests/`/`PlanExecutorTests/`/`PlanComparerTests/`

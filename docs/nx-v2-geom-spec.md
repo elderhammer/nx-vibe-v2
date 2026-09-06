@@ -4,7 +4,7 @@
 > （additive）/ D-3 腔铣族先行 / D-4 Executor 改动面按 §0 / D-5 Comparer 三维 + **一体交付**（A）。
 > [U] 100/100 全绿（2026-09-05 时点：93 回归 + V2 红线七测试 = 八性质名——V2-PRE-1/2/3（PRE-3 折叠
 > 于 PRE-1 测试内）+ POST-2/4/5/6 + INV-2 round-trip；V2GATE 门控测试 2530c6d 补入 → V2GeomTests
-> 现行 8 条；全仓 2026-09-06 现行 116/116 见 src/NXPlugins/README.md）；
+> 现行 8 条；全仓 2026-09-06 现行 118/118 见 src/NXPlugins/README.md）；
 > csc 三适配器编译通过（compile-executor-adapter 补入 NxCollect.cs 合编——PS5.1 无 BOM UTF-8
 > 中文注释致插入行不生效的编码坑，注释已 ASCII 化）；sln MSBuild 构建通过。改动面：
 > schema operation.cut_area_signatures（可选）+ Model{OperationItem/FaceSignature/刀路区域字段} +

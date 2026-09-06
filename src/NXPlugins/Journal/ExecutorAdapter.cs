@@ -60,6 +60,28 @@ public class ExecutorAdapter
 
             // ---- NX 会话（索引 §2.1 纪律：建件 → CreateCamSession → CreateCamSetup）----
             Session s = Session.GetSession();
+
+            // 许可 gate（cam_base；I-4/MONO-1：任何 NX 对象创建/落盘（含 v2 STEP 导入 SaveAs）之前——
+            // 2026-09-06 修正：原位于 CreateCamSetup 之后且失败仅记 fail 不中止，缺许可会落半成品件；
+            // 现前置且失败即中止（return，无任何对象创建））
+            bool gateOk = false;
+            try
+            {
+                s.LicenseManager.Reserve("cam_base", "ExecutorAdapter");
+                Log("  cam_base Reserve OK");
+                gateOk = true;
+            }
+            catch (Exception ex)
+            {
+                Log("!! 许可 gate 失败（cam_base Reserve）——中止，不创建任何 NX 对象: " + ex.Message);
+                return;
+            }
+            finally
+            {
+                if (gateOk)
+                    try { s.LicenseManager.Release("cam_base", "ExecutorAdapter"); } catch { }
+            }
+
             Part part = s.Parts.NewDisplay("ExecutorOut" + DateTime.Now.ToString("HHmmss"),
                 Part.Units.Millimeters);
 
@@ -118,17 +140,6 @@ public class ExecutorAdapter
                 if (c.Pair.Type == "mill_contour") { hasMill = true; break; }
             CAMSetup cam = part.CreateCamSetup(hasMill ? "mill_contour" : "hole_making");
             Log("CreateCamSetup(" + (hasMill ? "mill_contour" : "hole_making") + ") OK");
-
-            // 许可 gate（cam_base）
-            Step("许可 gate", () =>
-            {
-                try
-                {
-                    s.LicenseManager.Reserve("cam_base", "ExecutorAdapter");
-                    Log("  cam_base Reserve OK");
-                }
-                finally { try { s.LicenseManager.Release("cam_base", "ExecutorAdapter"); } catch { } }
-            });
 
             // ---- 执行重建（指令序 = rp.Operations DFS 序，INV-3）----
             var toolMap = new Dictionary<string, NCGroup>();
@@ -429,7 +440,7 @@ public class ExecutorAdapter
                 }
             });
 
-            Step("回读对照（I-2：结构/刀具直径/MCS/fixture/可写参数 vs plan）", () =>
+            Step("回读对照（I-2：结构/刀具直径/MCS/fixture vs plan——2026-09-06 标签修正：本步不回读参数值，参数持久证据由 comparer param 维承担）", () =>
                 ReadbackCompare(s, rp, prjPath, part));
         }
         catch (Exception ex)

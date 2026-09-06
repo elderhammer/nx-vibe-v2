@@ -340,7 +340,7 @@ namespace NXPlugins.PlanExporterTests
                 "畸形输入应 Ok=false 或带 diag（不静默）");
         }
 
-        // INV-4：diagnostics 同 code+scope 聚合一次。
+        // INV-4：diagnostics 同 code+scope 聚合一次（反面：跨 scope 不合并）。
         public static void test_INV4_diag_dedupe_same_scope()
         {
             PlanDocument p = SamplePlan();
@@ -352,6 +352,22 @@ namespace NXPlugins.PlanExporterTests
             foreach (RebuildDiag d in r.Diagnostics)
                 if (d.Code == "REF_DANGLING") n++;
             Assert.True(n == 2, "两个不同 scope 各一条（n=" + n + "）");
+        }
+
+        // INV-4 正向（2026-09-06 补，审计 C7）：同 code+同 scope 的重复诊断聚合为一条。
+        // 触发 = 同一 op 条目重复出现两次（同一 operation_id 悬空 tool_ref）→ 两次 AddDiag
+        // (REF_DANGLING, op_id) → 聚合应剩 1（无聚合则为 2，红）。
+        public static void test_INV4_diag_dedupe_same_code_scope_positive()
+        {
+            PlanDocument p = SamplePlan();
+            string opId = p.operations[0].operation_id;
+            p.operations[0].tool_ref = "T-999";
+            p.operations.Add(p.operations[0]);   // 同 id 条目 ×2
+            RebuildPlan r = ExecutorCore.Build(p);
+            int n = 0;
+            foreach (RebuildDiag d in r.Diagnostics)
+                if (d.Code == "REF_DANGLING" && d.Scope == opId) n++;
+            Assert.True(n == 1, "同 code+scope 应聚合一条（n=" + n + "）");
         }
 
         // ---------- v1.5-①（comparer spec §2 口径破绽根因修复：workplan 根语义对齐） ----------

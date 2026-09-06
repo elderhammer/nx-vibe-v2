@@ -71,8 +71,9 @@ A6 分型 Builder 回读：形态注册表（成员路径+形态类）驱动 →
    docs/nx-param-registry-spec.md：读面 16 键 15 可读 + 写面持久性矩阵）——v1.5-③ 扩展本步骤依据
 A7 刀具组（NCGroup→Builder 读回直径/刃数等 MVP 字段）/ MCS（MillOrientGeomBuilder.Mcs 属性）/
    方法组名 → resources/setups/method_ref → [I]
-A8 workingsteps 1:1 生成；COPY 链展开为独立 operation 条目（name 保留 _COPY 后缀链），diag 记副本关系
-   → INV-3（决策②口径：展开 + diag）
+A8 workingsteps 1:1 生成；COPY 链展开为独立 operation 条目（name 保留 _COPY 后缀链）
+   → INV-3（决策②口径：展开；2026-09-06 注记（审计 C4）："diag 记副本关系"未实现——副本关系由
+   workplan ws 名（_COPY 后缀链）与 INV-5 Tag 去重自然承载，该 diag 声称撤销，见 §5 决策② 注）
 A9 features：组级存在性（几何父组链）+ anchor 兜底；face_anchors 空 → 见 U-5
 A10 JSON 序列化（double 原样）→ POST-4
 A11 schema 校验 → INV-1/POST-1
@@ -111,7 +112,9 @@ A12 `.tmp` 写入 + rename；diagnostics 汇总写回 → POST-2/POST-5/INV-6
   规格与机制残留注记见 docs/nx-stepover-probe-spec.md。Executor 重建步距字段维持拒收 + diag
   （ParamWhiteList 不变）；BuilderProperties/UI 录制等通道已探尽（P1 另证 BuilderProperties 为
   已提交态快照，非未提交写入实时视图）。
-- **决策②**：COPY 链展开为独立条目 + diag（不引入 schema 副本字段）。
+- **决策②**：COPY 链展开为独立条目 + diag（不引入 schema 副本字段）。（2026-09-06 注（审计 C4）：
+  "diag 记副本关系"部分未实现，已撤销——展开语义由 INV-5 Tag 去重 + workplan ws 名（_COPY 后缀链）
+  承载，无独立 diag 码；见 §4 A8 注记。）
 - **决策③**：导出生效值（实测可读）；显式/继承打标按 U-3 结案语义处理。
 - **决策⑤ 冲突已决**：几何首版砍至组级（CONFLICT-2，理由见 U-5 结案）。
 

@@ -132,7 +132,7 @@ namespace NXPlugins.PlanExporterTests
             finally { try { File.Delete(f); } catch { } }
         }
 
-        // POST-2：失败不产生半成品；旧文件不被破坏（.tmp+rename）。
+        // POST-2：失败不产生半成品；旧文件不被破坏（.tmp+File.Replace 原子替换）。
         public static void test_POST2_failure_keeps_old_file_intact()
         {
             string f = TempFile();
@@ -152,6 +152,24 @@ namespace NXPlugins.PlanExporterTests
                 Assert.Equal("OLD-CONTENT", File.ReadAllText(f), "POST-2 旧文件应保持原样");
                 string[] leftovers = Directory.GetFiles(Path.GetDirectoryName(f), Path.GetFileName(f) + ".tmp");
                 Assert.True(leftovers.Length == 0, "POST-2 不应残留 .tmp");
+            }
+            finally { try { File.Delete(f); } catch { } }
+        }
+
+        // POST-2 真实文件成功替换路径（2026-09-06 补）：旧文件存在 → File.Replace 覆盖为新内容，
+        // 可再解析、无 .tmp 残留（File.Replace 原子语义——旧文件保持至新文件就位）。
+        public static void test_POST2_real_file_atomic_replace()
+        {
+            string f = TempFile();
+            try
+            {
+                File.WriteAllText(f, "OLD-CONTENT");
+                PlanWriter.WriteAtomically(BuildSample(), f);
+                PlanDocument back = PlanWriter.Serializer.Deserialize(File.ReadAllText(f));
+                AssertValid(back, "POST-2 覆盖后应为可解析的新 plan");
+                Assert.False(File.ReadAllText(f) == "OLD-CONTENT", "POST-2 内容应已替换");
+                string[] leftovers = Directory.GetFiles(Path.GetDirectoryName(f), Path.GetFileName(f) + ".tmp");
+                Assert.True(leftovers.Length == 0, "POST-2 替换成功不应残留 .tmp");
             }
             finally { try { File.Delete(f); } catch { } }
         }
@@ -184,6 +202,10 @@ namespace NXPlugins.PlanExporterTests
         }
 
         // POST-5：结构级失败（PRE-1/2/3 不满足）→ 中止且不落盘。
+        // 2026-09-06 修正注记（审计 C5）："不落盘"全链语义由适配器纪律（[I]：失败路径不调用
+        // WriteAtomically，adapter-run/executor-run 日志证据）保证；本单测可离线断言的 =
+        // 守卫 Preflight 拦截（Failures 列出全部失败）——测试自身从不发起写尝试，File.Exists
+        // 断言不覆盖 WriteAtomically 行为（POST-2 两测试覆盖写入路径本身）。
         public static void test_POST5_structural_failure_no_output()
         {
             string f = TempFile();
@@ -193,8 +215,6 @@ namespace NXPlugins.PlanExporterTests
                 PreflightResult pr = ExportGates.Preflight(gate, true);
                 if (!pr.Ok)
                 {
-                    // 调用方契约：失败路径不调用 WriteAtomically（此处验证"若绕过守卫则无产物"由
-                    // 适配器纪律保证；单测验证守卫确实拦截）——
                     Assert.True(pr.Failures.Count > 0, "POST-5 守卫应列出全部失败");
                     Assert.False(File.Exists(f), "POST-5 不应有输出文件");
                 }

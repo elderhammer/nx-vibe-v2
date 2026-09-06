@@ -75,7 +75,7 @@
 | `PlanParser` | plan.json → 强类型模型（对齐 schema v3） | ⛔ 未独立实现——复用 PlanExporter 的 PlanDocument/PlanJsonSerializer（executor spec §1/§6） |
 | `PlanExecutor` | 重建：按 plan 建 CAMSetup/四组/逐工序创建 → prj′；v2 增 STEP 导入→签名面指派→带几何刀路→原地 Save | ✅ v1（spec+[U] 33/33+[I] 三连跑，2026-09-04）+ **v2 一体收官（2026-09-05：[U] 100/100；[I] 191434 ok=19/fail=0）+ v2.5 键批收官（2026-09-06：深度键 CutLevel 子树/#17 reference_tool/#18 transfer_within_levels；OP-003 判别⑧ 定档 = γ 引擎内部行为，executor 不改，末跑 executor-run-143712 ok=19/fail=0）**——见 nx-v2-geom-spec.md §7 与 comparer spec §3（2026-09-06 同步） |
 | `FaceResolver` | OCCT face_id → NX Tag（质心+面积+曲面类型+法向匹配；⚠️ U-5 实证负结案：导出侧面级锚点无生产源 → v1 不进对比维度） | 🔧→ **被 v2 签名通道替代**（AskFaceData 类型/法向轴/代表点/半径，F1 13/13 唯一命中，2026-09-05）；组件本身不再推进 |
-| `PlanComparer` | prj′ vs prj 偏差计算：逐工序/刀具/参数/MCS + v2 三维（刀路/区域/sigfaceset），输出报告 | ✅ v1（spec+[U] 78/78+[I] 终跑 144237，2026-09-04——设计 §7 步骤 3，三步闭环 v1 收官）+ v1.5-③ 200339 + **v2 三维 gate 终跑 192456（2026-09-05：issues=21=预测、sigfaceset=4/4）验收关闭** + **v2.5 区域配对/键批收官（2026-09-06：[U] 116/116、issues=9 全解释 = 永久校准 9 条、RegionPairing 分层配对 12 条；复跑 003738/004123/140734/143758）**——校准记录见 [nx-plan-comparer-spec.md](./nx-plan-comparer-spec.md) §3（2026-09-05/09-06 增补） |
+| `PlanComparer` | prj′ vs prj 偏差计算：逐工序/刀具/参数/MCS + v2 三维（刀路/区域/sigfaceset），输出报告 | ✅ v1（spec+[U] 78/78+[I] 终跑 144237，2026-09-04——设计 §7 步骤 3，三步闭环 v1 收官）+ v1.5-③ 200339 + **v2 三维 gate 终跑 192456（2026-09-05：issues=21=预测、sigfaceset=4/4）验收关闭** + **v2.5 区域配对/键批收官（2026-09-06：[U] 118/118（审计批 +2）、issues=9 全解释 = 永久校准 9 条、RegionPairing 分层配对 12 条；复跑 003738/004123/140734/143758）**——校准记录见 [nx-plan-comparer-spec.md](./nx-plan-comparer-spec.md) §3（2026-09-05/09-06 增补） |
 
 ### 2.1 PlanExporter（已实现，导出侧核心）
 

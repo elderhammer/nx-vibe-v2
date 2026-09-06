@@ -1,10 +1,11 @@
 # PlanExecutor 规格（spec-before-code 纪要落档，2026-09-04）
 
 > 状态：**纪要落档（2026-09-04）；D-1/D-2 已确认 = A/A（§7）；核心实现红线全绿（33/33——2026-09-04
-> 落档当日快照；全仓 [U] 现行 116/116，见 src/NXPlugins/README.md）；**
+> 落档当日快照；全仓 [U] 现行 118/118，见 src/NXPlugins/README.md）；**
 > **[I] 层集成完成（ExecutorAdapter v3 三连跑收官）**：I-1 全链创建、I-4 许可 gate、MONO-1 执行期、
 > I-2 回读对照（6 工序序名/6 刀具直径/MCS 原点 (75,0,100) 全 PASS，executor-run-20260904-014930）、
-> I-3 跨会话重开（reopen-20260904-015129：ops=6）全点亮；I-5 模板选择（hole_making）预检实证已背书。
+> I-3 跨会话重开（reopen-20260904-015129：ops=6 判据满足；toolGroups=7 旗标注记见 §3 I-3 行）全点亮；
+> I-5 模板选择（hole_making）预检实证已背书。
 > 重建资产：samples/test.rebuilt-014933.prt（136K，自建件入库）。
 > 需求源：docs/nx-plugin-design.md §7 步骤 2 / §2.1（PlanExecutor 行）/ §4 最小闭环；
 > 合同：schema/autocam-plan.schema.json v3.0（**导出侧实际产物的偏差见 §1**）；
@@ -75,7 +76,10 @@ nx-plan-contract-cleanup-spec.md）；⑥ 每 op 经 workingstep 1:1 挂 setup_r
 [I] 集成验证清单（不进单测；2026-09-04 已全部点亮，源 executor-run-20260904-014930/reopen-015129）：
 I-1 空件全链创建成功（程序组 A01 + 6 刀具组 + MCS_MILL/WORKPIECE 链 + 6 op DFS 序，无异常）；
 I-2 回读对照全 PASS（工序数/序/名、6 刀具直径 vs plan、MCS 原点 (75,0,100)、fixture=1 默认（plan 未带））；
-I-3 prj′ 落盘（SaveAs 时间戳名兜底）并跨会话重开复核 ops=6；
+I-3 prj′ 落盘（SaveAs 时间戳名兜底）并跨会话重开复核 ops=6；（2026-09-06 注（审计 C1）：证据档
+  reopen-20260904-015129 在 ops=6 之外打印 toolGroups=7 + "!! 结构不符"——ReopenCheck 探针源未入库，
+  旗标判据无法复核；推断 toolGroups=7 = 重建 6 刀组 + 模板默认组 1（mill_contour 模板自带），未证实。
+  "全点亮"以 I-3 判据 ops=6 满足为准；建议后续补入库探针源或重跑复核该旗标）
 I-4 许可 gate（cam_base Reserve）前置通过；
 I-5 CreateCamSetup("hole_making") 模板选择由预检探针实证（P6），适配器按"全钻→hole_making"分派。
 
