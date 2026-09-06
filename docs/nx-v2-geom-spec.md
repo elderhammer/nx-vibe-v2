@@ -216,3 +216,24 @@ STEP 资产；评分规格固化（决策④遗留，随本批校准记录后另
 > ExecutorCore 解析+匹配器 → ExecutorAdapter v2 链 → ComparerCore 三维 + 渲染 → V2GeomTests
 > 七条红线入测试（100/100）→ 三适配器 csc 编译通过 → sln 构建通过。[I] 实录已随 §7 收官
 > （I-1..I-4，2026-09-05 晚：190859 / 191001 / 191434 / 192158 / 192456）。
+
+> **判别⑧ 五候选开关闭合（2026-09-06，源 samples/camprobe-v2gammacands-20260906-{151742,151900}.txt +
+> 探针源 CamProbeV2GammaCands.cs；静态审查前置 = 头文件/样例/XML 三语料，结论入索引 §2.1/§2.5）**：
+> 为把 γ"候选开关缺检"升级为闭合，按静态审查挑出的公开面低投入候选逐一双会话实测
+> （B0 克隆基线复现 0 哨兵 ✓）：
+> - E1 `RegionSequencing=Optimize/RegionPoints`（MillCutParameters，NX6.0.0）→ 写持久、regen **0**；
+> - E2 `SmallAreaAvoidance`（SmallAreaStatus=Cut + AreaSize=0/PartUnits）→ 写持久、regen **0**；
+> - E3 `GeometrySet.Reversed=true`（NX2007）→ **写不持久**（写后新 builder 读回 False，双会话一致——
+>   "形态可写 ≠ 持久"新实例，入索引 §2.1/§2.5）；
+> - E4 `CAMSetup.ExtractCutArea(γ op)`（NX2306）→ **非空**：产物 FeatureGeometry
+>   `MILL_AREA_CAVITY_MILL_COPY_COPY`（引擎判 op 有 cut area 且可复制成区组——"引擎无 cut area"
+>   假设排除）；产物直生成未抛；
+> - E5v2 op 几何父挂 E4 产物区组（3 面引擎复制、op 级不指派）→ **0**（"op 级默认集 SetArray
+>   指派上下文"假设排除；"AREA" 组字面量 CreateGeometry 不存在 = The desired template does not
+>   exist，入 §2.5）。
+> **定档闭合**：区域形成为 0 与参数/执行层旋钮（排序×2/小面积滤除/法向反转）/几何引用通道
+> （op 直接集 vs 引擎 ExtractCutArea 区组）均无关 → γ = rebuilt（STEP 回导）体上下文上的引擎
+> 区域形成内部行为，**公开面无开关、通道变体已穷尽**，维持永久校准条目（comparer OP-003 ×4
+> 不变）。候选清单 = 静态审查输出（区域词族命名级扫描零命中 + GeometrySet seed/traverse 族
+> 无腔铣消费文档 + 全语料无区域形成条件注记 + 官方样例无"导入体+腔铣刀路"先例——CAMSetupImport
+> 的 sim_final2.stp 仅挂 KIM 装夹）。

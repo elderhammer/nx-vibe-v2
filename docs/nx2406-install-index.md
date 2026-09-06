@@ -265,6 +265,27 @@ adapter-run-20260904-194935.txt；规格 docs/nx-params-v15-spec.md = S1 参数�
 - **ComparerAdapter 参数语义定稿**：NX Execute 对话框为**单参整体传递**（多参引号整体入 args[0] →
   Path 非法字符，200022 实证）→ args[0] = B（rebuilt）覆盖 + 引号清洗，A 恒默认 test.prt。
 
+**2026-09-06 γ 判别⑧ + 静态审查增补（源：samples/camprobe-v2gammacands-20260906-{151742,151900}.txt
+双会话 + 头文件/样例/XML 三语料审查；γ 定档见 nx-v2-geom-spec.md §7 判别⑧）**：
+
+- **`CAMSetup.ExtractCutArea(op)`（NX2306，cam_base）活性实证**：对空刀路腔 op 返回
+  **FeatureGeometry**（`MILL_AREA_<op名>`，Base Geometry Group NX7.5，编辑工厂 = FeatureGeomBuilder）
+  = 引擎判 op 有 cut area 且可复制为区组——可作"空刀路 op 有面无区"的标准诊断探针；
+  产物当 op 几何父（op 级不指派）仍出刀路 0 → 指派通道变体排除。
+- **`GeometrySet.Reversed`（NX2007）.NET 写不持久**：写 true → op builder Commit → 新 builder
+  读回恒 False（双会话一致 = U-6 三跑纪律）——"形态可写 ≠ 持久"新实例（同 #19 Height 教训），
+  写面别走此键。
+- **`CreateGeometry(...,"AREA",...)` 组字面量不存在**（The desired template does not exist，
+  2026-09-06 实测）——区组正确通道 = `ExtractCutArea`/FeatureGeomBuilder。
+- **stepover 负结案静态复核加固（2026-09-06）**：主链全为 NX6-9 老成员、2406 无替换增补；
+  36 个返回 Stepover* 型的宿主属性全 get-only；2406 唯一新成员 `StepoverConnection`
+  （NX2406.0.0，option-menu 形态）零宿主零工厂零样例；全库 372 官方源文件唯一 stepover 写面
+  = CornerSetRadiusAndLimitCycleAll.vb:105 `StepoverLimit=150`（恰模板默认，与"界内写回填"自洽）；
+  旁注：CAM_StepoverBuilder.hxx 枚举实测 **21 值** vs 本索引旧记 22（计数待核）。
+- **区域 API 内部标注加力**：`CutRegionsData`（NX10.0.2）与 `CutRegionsBuilder`（NX9.0.0，含唯一
+  入口 `SurfaceContourBuilder.GetCutRegionsBuilder`）双侧 `\cond NX_NO_DOC` + "internal API, may
+  change at any time"（XML 与 hxx 一致）——读回可用（G3/Comparer 实证）但无契约保障。
+
 ### 2.2 属性取值形态（四类混合——Mapper 必须按类型分支）
 
 | 形态 | 特征 | 实例（NX2406 .NET 实测） |
@@ -305,7 +326,16 @@ adapter-run-20260904-194935.txt；规格 docs/nx-params-v15-spec.md = S1 参数�
 `CAMSetupBuilder`；`CAMSetup.ProgramOrderView/MachineToolView/GeometryView/MethodView`；`camSetup.CreatePlanarMillingBuilder(...)`（应在 OperationCollection）；`MillCutParameters.DepthPerCut`（应在 `PlanarOperationBuilder/CavityMillingBuilder`）；`Stepover.Percent`；`MillCutParameters.CutOrder` 用顶层 `CutOrder` 枚举（类型是 `CutParametersCutOrderTypes`）；`HoleMachiningBuilder.Cycle`（**只有 `CycleTable`**，类型 `CAM.Cycle`）；`Operation.gougeCheck / getCuttingTime / getCuttingLength`（gouge 在 `CAMSetup.GougeCheck/CreateGougeCheckBuilder` 与 `Operation.GougeCheckStatus/Results`）；`MillingToolBuilder.holderSectionBuilder`（有 `ShankSectionBuilder`）；`setMcs/setRcs` 方法（`Mcs/Rcs` 是可写属性）；`cam_general_mill.prt`（2406 用 `mill_contour.prt` 等）；`CAMObject` 的 subtypeName/子类型读回成员（NCGroup/CAMObject 层零命中，仅有 `GetNameOfType()` 且为内部 API；
 **例外：`CAM.Tool.GetTypeAndSubtype`**（NX7.5 起、License None、工具专用——2026-09-04 实证，见 §2.1 增补））；`PartCollection.OpenReadOnly`（无只读打开重载）；`MillGeomBuilder.Blank`（**不存在**——真实成员 = `BlankGeometry`/`PartGeometry`/`CheckGeometry`，XML 实证 2026-09-04；schema/文档落点一律用 BlankGeometry）；面级质心/面积 API（**不存在**——`NXOpen.Face` 成员清单零命中 Area/Centroid/Mass/Measure，XML 实证 2026-09-04；`UF_MODL_ask_mass_props_3d` 头注记 objects 仅收 **solid/sheet body**（uf_modl.h:4324，U-5 链 NX 源码侧背书））；PTP 旧模板循环细分参数读回成员（G83/打点步距、退刀——builder 公开面/BuilderProperties JSON/用户属性三路零命中，2026-09-04）；`SpindleModeBuilder` 的模式语义（int 自由槽无枚举，2026-09-04）；`run_journal.exe -nogui`（**无此旗标**，2026-09-04）；stepover 族有效写入通道（`CutParameters.Stepover`
 复合对象全成员面 + 直属 `StepoverLimit`——.NET 写入 commit 后必还原模板默认，**2026-09-04 负结案**，
-camprobe-stepover 三跑，见 docs/nx-stepover-probe-spec.md；StepoverLimit 仅校验层可达、值域 [100,300]%）；`MultiDepthCut` 整对象与 Boundary 容差族可写通道（`MultiDepthCut.Toggle`(bool)/`StepMethod`(嵌套枚举) + `MillCutParameters.BoundaryInTol/OutTol`(直 double)——.NET 写入 commit 后必还原模板默认，**2026-09-04 负结案**，camprobe-params2 三跑 E2-E6 邻接判别，见 docs/nx-param-registry-spec.md；读面可读 = 导出可用，写面不可持久 = 重建侧拒收 + diag）。
+camprobe-stepover 三跑，见 docs/nx-stepover-probe-spec.md；StepoverLimit 仅校验层可达、值域 [100,300]%）；`MultiDepthCut` 整对象与 Boundary 容差族可写通道（`MultiDepthCut.Toggle`(bool)/`StepMethod`(嵌套枚举) + `MillCutParameters.BoundaryInTol/OutTol`(直 double)——.NET 写入 commit 后必还原模板默认，**2026-09-04 负结案**，camprobe-params2 三跑 E2-E6 邻接判别，见 docs/nx-param-registry-spec.md；读面可读 = 导出可用，写面不可持久 = 重建侧拒收 + diag）；
+`GeometrySet.Reversed`（NX2007）**写面不持久**（.NET 写 true → Commit → 新 builder 读回恒 False，
+**2026-09-06 双会话实证**，camprobe-v2gammacands-151742/151900；写面别走此键）；`CreateGeometry`
+组创建 typeName 字面量 `"AREA"`（**不存在**——The desired template does not exist，2026-09-06 实测；
+区组正确通道 = `CAMSetup.ExtractCutArea`/FeatureGeomBuilder）；stepover 2406 六新 option-menu 形态类
+（`StepoverConnection` NX2406.0.0/SmoothStepover NX2206/StepoverType NX2007/ZigZagStepoverType NX1980/
+DepositionOnStepover NX1980/DivideStepover NX1980）——类存在于 XML 但**公开面零宿主零工厂零样例 =
+不可达**（2026-09-06 静态复核，三语料检索清单见 nx-v2-geom-spec.md §7 判别⑧ 前注）；
+`CutRegionsData`/`CutRegionsBuilder` 为 **NX_NO_DOC 内部 API**（XML `\cond NX_NO_DOC` + hxx
+"internal API, may change at any time" 双侧标注，NX10.0.2/NX9.0.0——读回可用但无契约保障）。
 
 ---
 

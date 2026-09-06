@@ -1,0 +1,37 @@
+== CamProbeV2GammaCands（OP-003 γ 五候选开关判别）==
+time: 2026-09-06 15:17:42
+件: C:\Users\21505\Code\nx-vibe-v2\samples\v2.rebuilt-20260906-143713.prt
+打开 OK: v2.rebuilt-20260906-143713  camSession=True
+γ op 面数=3（预期 3）当前刀=T-003
+
+== B0 基线克隆（无候选写，γ 复现哨兵）==
+  克隆创建 OK: CAVITY_MILL_1
+  [B0 基线(预期 0)] time=0 length=0 regions=0
+
+== E1a RegionSequencing=Optimize ==
+  克隆创建 OK: CAVITY_MILL_2
+   读回 RegionSequencing=Optimize
+  [E1a Optimize] time=0 length=0 regions=0
+
+== E1b RegionSequencing=RegionPoints ==
+  克隆创建 OK: CAVITY_MILL_3
+   读回 RegionSequencing=RegionPoints
+  [E1b RegionPoints] time=0 length=0 regions=0
+
+== E2 SmallAreaAvoidance: Status=Cut + AreaSize=0/PartUnits ==
+  克隆创建 OK: CAVITY_MILL_4
+   读回 SmallAreaStatus=Cut AreaSize=0/PartUnits
+  [E2 小面积滤除关] time=0 length=0 regions=0
+
+== E3 GeometrySet.Reversed=true（面集法向反转）==
+   写前 Reversed=False
+  克隆创建 OK: CAVITY_MILL_5
+   读回 Reversed=False
+  [E3 Reversed] time=0 length=0 regions=0
+
+== E4 CAMSetup.ExtractCutArea(γ op) 诊断 ==
+   ExtractCutArea → FeatureGeometry 名=MILL_AREA_CAVITY_MILL_COPY_COPY
+   非 Operation（FeatureGeometry）——仅日志
+
+== E5 指派通道变体：AREA 区组（MillAreaGeomBuilder）+ op 几何父挂区组 ==
+   !! AREA 字面量建组失败: The desired template does not exist → E5 中止

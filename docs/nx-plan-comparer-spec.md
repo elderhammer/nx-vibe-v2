@@ -206,6 +206,22 @@ I-2）同 API 面，全部已实证，零新探针；几何/刀路维度显式�
 > Direct 修对后现形——校准条目，非本批回归）；OP-002 残余 time 44.4%/length 28.5% = 进刀族未写
 > （方案 B 排队）；OP-003 γ 4 条保持。
 
+> **2026-09-06 静态审查 + γ 定档补记（头文件/样例/XML 三语料审查 + 判别⑧ 双会话，证据详见
+> nx-v2-geom-spec.md §7 判别⑧ 与索引 §2.1/§2.5）**：
+> ① **OP-003 γ 从"候选开关缺检"闭合**：五候选（RegionSequencing Optimize/RegionPoints、
+> SmallAreaAvoidance Cut+0、GeometrySet.Reversed、ExtractCutArea 区组通道 E5v2）全零——
+> 定档 = rebuilt 体上下文引擎区域形成内部行为，公开面无开关、通道变体穷尽 → 4 条维持永久校准。
+> ② **stepover（#9）负结案静态复核证实**：主链全为 NX6-9 老成员；2406 唯一 stepover 新成员
+> StepoverConnection（NX2406.0.0）零宿主零工厂零样例 = 公开面不可达；全库 372 官方源文件唯一
+> stepover 写面（CornerSetRadiusAndLimitCycleAll.vb:105）写的是模板默认值 150 = 与 U-6 P3
+> "界内写回填"自洽，样例存在不构成反例 → OP-001 残余归因维持。
+> ③ **方案 B（进刀族）键集静态面清单化**：腔铣进刀族 = NcmPlanarBuilder 子树 6 EngRet builder
+> （NcmPlanarEngRetBuilder 型，NX5.0.0/cam_base，CanWrite=True）+ 光顺族；官方样例双写范
+> （PlanarOpsSetNCMCycleAll.vb:100-114 op builder Commit、MillingOpsSetAngleAnglePlaneCycleAll.vb:185-192
+> EngRetType+角度）；C3 判别实为漏写 Trim(bool)/5×EngRetType/MinRampLength/TransferWithinLevelsWith
+> /LimitEngRetToCutRegion/MinimizeNumberOfEngages/FeedEngage 等差键 → 17% 收敛非全键上限；
+> 持久性全部待批内 [T] 实测（#19 Height 教训）。**OP-002 残余 2 条维持方案 B 排队。**
+
 ## 4. 算法（步骤 → 性质映射）
 
 A1 输入合法性与索引：双侧 op 名 → map（重复名 → DUP 失配 + diag，INV-C1）；setup 名 map；刀具序
