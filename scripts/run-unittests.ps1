@@ -1,4 +1,4 @@
-# run-unittests.ps1 — 纯逻辑层单测红线回归（PlanExporter + PlanExecutor，零依赖 Runner）
+# run-unittests.ps1 — 纯逻辑层单测红线回归（PlanExporter + PlanExecutor + PlanComparer，零依赖 Runner）
 # 用法：powershell -NoProfile -File scripts\run-unittests.ps1
 # 编译：csc 经响应文件（避免 shell 参数路径剥除问题）；产物输出 .claude\tmp\（已 gitignore）。
 # 判定：退出码 = 失败数；全绿输出 "== 汇总: pass=N fail=0 =="。

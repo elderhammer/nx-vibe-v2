@@ -13,7 +13,8 @@
 > PTP 家族 v2 范围缺席 → CompareCore CompareV2 维 gate（三维仅腔铣族，2530c6d）；终跑
 > comparer-run-20260905-192456：issues=21 与 gate 预测一致、sigfaceset=4/4、toolpath=0/8
 > region=0/8，残余全为已知校准条目（I-3 验收关闭，见 nx-v2-geom-spec.md §7）。
-> [U] 现为全量 100/100（93 回归 + v2 七条，含 V15 union 与 CompareV2 门控断言）。
+> [U] 时点全量记录：2026-09-05 为 100/100（93 回归 + v2 七测试，V2GATE 门控 2530c6d 补入后 101）；
+> 2026-09-06 现行全量 116/116（累计含 PTP 方向化 4 + RegionPairing 12 条），见 src/NXPlugins/README.md。
 > 需求源：docs/nx-plugin-design.md §7 步骤 3 / §2.2（维度表与输出口径）；前置范围：nx-plan-executor-spec.md
 > §0/§7 D-1（重建 v1 空件无几何无刀路 → 对比维度显式声明）；事实源：nx2406-install-index.md §2.1。
 > 上游共享：ExportSnapshot（PlanExporter/Model.cs，导出与对比共用采集口径）+ WhiteList / ToolFamilyMap 归一思想。
@@ -64,8 +65,11 @@ I-2）同 API 面，全部已实证，零新探针；几何/刀路维度显式�
   （同会话采集 → 两侧 TypeFamily 同语言，[U] 夹具不受限）。
 - 容差：`ComparerOptions { EpsLen = 0.01mm, RelTol = 0.05, EpsAxis = 1e-6 }`（决策④直觉默认；
   校准后固化为评分规格文档）。数值判据 = `|a-b| ≤ EpsLen` **或** 相对偏差 `|a-b|/max(|a|,1e-9) ≤ RelTol`。
-- 结果模型（新，纯逻辑）：`ComparerResult { OpDiffs, ToolDiffs, SetupDiffs, StructureIssues, Score, Diags }`；
-  条目含 key（op 名/setup 名/刀序号）与双侧值——INV-C3 可溯。
+- 结果模型（新，纯逻辑）：`ComparerResult = Issues[]（ComparerIssue：Key/Code/Detail/AbsDiff——key 可溯
+  INV-C3、code 稳定可聚合 INV-C4）+ Notes[]（非致命注记）+ 结构统计（OpsMatched/Missing/Extra、Tools、
+  Setups）+ 维度计数对（Param/Tool/Mcs/Fixture/Template/Toolpath/Region/Sig × Checks/Pass——POST-C5
+  汇总由条目派生）`。（2026-09-06 修正：早期稿"OpDiffs/ToolDiffs/SetupDiffs/StructureIssues/Score/Diags"
+  字段形态未实现——实现为上述条目+计数模型，无 Score/Diags 独立成员；汇总评分由适配器渲染层承担。）
 - 表示决策：枚举不做（无实证枚举面）；参数键 = 导出侧现有键集（part_stock/floor_stock/depth_per_cut/
   bottom_stock/hole_depth…），两件同采集面。
 
@@ -304,11 +308,11 @@ run-unittests.ps1 纳入 PlanComparer/PlanComparerTests 目录；csproj 加 Plan
 
 | 维度 | 容差 | 判据 | 校准证据 |
 |---|---|---|---|
-| 参数数值 | `EpsLen=0.01mm` + `RelTol=5%` | `\|a-b\| ≤ EpsLen` **或** 相对偏差 ≤ RelTol → PASS | 000948 param=50/50 零噪音；哨兵 = OP-001 长度 3.4% PASS vs time 6.3% FAIL——阈值不掩盖已知不可写残余（stepover 60/65 vs 70，#9），调整须保哨兵 FAIL |
+| 参数数值 | `EpsLen=0.01mm` + `RelTol=5%` | `\|a-b\| ≤ EpsLen` **或** 相对偏差 ≤ RelTol → PASS | 000948 param=50/50 零噪音；哨兵 = OP-001 time 6.8% / length 5.9% FAIL（末轮 143758——length 5.9% 系转移族批 Direct 修对后自 3.4% PASS 显形，见 §3 记录）——阈值不掩盖已知不可写残余（stepover 60/65 vs 70，#9），调整须保哨兵 FAIL |
 | 参数枚举 | ordinal 相等 | 词集同源（采集侧按键固定，两侧同形） | v1.5-③ 起枚举键全 PASS |
 | MCS/fixture | origin 欧氏 ≤ EpsLen；z/x 轴元素差 ≤ `EpsAxis=1e-6`；fixture 整数等 | — | 192456 起 mcs=1/1、fixture=1/1 |
 | 刀路三维（v2 gate，仅腔铣族） | time/length = 同 RelTol=5%；**区域 = 明细分层配对判据（v2.5，RegionPairing）**：层数差分级（差层面积占比 ≤ NoteAreaRatio=2% → note；> 2% → FailStructure）+ 层内 1:1/2:1 合并 + 配对面积漂移 ≤ RelTol（哨兵）；签名面集 = 集合等 | CompareV2 维 | OP-004 深度复刻后 2 区=2 区全同；OP-001 80 vs 79 层 = **1 真差层（面积 4.3% > 2%，FailStructure 哨兵案例——端层范围取整差，非纯粒度）**；OP-002 18 vs 118 层（84.8%）→ 机理级报告；阈值 004123 定案（0.1% 微区 → note / 4.3% 整层 → FAIL），调值按 §7 变更纪律留痕 |
 | 单侧缺失（2026-09-06 方向化） | A-only → FAIL；B-only（近似模板带出，gt 无概念面）→ note | 不静默（note 含键与值） | PTP 收尾 000948：bottom_stock ×2 降 note 后 param=50/50 |
 
 **变更纪律**：本表值 = 2026-09-06 定稿。任何容差调整须过全量 [U] + 校准回归——已知 FAIL 哨兵（OP-001
-time 6.3%、γ 类条目）必须仍 FAIL 不静默，已知 PASS 不得转 FAIL；调整在此节留痕（日期 + 理由 + 回归结果）。
+time 6.8% / length 5.9%（143758 末轮）、γ 类条目）必须仍 FAIL 不静默，已知 PASS 不得转 FAIL；调整在此节留痕（日期 + 理由 + 回归结果）。

@@ -46,8 +46,9 @@ E5v2 区组通道零）→ OP-003 γ 定档引擎内部行为；方案 B 判别�
   三维/门控与 **RegionPairing 分层配对 12 条**（v2.5），见 docs/nx-plan-comparer-spec.md 与
   docs/nx-v2-geom-spec.md）；`PlanExporterTests/`/`PlanExecutorTests/`/`PlanComparerTests/`
   测试目录不入库编译（scripts/run-unittests.ps1 红线回归）。
-- 合编脚本：`scripts/compile-executor-adapter.ps1`（重建 exe）与 `scripts/compile-exporter-adapter.ps1`
-  （导出 exe，U-7 新增，镜像前者）→ .claude/tmp/*.exe 供 NX File → Execute。
+- 合编脚本：`scripts/compile-executor-adapter.ps1`（重建 exe）、`scripts/compile-exporter-adapter.ps1`
+  （导出 exe，U-7 新增，镜像前者）与 `scripts/compile-comparer-adapter.ps1`（对比 exe）→
+  .claude/tmp/*.exe 供 NX File → Execute。
 
 ## 规划目录（按 nx-plugin-design.md §7 步骤 0-4 进度）
 

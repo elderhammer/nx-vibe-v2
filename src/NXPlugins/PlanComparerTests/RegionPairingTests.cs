@@ -58,7 +58,7 @@ namespace NXPlugins.PlanExporterTests
 
         public static void test_region_granularity_small_extra_is_note()
         {
-            // 粒度差型（OP-001 80/79 类比）：A 含 1 个面积占比 ~0.012% 的微区，B 无 → Note 不 FAIL
+            // 粒度差型（OP-001 80/79 类比）：A 含 1 个面积占比 ~0.00125%（0.1/8000.1，2026-09-06 注释数值修正）的微区，B 无 → Note 不 FAIL
             List<RegionItem> a = Gen(40, 76.5, 0.2, new[] { new[] { 70.0, 0.0, 100.0 }, new[] { 75.0, 0.0, 100.0 } });
             a.Add(new RegionItem(77.0, 1.0, 76.5, 0.1));   // 81 区：首层 3 区（+1 微区 0.1），非独立层
             List<RegionItem> b = Gen(40, 76.5, 0.2, new[] { new[] { 70.0, 0.0, 100.0 }, new[] { 75.0, 0.0, 100.0 } });

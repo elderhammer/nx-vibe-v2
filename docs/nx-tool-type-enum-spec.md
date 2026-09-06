@@ -106,7 +106,7 @@ schema `tool.type` 词集从"零出处 14 CAPP 词"（D-2 违例根源）替换�
 > cam_legacy 同款；锚点对 (mill_planar,MILL)→Mill5、(hole_making,STD_DRILL)→DrillStandard 同批
 > 回归）→ 重建注册对表加行（ToolFamilyMap RegisterPairs），T-004 中心钻的 TOOL_TYPE_INFERRED
 > 消除。
-> **I-2 复跑（202730）暴露倒角刀直径写缺陷并已修（camprobe-chamferwrite-202922 s1-s5）**：
+> **I-2 复跑（202730）暴露倒角刀直径写缺陷并已修（camprobe-chamferwrite-203052 s1-s5，2026-09-06 时间戳修正）**：
 > CHAMFER_MILL 模板默认 ChamferLength=4（D16 型）→ 写 D6 直径被 NX 校验拒（"chamfer/corner
 > radius 交叉中心线"，s1-s3 全复现）；预置 **ChamferLength=D/2（90° 尖角中心钻语义）** 后写
 > 直径 6 → commit 持久、类型保持 (Mill,MillChamfer)（s4/s5；ChamferLengthBuilder 仅运行时面，

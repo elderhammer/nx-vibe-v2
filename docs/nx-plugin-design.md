@@ -16,6 +16,9 @@
 > 一致、sigfaceset=4/4**。已知校准残余 21 = feed_cut 写面缺口（腔时间差主因，注册表 #15 探针
 > 候选）+ 区域分割粒度 + OP-003 空刀路待诊（判别读探针 191955/192013 排除集属性/DPC/feed
 > 假设）+ PTP 键错位 ×4 + tool#4；模块表已同步。
+> 2026-09-06 更新：v2.5 三批收官——模块表本表同步（PlanExecutor γ 判别⑧ 定案、PlanComparer
+> issues=21→9 永久校准收口、FaceResolver 区域配对由 RegionPairing 实现）；同日契约一次性反推
+> 修正（schema 恢复规范面真值，见 schema 头注约定 1-10 与 CLAUDE.md 规则 5）。
 > 几何面级通道受 U-5 负结案限制（2026-09-04），见 FaceResolver 行注。
 > 定位转变：**初始版本不再直接消费云端 CAPP 计划**，而是以**工程师手编的 NX 工程
 > 为 ground truth**，跑通「导出 plan.json → 按 plan 自动重建工程 → 对比偏差」三步闭环。
@@ -70,9 +73,9 @@
 |---|---|---|
 | `PlanExporter` | 读工程师手编 prj：遍历 CAMSetup 组树 + Operation，回读 Builder 实际参数 → plan.json | ✅（spec+[U] 全绿+[I] 导出闭环，2026-09-04） |
 | `PlanParser` | plan.json → 强类型模型（对齐 schema v3） | ⛔ 未独立实现——复用 PlanExporter 的 PlanDocument/PlanJsonSerializer（executor spec §1/§6） |
-| `PlanExecutor` | 重建：按 plan 建 CAMSetup/四组/逐工序创建 → prj′；v2 增 STEP 导入→签名面指派→带几何刀路→原地 Save | ✅ v1（spec+[U] 33/33+[I] 三连跑，2026-09-04）+ **v2 一体收官（2026-09-05：[U] 100/100；[I] 191434 ok=19/fail=0——OP-003 空刀路待诊），见 nx-v2-geom-spec.md** |
+| `PlanExecutor` | 重建：按 plan 建 CAMSetup/四组/逐工序创建 → prj′；v2 增 STEP 导入→签名面指派→带几何刀路→原地 Save | ✅ v1（spec+[U] 33/33+[I] 三连跑，2026-09-04）+ **v2 一体收官（2026-09-05：[U] 100/100；[I] 191434 ok=19/fail=0）+ v2.5 键批收官（2026-09-06：深度键 CutLevel 子树/#17 reference_tool/#18 transfer_within_levels；OP-003 判别⑧ 定档 = γ 引擎内部行为，executor 不改，末跑 executor-run-143712 ok=19/fail=0）**——见 nx-v2-geom-spec.md §7 与 comparer spec §3（2026-09-06 同步） |
 | `FaceResolver` | OCCT face_id → NX Tag（质心+面积+曲面类型+法向匹配；⚠️ U-5 实证负结案：导出侧面级锚点无生产源 → v1 不进对比维度） | 🔧→ **被 v2 签名通道替代**（AskFaceData 类型/法向轴/代表点/半径，F1 13/13 唯一命中，2026-09-05）；组件本身不再推进 |
-| `PlanComparer` | prj′ vs prj 偏差计算：逐工序/刀具/参数/MCS + v2 三维（刀路/区域/sigfaceset），输出报告 | ✅ v1（spec+[U] 78/78+[I] 终跑 144237，2026-09-04——设计 §7 步骤 3，三步闭环 v1 收官）+ v1.5-③ 200339 + **v2 三维 gate 终跑 192456（2026-09-05：issues=21=预测、sigfaceset=4/4）验收关闭**——校准记录见 [nx-plan-comparer-spec.md](./nx-plan-comparer-spec.md) §3（2026-09-05 增补） |
+| `PlanComparer` | prj′ vs prj 偏差计算：逐工序/刀具/参数/MCS + v2 三维（刀路/区域/sigfaceset），输出报告 | ✅ v1（spec+[U] 78/78+[I] 终跑 144237，2026-09-04——设计 §7 步骤 3，三步闭环 v1 收官）+ v1.5-③ 200339 + **v2 三维 gate 终跑 192456（2026-09-05：issues=21=预测、sigfaceset=4/4）验收关闭** + **v2.5 区域配对/键批收官（2026-09-06：[U] 116/116、issues=9 全解释 = 永久校准 9 条、RegionPairing 分层配对 12 条；复跑 003738/004123/140734/143758）**——校准记录见 [nx-plan-comparer-spec.md](./nx-plan-comparer-spec.md) §3（2026-09-05/09-06 增补） |
 
 ### 2.1 PlanExporter（已实现，导出侧核心）
 

@@ -64,7 +64,8 @@ rpm 走既有 tech: 前缀 + 既有白名单（spindle_rpm），首次全链点�
   `CutParameters.FinishPasses.NumberOfFinishPasses`（number）。kind = "enum" 的条目另带 NxParamWords 词集。
 - `ParamInstruction`（RebuildPlan.cs）：持 MemberPath + kind + double? N + string S（替代现 double 单值；
   纯逻辑不引 NX 类型）。
-- NxParamWords（PlanExporter/NxToolWords.cs 同目录新表或同文件）：cut_pattern 36 词 / cut_order 3 词 /
+- NxParamWords（PlanExporter/NxToolWords.cs 同目录新表或同文件）：cut_pattern 35 词（2026-09-06 修正：
+  落档预估值 36 → 实证收编后与 schema/NxParamWords 一致为 35）/ cut_order 3 词 /
   cut_direction 5 词 = NXOpen.xml F: 实证词集（task 5 拉取后固化；validator 复用）。
 - schema：strategy.cut_pattern/cut_order/cut_direction 枚举词集 → NX 原文（含 $comment 出处与
   "枚举值 = NX ToString 原文，重建侧 Enum.Parse 直用" 注记）；finish_passes 维持 integer；其余不动。

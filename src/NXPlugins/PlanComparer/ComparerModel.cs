@@ -11,7 +11,7 @@ namespace NXPlugins.PlanComparer
     public sealed class ComparerOptions
     {
         public double EpsLen = 0.01;    // 数值绝对容差 mm（沿设计 §2.2 几何口径，§7 固化）
-        public double RelTol = 0.05;    // 数值相对偏差容差（§7 固化——哨兵 OP-001 time 6.3% 须仍 FAIL）
+        public double RelTol = 0.05;    // 数值相对偏差容差（§7 固化——哨兵 OP-001 time 6.8%/length 5.9%（143758 末轮）须仍 FAIL）
         public double EpsAxis = 1e-6;   // MCS 单位向量轴元素差容差（§7 固化）
     }
 

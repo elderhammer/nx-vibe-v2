@@ -1,6 +1,7 @@
 # PlanExecutor 规格（spec-before-code 纪要落档，2026-09-04）
 
-> 状态：**纪要落档（2026-09-04）；D-1/D-2 已确认 = A/A（§7）；核心实现红线全绿（33/33）；**
+> 状态：**纪要落档（2026-09-04）；D-1/D-2 已确认 = A/A（§7）；核心实现红线全绿（33/33——2026-09-04
+> 落档当日快照；全仓 [U] 现行 116/116，见 src/NXPlugins/README.md）；**
 > **[I] 层集成完成（ExecutorAdapter v3 三连跑收官）**：I-1 全链创建、I-4 许可 gate、MONO-1 执行期、
 > I-2 回读对照（6 工序序名/6 刀具直径/MCS 原点 (75,0,100) 全 PASS，executor-run-20260904-014930）、
 > I-3 跨会话重开（reopen-20260904-015129：ops=6）全点亮；I-5 模板选择（hole_making）预检实证已背书。
@@ -43,10 +44,16 @@ nx-plan-contract-cleanup-spec.md）；⑥ 每 op 经 workingstep 1:1 挂 setup_r
   **Geometry**=op 的 ws.setup_ref → 该 setup 的 MCS/WORKPIECE 链。
 - 参数指令 = **(NX 成员路径, 取值形态, 值)** 三元组，仅含**写入面白名单**（实证可写：PartStock/
   FloorStock/DepthPerCut（腔写面目标 = `CutLevel.GlobalDepthPerCut.DistanceBuilder`——2026-09-05 v2.5
-  实证：op 级 DepthPerCut 惰性，camprobe-v2depth-211011）`.Value`；fixture_offset 待 [I] 证）；
+  实证：op 级 DepthPerCut 惰性，camprobe-v2depth-211011）`.Value`；fixture_offset 已实证（§5b P4：
+  Value=2 → 重开持久））；
   **stepover 拒收 → diag**（U-6）。
-- 刀具重建对（D-2 决策前以推荐 A 表述；实证补记见 §5b）：关键词表「铣刀*→(mill_planar,MILL)；
-  钻刀/倒斜铣刀→(hole_making,STD_DRILL)；未知→(mill_planar,MILL)+warning」。**CutterSubtype 库刀具
+- 刀具重建对（**2026-09-06 修正注记：执行链以 ToolFamilyMap.cs 现表为准，旧 plan 兼容行为读此**——
+  ① NX 注册对表（U-7 实证精确命中，大小写敏感）：(Mill,Mill5)→(mill_planar,MILL)、
+  (Drill,DrillStandard)→(hole_making,STD_DRILL)、(Mill,MillChamfer)→(mill_planar,CHAMFER_MILL)；
+  ② 家族关键词回退（旧 plan 家族串，大小写不敏感）：钻刀/Drilling Tool/drill→(hole_making,STD_DRILL)、
+  铣刀/倒斜铣刀（= Chamfer Mill 中文名，**铣**族）等→(mill_planar,MILL)；③ 默认 (mill_planar,MILL)+warning。
+  早期 D-2 关键词表「铣刀*→(mill_planar,MILL)；钻刀/倒斜铣刀→(hole_making,STD_DRILL)；未知→
+  (mill_planar,MILL)+warning」中"倒斜铣刀→STD_DRILL"系决策前错误推断，作废）。**CutterSubtype 库刀具
   读回已证可行（§5b）→ U-7 无技术障碍**，导出侧补 schema 枚举后 Executor 可按枚举映射重建。
 
 ## 3. 性质（红线；[U]=离线单测硬红线 [I]=集成验证 [T]=待实测）

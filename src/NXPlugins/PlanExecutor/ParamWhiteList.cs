@@ -42,7 +42,8 @@ namespace NXPlugins.PlanExecutor
             // v2.5 转移族批（2026-09-06 camprobe-v2ncm 实证，注册表 #18）：层内转移方式。OP-002 36 区
             // 同构下残余长度差（重建 3257 vs gt 929）主因 = 模板默认 Clearance（抬刀模式）vs gt Direct
             // （直接平移，gt 四腔 op 全 Direct/UseEngret，v2surf-gt 195205 矩阵）→ 写回 Direct → 长度
-            // 收敛 71%（[I] 142827/143155：重建件 3257→1299）。#19 height 键负结案撤采：Value 写 commit
+            // 收敛（探针级 4718→1380 ≈ 71%；[I] 142827/143155 重建件 3257→1299 ≈ 60%——2026-09-06
+            // 注释算术修正）。#19 height 键负结案撤采：Value 写 commit
             // 还原（camprobe-v2ncmh 四写序变体 Intent/ValueIntent 持久、Value 恒回模板 3 = UI 可设 API
             // 不可写，stepover #9 同族新实例）。
             { "hole_depth",    new ParamTarget("HoleDepth", ParamKind.Number) },   // OperationBuilder 级（PTP/钻孔均可达）
