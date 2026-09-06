@@ -2,7 +2,9 @@
 
 > 定位：Plan 双向验证闭环（导出 → 按 plan 重建 → 对比）的 NX 侧实现载体。
 > 需求与设计：`docs/nx-plugin-design.md`；API 事实源：`docs/nx2406-install-index.md`；
-> 合同：`schema/autocam-plan.schema.json`（v3.0）。
+> 合同：`schema/autocam-plan.schema.json`（v3.0；2026-09-06 反推修正——schema 为协议规范面，
+> 形状真值经 jsonschema 引擎对真实产物核验通过，语义镜像 = PlanValidator + 参数键集注册表，
+> 两面同批收敛纪律见 schema 头注约定 10 与 CLAUDE.md 规则 5）。
 > 工程决策（2026-09-03，见 nx-plugin-design.md 头部"已确认决策"）：
 > 仅支持 NX2406；.NET Framework 4.8.1（2026-09-05 由 4.8 提升——本机无 v4.8 targeting pack、
 > 官方 4.8 Dev Pack 安装器在沙箱挂起、4.8.1 pack 已就位且运行时 4.8.1；语义兼容 4.8 代码）；

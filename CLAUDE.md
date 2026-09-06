@@ -86,3 +86,9 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
    `CreateCamSetup` 模板名、`run_journal.exe -nogui` 等）未在 NX 会话/批处理实测前，
    代码与文档只可标注"待实测"，不得当作最终接口使用。
 4. 改动上述 NX 文档或本规则引用的内容时，保持与索引一致；发现索引过期立即修正。
+5. **契约纪律（schema ↔ 执行面两面同批）**：`schema/autocam-plan.schema.json` 是三步闭环基础协议
+   的**规范面**（设计基准），执行面 = Doc.cs/PlanJsonSerializer（形状）、PlanValidator（语义镜像）、
+   参数键集注册表（键语义权威，docs/nx-param-registry-spec.md）。两面相辅相成：设计新增从规范面发起，
+   实证纠正从执行面发起；涉及 plan 形状/键集/词集/结构的任何变更，**收口 = schema + 代码 + validator +
+   [U] 测试 + 注册表/spec 同批提交**，任何一面不得长期落后（2026-09-06 一次性反推修正已恢复两面一致，
+   见 schema 头注约定 10；历史教训 = v1.5-③ 起四批实证变更后 schema 形状声明漂移）。

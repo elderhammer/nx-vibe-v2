@@ -1,15 +1,17 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema#",
     "$id": "https://autocam.local/schema/autocam-plan.schema.json",
-    "title": "Autocam Plan (v3) — NX 双向验证闭环合同",
-    "description": "NX 插件三步闭环（导出 plan.json → 按 plan 重建 → 对比偏差）共用合同。ground truth 采集（PlanExporter）、重建（PlanExecutor）、偏差计算（PlanComparer）三方读写同一实例；plan 是意图层（工艺决策），NX Builder 是参数层（CAM 执行）。",
-    "$comment": "本地口径：docs/nx-plugin-design.md §5 与 nxopen-research.md §4.9（字段清单）+ docs/nxopen-research.md §4.3-4.7 与附 A（NX2406 实证的枚举/形态）。约定：1) 枚举值为 plan 层规范形式（大写 + 下划线），NX 侧 Mapper 负责映射到 NXOpen 枚举（如 FOLLOW_PART→CutPatternBuilder.Types.FollowPart）；2) nx_template 保留 NX 原串对：type/subtype = **模板部件名 / 对象模板类型**（NX2406 实测，2026-09-03，见 nx2406-install-index.md §2.1；如 mill_contour/CAVITY_MILL，成对供 OperationCollection.Create 直用，空 subtype 非法）；3) 结构对象（mcs/nx_template/workplan 节点等）禁多余字段，策略/技术/参数对象允许扩展字段（后续增强字段逐步入档）；4) 特征为组级口径（v1）：feature 条目 = id + feature_type(恒 geometry_group) + params(恒空)；面级/云端几何字段（face_anchors/face_ids/edge_ids/anchor）已删除——面质心/面积无 NX API（U-5 三路负结案，2026-09-03/04；uf_modl.h 仅收 solid/sheet body，NXOpen.Face 零成员），v2 几何挂载时按当时通道（区域级 CutRegionsData 候选/外部素材）重新设计字段；5) operation_type/feature_type 为自由串两档：NX 导出侧产实态值（milling/drilling/other、geometry_group），外部共享方（CAPP/识别）素材挂载后再断言其词表并递增 contract_version——本仓库当前为合同唯一持有方；6) $id 域名为占位（autocam.local），正式发布前替换或去域。",
+    "title": "Autocam Plan (v3) — NX 双向验证闭环基础协议",
+    "description": "plan 文档是导出（PlanExporter）→ 重建（PlanExecutor）→ 对比（PlanComparer）闭环交换的基础协议实例。本文件 = 协议规范面（设计基准）；执行面 = src/NXPlugins/PlanExporter/Doc.cs 数据模型 + PlanJsonSerializer（DataContractJsonSerializer 投影）+ PlanValidator（可执行语义镜像）+ 参数键集注册表（docs/nx-param-registry-spec.md）。两面相辅相成：设计新增从规范面发起，实证纠正从执行面发起；任何一面变更必须带动另一面同批收敛（头注约定 10）。",
+    "$comment": "反推修正（2026-09-06）：v1.5-③/v2/v2.5 各批实证变更后规范面未同批同步，形状声明长期失实（type:object vs 实际 KV 数组、假定缺席语义 vs 实际 null 落盘、目录键无 Doc.cs 成员等）。本批按执行面定稿逻辑一次性反推恢复一致。约定：1) 形状 = DCJS 对 Doc.cs 纯 POCO 的全字段投影：所有成员恒在（无缺席语义）；可空成员以 JSON null 落盘（subtype/safe_plane_z/fixture_offset/mcs/坐标轴/cut_area_signatures）；Dictionary = KV 数组 [{Key,Value}]；ParamValue 值 = {N:number}|{S:串} 二选一。2) 词集 = NX 枚举原文直写（导出直写、重建 Enum.Parse 直用）；schema enum 与代码常量镜像（NxToolWords：Types=14/Subtypes=49；S 值词键 = NxParamWords：cut_pattern/cut_order/cut_direction/transfer_within_levels），不同步即 bug，[U] 词集测试钉住。3) 参数键集开放：strategy/technology 的 Key 为自由串，键权威与逐键语义/NX 落点 = 注册表；导出侧 tech: 前缀键分流进 technology（ExporterCore）。4) nx_template type/subtype 成对非空（NX 侧语义：模板部件名/对象模板类型，OperationCollection.Create 直用；空 subtype 非法）。5) operation_type/feature_type 自由串两档：导出侧实态值 = milling/drilling/other（FamilyToOperationType）与 geometry_group；外部 CAPP/识别素材挂载后再断言词表并递增版本。6) 语义执行体：JSON Schema 不可表达的约束（ref 闭合、operation↔workingstep 1:1、ID 去重、nx_template 成对、tool 词集命中、diag 规则）由 PlanValidator 执行——validator 是规范面的可执行镜像，两面差异即缺陷。7) v1 旧形状读兼容：读侧 NormalizeLegacyValues shim 将旧 strategy/technology KV 裸 number 归一为 {N} 包装（V15-INV-1/2，幂等）；本文件描述现形状。8) 契约版本：contract_version 维持 3.0（本批为声明修正、无外部消费者；未来结构/词集断言变更按约定 5 递增）。9) $id 域名为占位（autocam.local），正式发布前替换或去域。10) 变更纪律：涉及形状/键集/词集/结构的改动，任一面发起（设计新增 → 先修本文件；实证纠正 → 先改执行面），收口 = 本文件 + Doc.cs + PlanValidator + [U] 测试 + 注册表/spec 同批提交，不得单面推进后长期留另一面过期。",
     "type": "object",
     "additionalProperties": false,
     "required": [
         "contract_version",
         "plan_id",
+        "name",
         "input_ref",
+        "meta",
         "setups",
         "resources",
         "features",
@@ -21,32 +23,25 @@
     "properties": {
         "contract_version": {
             "const": "3.0",
-            "$comment": "合同版本，独立于 plan 业务版本；结构破坏性变更时递增"
+            "$comment": "合同版本，独立于 plan 业务版本；结构破坏性变更时递增（见头注约定 8）"
         },
         "plan_id": {
             "type": "string",
             "minLength": 1,
             "pattern": "^[A-Za-z0-9._-]+$",
-            "description": "plan 唯一标识"
+            "description": "plan 唯一标识（导出侧缺省 PLAN-0001）"
         },
         "name": {
             "type": "string",
-            "description": "plan 显示名（可选）"
+            "minLength": 1,
+            "description": "plan 显示名（导出侧 = 源 prt 描述名；validator 镜像：非空必填）"
         },
         "input_ref": {
             "type": "string",
-            "description": "输入源引用：工程师手编 prj 路径或云端任务 id（ground truth 溯源）"
+            "minLength": 1,
+            "description": "输入源引用：工程师手编 prj 路径或云端任务 id（ground truth 溯源；validator 镜像：非空必填）"
         },
-        "meta": {
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
-                "generator": { "type": "string", "description": "生成器（如 PlanExporter / CAPP / 手工）" },
-                "generator_version": { "type": "string" },
-                "created_at": { "type": "string", "format": "date-time", "description": "生成时刻（RFC3339）" },
-                "notes": { "type": "string" }
-            }
-        },
+        "meta": { "$ref": "#/definitions/meta" },
         "setups": {
             "type": "array",
             "items": { "$ref": "#/definitions/setup" },
@@ -66,7 +61,7 @@
         "features": {
             "type": "array",
             "items": { "$ref": "#/definitions/feature" },
-            "description": "加工特征（v1 组级口径，1 workingstep ↔ 1 feature）：条目 = feature_id + feature_type(恒 geometry_group) + params(恒空)。面级/云端几何锚点字段已删除（U-5 负结案：面质心/面积无 NX API，见 $comment 约定 4）；v2 几何挂载时重设计"
+            "description": "加工特征（组级口径，1 workingstep ↔ 1 feature）：条目 = feature_id + feature_type(恒 geometry_group) + params(恒空数组)"
         },
         "operations": {
             "type": "array",
@@ -79,51 +74,60 @@
         },
         "workplan": {
             "$ref": "#/definitions/workplan",
-            "description": "程序组树（Program Order 视图层级），决定刀路输出顺序；根通常为 PROGRAM"
+            "description": "程序组树（Program Order 视图层级），决定刀路输出顺序；根 = 虚拟 PROGRAM（导出侧恒产）"
         },
         "diagnostics": {
             "type": "array",
             "items": { "$ref": "#/definitions/diagnostic" },
-            "description": "导出/导入/对比过程的 info/warning/error（导出侧汇入；重建侧比对侧追加）"
+            "description": "导出/导入/对比过程的 info/warning/error"
         }
     },
 
     "definitions": {
-        "id": { "type": "string", "minLength": 1 },
+        "meta": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["generator", "generator_version", "created_at", "notes"],
+            "properties": {
+                "generator": { "type": "string", "description": "生成器（导出侧恒 PlanExporter；未来 CAPP/手工）" },
+                "generator_version": { "type": "string" },
+                "created_at": { "type": "string", "format": "date-time", "description": "生成时刻（RFC3339）" },
+                "notes": { "type": "string", "description": "备注（可为空串）" }
+            }
+        },
 
         "vector3": {
-            "type": "array",
+            "type": ["array", "null"],
             "items": { "type": "number" },
             "minItems": 3,
             "maxItems": 3,
-            "description": "[x, y, z]，mm（模型局部坐标）"
+            "description": "[x, y, z]，mm（模型局部坐标）；null = 未采集（适配器实证前）"
         },
 
         "setup": {
             "type": "object",
             "additionalProperties": false,
-            "required": ["setup_id", "mcs"],
+            "required": ["setup_id", "name", "mcs", "safe_plane_z", "fixture_offset"],
             "properties": {
-                "setup_id": { "$ref": "#/definitions/id" },
-                "name": { "type": "string", "description": "装夹名（导出时可用组名还原）" },
+                "setup_id": { "type": "string", "minLength": 1 },
+                "name": { "type": "string", "description": "装夹名（导出侧 = 几何组名，如 MCS_MILL）" },
                 "mcs": {
-                    "type": "object",
-                    "additionalProperties": false,
+                    "type": ["object", "null"],
                     "required": ["origin", "z_axis", "x_axis"],
                     "properties": {
-                        "origin": { "$ref": "#/definitions/vector3" },
+                        "origin": { "$ref": "#/definitions/vector3", "description": "加工坐标系原点（模型坐标）" },
                         "z_axis": { "$ref": "#/definitions/vector3", "description": "加工坐标系 Z（单位向量）" },
                         "x_axis": { "$ref": "#/definitions/vector3", "description": "加工坐标系 X（单位向量）" }
                     },
-                    "$comment": "NX 落点：MillOrientGeomBuilder.Mcs（可写属性，构造 CartesianCoordinateSystem）"
+                    "description": "MCS（MillOrientGeomBuilder.Mcs）；null = setup 无 MCS 回读（导出侧落 MCS_MISSING error diag）"
                 },
                 "safe_plane_z": {
-                    "type": "number",
-                    "description": "安全平面 Z 高度（mm，模型坐标；0/缺省表示未设，导入时 NX 侧给默认安全距离）"
+                    "type": ["number", "null"],
+                    "description": "安全平面 Z 高度 mm（模型坐标）；null = 未设（导入时 NX 侧给默认安全距离）"
                 },
                 "fixture_offset": {
-                    "type": "integer",
-                    "description": "夹具偏置号（G54=1, G55=2 …）；NX 落点 FixtureOffsetBuilder"
+                    "type": ["integer", "null"],
+                    "description": "夹具偏置号（G54=1, G55=2 …；NX 落点 FixtureOffsetBuilder）；null = 未设"
                 }
             }
         },
@@ -131,74 +135,51 @@
         "tool": {
             "type": "object",
             "additionalProperties": false,
-            "required": ["tool_id", "type", "diameter"],
+            "required": ["tool_id", "type", "subtype", "diameter", "num_flutes", "flute_length", "lower_corner_radius"],
             "properties": {
-                "tool_id": { "$ref": "#/definitions/id" },
+                "tool_id": { "type": "string", "minLength": 1 },
                 "type": {
                     "type": "string",
-                    "enum": [
-                        "Mill", "Drill", "Turn", "Groove", "Thread", "Wedm",
-                        "Barrel", "Tcutter", "Form", "DrillSpcGroove", "Solid",
-                        "MillForm", "Laser", "Soft"
-                    ],
-                    "$comment": "NX2406 Tool.Types 枚举原文（14 值，出处：NXOpen.CAM.Tool.GetTypeAndSubtype，2026-09-04 U-7 实证，见 docs/nx-tool-type-enum-spec.md；原 14 CAPP 词零出处已替换，D-3）。执行侧重建 = (type,subtype)→注册对，未命中回退旧家族关键词表（旧 plan 兼容）"
+                    "enum": ["Mill", "Drill", "Turn", "Groove", "Thread", "Wedm", "Barrel", "Tcutter", "Form", "DrillSpcGroove", "Solid", "MillForm", "Laser", "Soft"],
+                    "$comment": "NX2406 Tool.Types 枚举原文 14 值（词集镜像 NxToolWords.Types，U-7 实证 2026-09-04）；导出/校验/重建共用同一词集常量；恒非空（类型读回失败的刀不入本表）"
                 },
                 "subtype": {
-                    "type": "string",
-                    "enum": [
-                        "Undefined", "Mill5", "Mill7", "Mill10", "MillBall",
-                        "DrillStandard", "DrillCenterBell", "DrillCountersink",
-                        "DrillSpotFace", "DrillSpotDrill", "DrillBore", "DrillReam",
-                        "DrillCounterbore", "DrillTap", "DrillBurnishing", "DrillThreadMill",
-                        "DrillBackSpotFace", "DrillStep", "TurnStandard", "TurnButton",
-                        "TurnBoringBar", "GrooveStandard", "GrooveRing", "GrooveFullNoseRadius",
-                        "GrooveUserDefined", "ThreadStandard", "ThreadButress", "ThreadAcme",
-                        "ThreadTrapezoidal", "Generic", "Probe", "MillChamfer",
-                        "MillSpherical", "DrillCore", "StdLaser", "Laser",
-                        "DrillBackCountersink", "CoaxialLaser", "DrillBoringBar",
-                        "DrillChamferBoringBar", "DrillBackBore", "ThreadTriangularStandard",
-                        "ThreadTriangularTrapezoidal", "BarrelStandard", "BarrelTangent",
-                        "BarrelTaper", "BarrelLens", "MillDovetail", "TurnPrime"
+                    "oneOf": [
+                        { "type": "string", "enum": ["Undefined", "Mill5", "Mill7", "Mill10", "MillBall", "DrillStandard", "DrillCenterBell", "DrillCountersink", "DrillSpotFace", "DrillSpotDrill", "DrillBore", "DrillReam", "DrillCounterbore", "DrillTap", "DrillBurnishing", "DrillThreadMill", "DrillBackSpotFace", "DrillStep", "TurnStandard", "TurnButton", "TurnBoringBar", "GrooveStandard", "GrooveRing", "GrooveFullNoseRadius", "GrooveUserDefined", "ThreadStandard", "ThreadButress", "ThreadAcme", "ThreadTrapezoidal", "Generic", "Probe", "MillChamfer", "MillSpherical", "DrillCore", "StdLaser", "Laser", "DrillBackCountersink", "CoaxialLaser", "DrillBoringBar", "DrillChamferBoringBar", "DrillBackBore", "ThreadTriangularStandard", "ThreadTriangularTrapezoidal", "BarrelStandard", "BarrelTangent", "BarrelTaper", "BarrelLens", "MillDovetail", "TurnPrime"] },
+                        { "type": "null" }
                     ],
-                    "description": "刀具子类型，可选。NX2406 Tool.Subtypes 枚举原文（49 值，含 Undefined——真刀读回恒为具体值）"
+                    "description": "NX Tool.Subtypes 原文 49 值（词集镜像 NxToolWords.Subtypes）；null = 空 subtype（不填；真刀读回恒为具体值，Undefined 为合法原文值）"
                 },
-                "diameter": { "type": "number", "exclusiveMinimum": 0, "description": "刀具直径 mm（NX: TlDiameterBuilder）" },
-                "num_flutes": { "type": "integer", "minimum": 0, "description": "刃数（NX: TlNumFlutesBuilder）" },
-                "flute_length": { "type": "number", "exclusiveMinimum": 0, "description": "刃长 mm（NX: TlFluteLnBuilder）" },
-                "lower_corner_radius": { "type": "number", "minimum": 0, "description": "底部圆角 R mm（牛鼻刀；NX: TlLowCorRadBuilder）" },
-                "height": { "type": "number", "exclusiveMinimum": 0, "description": "总长 mm（NX: TlHeightBuilder）" },
-                "taper_angle": { "type": "number", "description": "锥角 deg（NX: TlTaperAngBuilder）" },
-                "upper_corner_radius": { "type": "number", "minimum": 0, "description": "顶部圆角（NX: TlUpCorRadBuilder）" },
-                "shank_diameter": { "type": "number", "exclusiveMinimum": 0, "description": "柄径 mm（NX: TlShankDiaBuilder）" },
-                "tip_angle": { "type": "number", "description": "钻头顶角 deg（NX: TlPointAngBuilder）" },
-                "point_diameter": { "type": "number", "minimum": 0, "description": "钻尖直径（NX: TlTipDiameterBuilder）" },
-                "point_length": { "type": "number", "minimum": 0, "description": "钻尖长度（NX: TlTipLengthBuilder）" },
-                "pilot_diameter": { "type": "number", "minimum": 0 },
-                "pilot_length": { "type": "number", "minimum": 0 },
-                "pitch": { "type": "number", "exclusiveMinimum": 0, "description": "螺距 mm（丝锥/螺纹铣刀；NX: TlPitchBuilder）" },
-                "included_angle": { "type": "number", "description": "沉孔锥角（NX: TlIncludedAngBuilder）" },
-                "designation": { "type": "string", "description": "ISO 编号（如 DIN 338；NX: TlDesignation）" },
-                "tolerance_class": { "type": "string", "description": "公差等级（NX: TlToleranceClass）" },
-                "coolant_through": { "type": "boolean", "description": "中心出水（NX: CoolantThrough）" },
-                "material": { "type": "string", "description": "刀具材料（建议输出，NX 侧无直填位）" },
-                "coating": { "type": "string", "description": "涂层（建议输出）" }
+                "diameter": { "type": ["number", "null"], "exclusiveMinimum": 0, "description": "刀具直径 mm（NX: TlDiameterBuilder）" },
+                "num_flutes": { "type": ["integer", "null"], "minimum": 0, "description": "刃数（NX: TlNumFlutesBuilder）" },
+                "flute_length": { "type": ["number", "null"], "exclusiveMinimum": 0, "description": "刃长 mm（NX: TlFluteLnBuilder）" },
+                "lower_corner_radius": { "type": ["number", "null"], "minimum": 0, "description": "底部圆角 R mm（牛鼻刀；NX: TlLowCorRadBuilder）" }
             },
-            "$comment": "刀具参数是最'直填'的一层：字段与 NX MillingToolBuilder/DrillToolBuilder 的 Tl*Builder 基本一一对应（均 InheritableDoubleBuilder → .Value）"
+            "$comment": "导出 MVP 六域（U-7 原文直写，INV-U7-4：类型读回失败的刀不入本表 + error diag）；height/taper 等其余 Tl 参数域不在本契约——扩展 = 先修本文件再实现（头注约定 10）"
         },
 
         "feature": {
             "type": "object",
             "additionalProperties": false,
-            "required": ["feature_id", "feature_type"],
+            "required": ["feature_id", "feature_type", "params"],
             "properties": {
-                "feature_id": { "$ref": "#/definitions/id" },
+                "feature_id": { "type": "string", "minLength": 1 },
                 "feature_type": {
                     "type": "string",
-                    "description": "特征层分类，自由串两档：NX 导出侧恒 'geometry_group'（v1 组级口径，工序关联几何组）；识别模块挂载后可补 AP224 细类（hole/pocket/…）——本批不断言词表（见大 $comment 约定 5）"
+                    "description": "特征层分类，自由串两档（头注约定 5）：NX 导出侧恒 'geometry_group'（组级口径）；识别模块挂载后可补 AP224 细类并递增版本"
                 },
                 "params": {
-                    "type": "object",
-                    "description": "特征参数（直径/深度/螺距…自由对象，v1 恒空）；外部素材挂载后直通"
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "required": ["Key", "Value"],
+                        "properties": {
+                            "Key": { "type": "string", "minLength": 1 },
+                            "Value": { "type": "number" }
+                        }
+                    },
+                    "description": "特征参数键值对（DCJS Dictionary<string,double> 投影 = KV 数组）；v1 恒空 []，外部素材挂载后直通"
                 }
             }
         },
@@ -206,38 +187,72 @@
         "operation": {
             "type": "object",
             "additionalProperties": false,
-            "required": ["operation_id", "operation_type", "nx_template", "tool_ref"],
+            "required": ["operation_id", "operation_type", "nx_template", "tool_ref", "method_ref", "strategy", "technology", "cut_area_signatures"],
             "properties": {
-                "operation_id": { "$ref": "#/definitions/id" },
-                "name": { "type": "string", "description": "工序显示名（缺省由 NX 默认命名）" },
+                "operation_id": { "type": "string", "minLength": 1 },
                 "operation_type": {
                     "type": "string",
-                    "description": "工序层分类，自由串两档：NX 导出侧产实态粗类（milling/drilling/other，源自 GetNameOfType 大类映射）；外部 CAPP 素材挂载后可补细类（如 mill_cavity/drill_peck，nxopen-research §4.2 建议表）并 additive 恢复枚举——本批不断言词表（见大 $comment 约定 5）。精确类型语义以 nx_template 成对为准"
+                    "minLength": 1,
+                    "description": "工序层分类，自由串两档（头注约定 5）：NX 导出侧产实态粗类 milling/drilling/other（FamilyToOperationType）；外部 CAPP 素材挂载后可补细类并递增版本。精确类型语义以 nx_template 成对为准"
                 },
                 "nx_template": {
                     "type": "object",
                     "additionalProperties": false,
-                    "required": ["type"],
+                    "required": ["type", "subtype"],
                     "properties": {
                         "type": {
                             "type": "string",
-                            "description": "NX 模板部件名（2026-09-03 实证：OperationCollection.Create 的 typeName = 模板部件名，如 mill_contour；与 subtype 成对使用）"
+                            "minLength": 1,
+                            "description": "NX 模板部件名（OperationCollection.Create 的 typeName，如 mill_contour / hole_making；空 = 未解析，见 TPL_UNKNOWN diag）"
                         },
-                        "subtype": { "type": "string", "description": "NX 对象模板类型（Create 的 subtypeName，如 CAVITY_MILL / DRILLING；空串在 NX 侧非法，成对以 nx2406-install-index.md §2.1 为准）" }
+                        "subtype": {
+                            "type": "string",
+                            "minLength": 1,
+                            "description": "NX 对象模板类型（Create 的 subtypeName，如 CAVITY_MILL / DRILLING；成对非空——空串在 NX 侧非法，validator 镜像）"
+                        }
                     }
                 },
-                "tool_ref": { "$ref": "#/definitions/id", "description": "指向 resources.tools[].tool_id" },
-                "method_ref": { "type": "string", "description": "加工方法组名（如 MILL_ROUGH / DRILL_METHOD），缺省由 operation_type 推断" },
-                "strategy": { "$ref": "#/definitions/strategy" },
-                "technology": { "$ref": "#/definitions/technology" },
-                "cut_area_signatures": {
-                    "type": "array",
-                    "items": { "$ref": "#/definitions/face_signature" },
-                    "description": "op 级 CutAreaGeometry 面签名（v2 可选，additive；重建侧据签名在回导件上复刻相同加工面）——元素缺省空数组或字段缺席 = 无签名（v1 旧形状兼容）"
+                "tool_ref": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "指向 resources.tools[].tool_id（闭合由 PlanValidator 执行；悬空引用 → TOOL_REF_DANGLING error diag，实例判非法）"
                 },
-                "notes": { "type": "string", "description": "备注（NX: OperationBuilder.Notes）" }
+                "method_ref": { "type": "string", "description": "加工方法组名（如 METHOD）；可为空串" },
+                "strategy": { "$ref": "#/definitions/param_items" },
+                "technology": { "$ref": "#/definitions/param_items" },
+                "cut_area_signatures": {
+                    "type": ["array", "null"],
+                    "items": { "$ref": "#/definitions/face_signature" },
+                    "description": "op 级 CutAreaGeometry 面签名（v2，additive；重建侧据签名在回导件上复刻加工面）。null = 无签名（v1 旧形状无此键读兼容）；非空列表 = 采集签名（0.01mm/0.001 取整值）"
+                }
             },
-            "$comment": "NX 落点：OperationCollection.Create(4 父组, type, subtype, UseDefaultName, name) + 对应 CreateXxxMillingBuilder/Drill…Builder（工厂在 OperationCollection，不在 CAMSetup）"
+            "$comment": "无 name 成员（v1 起未产出）：op 显示名由 workplan ws 叶 name 承载、归属工序由 diag.operation_id 承载。NX 落点：OperationCollection.Create(4 父组, type, subtype, UseDefaultName, name)"
+        },
+
+        "param_items": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["Key", "Value"],
+                "properties": {
+                    "Key": {
+                        "type": "string",
+                        "minLength": 1,
+                        "description": "参数键（键集开放：权威 = docs/nx-param-registry-spec.md；导出侧注册表键集采集、tech: 前缀键分流进 technology）"
+                    },
+                    "Value": { "$ref": "#/definitions/param_value" }
+                }
+            },
+            "description": "参数键值数组（DCJS Dictionary<string,ParamValue> 投影 = KV 数组；空字典 = []）"
+        },
+
+        "param_value": {
+            "oneOf": [
+                { "type": "object", "additionalProperties": false, "required": ["N"], "properties": { "N": { "type": "number", "description": "数值键值（double 原样，POST-4 round-trip）" } } },
+                { "type": "object", "additionalProperties": false, "required": ["S"], "properties": { "S": { "type": "string", "description": "枚举键值 = NX 枚举原文串；S 词键 = cut_pattern/cut_order/cut_direction/transfer_within_levels，词集镜像 NxParamWords，重建侧 Enum.Parse 直用（词外 → V15-POST-2 拒绝）" } } }
+            ],
+            "description": "参数值联合（v1.5-③）：数值 {N} 与枚举原文串 {S} 二选一（EmitDefaultValue=false → 未设成员不落盘）"
         },
 
         "face_signature": {
@@ -246,227 +261,13 @@
             "required": ["face_type", "normal_axis", "rx", "ry", "rz", "radius"],
             "properties": {
                 "face_type": { "type": "integer", "minimum": 0, "description": "UFModl.AskFaceData 面类型号（实证：22=平面/16=圆柱 等；camprobe-geom）" },
-                "normal_axis": { "type": "string", "description": "法向主轴+象限：X+/X-/Y+/Y-/Z+/Z-（自由串六值，导出恒产重建恒匹配，不押词表外）" },
+                "normal_axis": { "type": "string", "description": "法向主轴+象限：X+/X-/Y+/Y-/Z+/Z-（自由串六值，导出恒产重建恒匹配）" },
                 "rx": { "type": "number", "description": "代表点 x（0.01mm 取整值——采集侧已取整，匹配/比对同粒度）" },
                 "ry": { "type": "number" },
                 "rz": { "type": "number" },
                 "radius": { "type": "number", "minimum": 0, "description": "曲面半径 0.001 取整（平面 = 0）" }
             },
-            "$comment": "v2（2026-09-05）面身份签名 = U-5 质心/面积禁令后的替代通道（F1 实证：gt 腔 op 13 面签名在 STEP 回导件 26 面中 13/13 唯一命中零歧义，camprobe-v2face A/B；取整粒度 0.01mm/0.001 对 translator round-trip 稳定）。NX 落点：op CutAreaGeometry 默认集 GeometrySet.Selection.SetArray（G1 实证）。规格：docs/nx-v2-geom-spec.md"
-        },
-
-        "strategy": {
-            "type": "object",
-            "additionalProperties": true,
-            "$comment": "对象级允许扩展（非切削细分/避让点等增强字段逐步入档）；NX 侧属性取值四形态混合（见 nxopen-research 附 A），Mapper 须按形态分支；v1.5-③（2026-09-04）起落盘值为联合形态——DataContract KV 数组的 Value = {N:number}|{S:NX 枚举原文串} 包装（P0 DCJS 探针实证，docs/nx-params-v15-spec.md §2），kind 按键固定于参数键集注册表（docs/nx-param-registry-spec.md）",
-            "properties": {
-                "cut_pattern": {
-                    "type": "string",
-                    "enum": [
-                        "AdaptiveRoughing", "AdaptiveZig", "ConcentricZig", "ConcentricZigWithContour",
-                        "ConcentricZigWithStepover", "ConcentricZigZag", "CrosscutZig", "CrosscutZigZag",
-                        "CrosscutZigZagWithLifts", "FollowPart", "FollowPeriphery", "Helical",
-                        "HelicalAroundPart", "HelicalSpiral", "Mixed", "None", "Profile", "RadialZig",
-                        "RadialZigWithContour", "RadialZigWithStepover", "RadialZigZag",
-                        "RadialZigZagWithLifts", "SameAsNonSteep", "Spiral", "StandardDrive",
-                        "Trochoidal", "Zig", "ZigWithContour", "ZigWithStepover", "ZigZag",
-                        "ZigZagWithLifts", "ZlevelHelical", "ZlevelZig", "ZlevelZigZag", "ZlevelZigZagWithLifts"
-                    ],
-                    "$comment": "NX2406 CutPatternBuilder.Types 原文 35 词（NXOpen.xml F: 实证，2026-09-04；v1.5-③ 词集收编 NX 原文——导出直写/重建 Enum.Parse 直用，无映射表；无 HILBERT/PARALLEL_LINES）。NX 落点：CutPattern.CutPattern = CutPatternBuilder.Types.*"
-                },
-                "cut_order": {
-                    "type": "string",
-                    "enum": ["DepthFirst", "DepthFirstAlways", "LevelFirst"],
-                    "$comment": "NX2406 CutParametersCutOrderTypes 原文 3 词（XML 实证 2026-09-04）。NX 落点：MillCutParameters.CutOrder（直接枚举，无 .Value；无 AreaFirst）"
-                },
-                "cut_direction": {
-                    "type": "string",
-                    "enum": ["Climb", "Conventional", "Forward", "Mixed", "Reverse"],
-                    "$comment": "NX2406 CutDirection.Types 原文 5 词（XML 实证 2026-09-04）；'顺铣/逆铣' = Climb/Conventional（无 Up）。NX 落点：CutDirection.Type = CutDirection.Types.*"
-                },
-                "stepover": {
-                    "type": "object",
-                    "additionalProperties": false,
-                    "required": ["mode", "value"],
-                    "properties": {
-                        "mode": {
-                            "type": "string",
-                            "enum": [
-                                "percent", "distance", "scallop", "multiple",
-                                "number", "maximum", "variable_average", "variable_maximum",
-                                "degression", "percent_remaining", "user_defined"
-                            ],
-                            "$comment": "percent = 刀具直径百分比（NX 落点：StepoverBuilder.StepoverType=PercentToolFlat + PercentToolFlatBuilder.Value）。写入链路负结案定稿（2026-09-04，camprobe-finalize + camprobe-stepover 三跑）：整链及全部形态（含直接 int/枚举、直属 StepoverLimit）commit 后必还原模板默认，公开 .NET 面无有效写入通道 → 重建侧拒收 + diag；StepoverLimit 仅校验层可达（值域 [100,300]%，越界抛 NXException）。规格见 docs/nx-stepover-probe-spec.md；见 nx2406-install-index.md §2.1/§2.5"
-                        },
-                        "value": { "type": "number" }
-                    },
-                    "$comment": "NX 落点：MillCutParameters.Stepover（StepoverBuilder，无 Percent 属性）"
-                },
-                "transfer_within_levels": {
-                    "type": "string",
-                    "enum": ["LowestSafeZ", "PrevPlane", "Direct", "Clearance", "BlankPlane", "ShortestToClearance", "CutPlaneToClearance", "Smooth", "DirectPreviousPlaneBackup", "CutPlane"],
-                    "description": "层内转移方式（切完一段到同层下一段之间的移动方式）。NX 落点：CavityMillingBuilder.NonCuttingBuilder.TransferWithinLevelsType（NcmPlanarBuilder，NX5.0/cam_base）；gt 实测四腔 op 全 Direct（直接平移），模板默认 Clearance（抬到安全平面）。重建写面持久 + 引擎消费（camprobe-v2ncm：C1 写 Direct → 36 区同构长度 4718→1380 收敛 71%）。见 nx-param-registry-spec.md #18"
-                },
-                "transfer_within_levels_height": {
-                    "type": "number",
-                    "minimum": 0,
-                    "description": "层内转移高度 mm（gt 实测 Intent/ValueIntent=PartUnits）。NX 落点：NcmPlanarBuilder.TransferWithinLevelsHeightBuilder（.Value + .Intent）。2026-09-06 负结案：Value 写 commit 还原（camprobe-v2ncmh 四写序变体：Intent/ValueIntent 持久、Value 恒回模板 3 = UI 可设 API 不可写，stepover #9 同族新实例）→ 采集撤采、重建拒写。见 nx-param-registry-spec.md #19"
-                },
-                "reference_tool": {
-                    "type": "number",
-                    "exclusiveMinimum": 0,
-                    "description": "参考刀具直径 mm（残余加工/清根语义：只切参考刀具留下的残料）。NX 落点：MillOperationBuilder.ReferenceTool = CAM.Tool 对象（NX7.5）；plan 跨件表达 = 直径（gt 名 17.0 vs 重建 T-001 名差 → 写侧按直径 0.001 匹配库刀）。重建侧写面持久 + 引擎消费（camprobe-v2reftool-135612/135652：写回 Ø17 → regen 36 区 = gt 本体同数；等径自刀参考 → 0 区）。缺键/0 = 无参考刀具。见 nx-param-registry-spec.md #17"
-                },
-                "depth_per_cut": {
-                    "type": "number",
-                    "exclusiveMinimum": 0,
-                    "description": "每刀深度 mm（NX 落点 2026-09-05 实证：平面 = PlanarOperationBuilder.DepthPerCut；腔铣 = CavityMillingBuilder.CutLevel.GlobalDepthPerCut.DistanceBuilder — 引擎消费成员，op 级 DepthPerCut 惰性）",
-                    "$comment": "2026-09-05 v2.5 修正：腔真实每刀深度在 CutLevel 子树（camprobe-v2depth-211011 写面验证：持久 + 刀路长度按深度反比收敛）；重建侧 0/缺失 = 继承语义不写保持默认。见 nx-param-registry-spec.md #12"
-                },
-                "multi_depth_cut": { "type": "boolean", "description": "多层切削开关（NX: MultiDepthCut.Toggle）", "$comment": "2026-09-04 负结案：MultiDepthCut 整对象（Toggle/StepMethod）写入 commit 后必还原模板默认（camprobe-params2 三跑 E2/E3，docs/nx-param-registry-spec.md）——读面可读（导出可用），重建侧不可直写，拒收+diag" },
-                "finish_passes": {
-                    "type": "integer",
-                    "minimum": 0,
-                    "description": "精加工刀数（NX: FinishPassesBuilder.NumberOfFinishPasses，int 直赋）"
-                },
-                "part_stock": { "type": "number", "minimum": 0, "description": "侧壁余量 mm（NX: CutParameters.PartStock.Value）" },
-                "floor_stock": { "type": "number", "minimum": 0, "description": "底面余量 mm（NX: MillCutParameters.FloorStock.Value）" },
-                "wall_stock": { "type": "number", "minimum": 0, "description": "壁余量 mm（NX: MillCutParameters.WallStock.Value）" },
-                "wall_cleanup": {
-                    "type": "string",
-                    "enum": ["NONE", "AT_START", "AT_END", "AUTOMATIC"],
-                    "$comment": "NX 落点：MillOperationBuilder.WallCleanupType = WallCleanupTypes.*"
-                },
-                "tool_axis": {
-                    "$ref": "#/definitions/vector3",
-                    "description": "刀轴矢量（铣：MillOrientGeomBuilder.ToolAxisVector；孔加工刀轴通常由 MCS/孔几何决定，可不填）"
-                },
-                "cycle": {
-                    "type": "string",
-                    "enum": ["DRILL", "PECK", "BREAK_CHIP", "TAP", "REAM", "BORE", "COUNTERBORE", "COUNTERSINK", "SPOT", "THREAD_MILL"],
-                    "$comment": "钻孔循环（plan 层规范值）。NX2406 落点：HoleDrillingBuilder.CycleTable（类型 CAM.Cycle）——无 Cycle 属性"
-                },
-                "depth": {
-                    "type": "object",
-                    "additionalProperties": false,
-                    "required": ["mode"],
-                    "properties": {
-                        "mode": { "type": "string", "enum": ["through", "blind", "value"] },
-                        "value": { "type": "number", "description": "盲孔/定值深度 mm（mode=through 时忽略）" }
-                    },
-                    "$comment": "NX 落点：HoleMachiningBuilder.PredefinedDepth（DimensionRule）+ HoleDepthType/HoleDepth"
-                },
-                "bottom_stock": { "type": "number", "minimum": 0, "description": "孔底余量（NX: HoleMachiningCutParameters.BottomStock.Value）" },
-                "bottom_clearance": { "type": "number", "minimum": 0, "description": "底部间隙（NX: BottomClearance.Value，NX2312+）" },
-                "top_offset": { "type": "number", "description": "顶部偏置（NX: HoleMachiningCutParameters.TopOffset，VerticalPosition）" },
-                "control_point_offset": {
-                    "type": "string",
-                    "enum": ["NONE", "FEATURE", "INITIAL"],
-                    "$comment": "NX: HoleDrillingBuilder.ControlPointOffset = ControlPointOffsetType.*（UI 术语对账待运行时）"
-                },
-                "retract_output_mode": {
-                    "type": "string",
-                    "enum": ["CLEARANCE_ONLY", "CLEARANCE_INITIAL", "ALWAYS"],
-                    "$comment": "NX: HoleDrillingBuilder.RetractOutputMode = RetractOutputModeType.*"
-                },
-                "tool_drive_point": {
-                    "type": "string",
-                    "description": "刀具驱动点。NX2406 实证（2026-09-04，camprobe-finalize）：GetToolDrivePoint() 默认 \"SYS_CL_TIP\"，SetToolDrivePoint(任意串) commit 后原样回读、无校验无 canonicalize → 取值集合程序化不可枚举，故不设枚举（见 nx2406-install-index.md §2.1 收官批增补）"
-                },
-                "cross_over_distance": { "type": "number", "minimum": 0, "description": "越程距离（NX: CrossOverDistance，InheritableToolDepBuilder）" },
-                "non_cutting": { "$ref": "#/definitions/non_cutting" }
-            }
-        },
-
-        "non_cutting": {
-            "type": "object",
-            "additionalProperties": true,
-            "properties": {
-                "clearance": {
-                    "type": "object",
-                    "additionalProperties": false,
-                    "required": ["type"],
-                    "properties": {
-                        "type": {
-                            "type": "string",
-                            "enum": ["automatic", "plane", "point", "cylinder", "sphere", "box", "body"],
-                            "$comment": "NX: NcmClearanceBuilder.ClearanceType = ClearanceTypes.*（UseCommon/Automatic/Plane/Point/Cylinder/Sphere/BoundingBox/Body 等）"
-                        },
-                        "safe_distance": { "type": "number", "minimum": 0, "description": "安全距离 mm（NX: SafeDistance，直接 double）" },
-                        "origin": { "$ref": "#/definitions/vector3", "description": "平面经过点/点安全几何位置" },
-                        "normal": { "$ref": "#/definitions/vector3", "description": "平面法向（type=plane）" },
-                        "radius": { "type": "number", "minimum": 0, "description": "圆柱/球半径（type=cylinder/sphere）" }
-                    },
-                    "$comment": "安全平面/几何（建议必填）；NX 落点：NcmPlanarBuilder.ClearanceBuilder（铣）/ MCS 几何组 TransferClearanceBuilder"
-                },
-                "engage": { "$ref": "#/definitions/eng_ret", "description": "进刀策略（封闭/开放区）" },
-                "retract": { "$ref": "#/definitions/eng_ret", "description": "退刀策略" },
-                "approach": { "$ref": "#/definitions/eng_ret" },
-                "final": { "$ref": "#/definitions/eng_ret", "description": "最终退刀" },
-                "from_point": { "$ref": "#/definitions/vector3", "description": "NX: NcmAvoidancePointBuilder（TransferAvoidanceFromBuilder）" },
-                "start_point": { "$ref": "#/definitions/vector3" },
-                "return_point": { "$ref": "#/definitions/vector3" },
-                "gohome_point": { "$ref": "#/definitions/vector3" },
-                "transfer_within_levels_height": { "type": "number", "minimum": 0, "description": "层内抬刀高度（NX: TransferWithinLevelsHeightBuilder）" }
-            },
-            "$comment": "MVP 仅录入 clearance + 基本进/退刀；避让点等增强字段逐步入档。铣削 NX 侧为 NcmPlanarBuilder；孔加工为 NcmHoleMachining（结构不同，落地时按 op 类型分派）"
-        },
-
-        "eng_ret": {
-            "type": "object",
-            "additionalProperties": true,
-            "required": ["type"],
-            "properties": {
-                "type": {
-                    "type": "string",
-                    "$comment": "进/退刀策略类型。NX2406 具体枚举在 NcmPlanarEngRetBuilder 内未逐项核对 → 暂不枚举，落地前按 /nx-api-verify 实证后回填"
-                },
-                "distance": { "type": "number", "minimum": 0, "description": "进/退刀距离 mm" },
-                "angle": { "type": "number", "description": "进/退刀角度 deg" },
-                "diameter_percent": { "type": "number", "description": "螺旋直径占刀径百分比（HELICAL 类）" }
-            }
-        },
-
-        "technology": {
-            "type": "object",
-            "additionalProperties": true,
-            "properties": {
-                "spindle_mode": {
-                    "type": "string",
-                    "enum": ["RPM", "SFM", "MMPM"],
-                    "$comment": "NX: FeedsBuilder.SpindleModeBuilder（InheritableIntBuilder）。NX2406 实证（2026-09-04）：自由 int 槽、无模式语义——写 0..6 原样持久、rpm/sfm 零联动，常态 RPM 场景 mode=0 → 导出侧只取 rpm、勿导 mode 数值（见 nx2406-install-index.md §2.1 收官批增补）"
-                },
-                "spindle_rpm": { "type": "number", "minimum": 0, "description": "主轴转速 rpm（NX: SpindleRpmBuilder.Value）" },
-                "surface_speed": { "type": "number", "minimum": 0, "description": "表面速度 m/min（与 rpm 二选一）" },
-                "feed_cut": {
-                    "type": "object",
-                    "additionalProperties": false,
-                    "required": ["value"],
-                    "properties": {
-                        "value": { "type": "number", "exclusiveMinimum": 0 },
-                        "unit": { "type": "string", "enum": ["MMPM", "MMPR"], "description": "mm/min 或 mm/rev，缺省 MMPM" }
-                    },
-                    "$comment": "NX: FeedsBuilder.FeedCutBuilder.Value（InheritableFeedBuilder）"
-                },
-                "feed_approach": { "type": "number", "minimum": 0 },
-                "feed_engage": { "type": "number", "minimum": 0 },
-                "feed_departure": { "type": "number", "minimum": 0 },
-                "retract_speed": { "type": "number", "minimum": 0, "description": "退刀速度（NX: RetractSpeed）" },
-                "coolant": {
-                    "type": "string",
-                    "enum": ["NONE", "FLOOD", "MIST", "THROUGH"],
-                    "$comment": "THROUGH=中心出水（刀具 CoolantThrough）"
-                },
-                "tolerance": {
-                    "type": "object",
-                    "additionalProperties": false,
-                    "properties": {
-                        "intol": { "type": "number", "minimum": 0, "description": "轮廓内公差（NX: MillCutParameters.BoundaryInTol，直接 double）" },
-                        "outtol": { "type": "number", "minimum": 0, "description": "轮廓外公差（NX: BoundaryOutTol，注意属性名）" }
-                    }
-                },
-                "minimal_clearance": { "type": "number", "minimum": 0, "description": "孔加工最小间隙（NX: MinimalClearance，直接 double）" }
-            }
+            "$comment": "面身份签名 = U-5 质心/面积禁令后的替代通道（v2 实证：gt 腔 op 13 面签名在 STEP 回导件 26 面中 13/13 唯一命中零歧义）；规格：docs/nx-v2-geom-spec.md"
         },
 
         "workingstep": {
@@ -474,19 +275,17 @@
             "additionalProperties": false,
             "required": ["workingstep_id", "feature_ref", "operation_ref", "setup_ref"],
             "properties": {
-                "workingstep_id": { "$ref": "#/definitions/id" },
-                "feature_ref": { "$ref": "#/definitions/id", "description": "→ features[].feature_id" },
-                "operation_ref": { "$ref": "#/definitions/id", "description": "→ operations[].operation_id" },
-                "setup_ref": { "$ref": "#/definitions/id", "description": "→ setups[].setup_id" }
-            },
-            "$comment": "NX 落点：workingstep → Operation（挂在四父组下）；setup → Program 组 + Geometry 组（MCS）。当前 NX 闭环：每个几何工序在导出时生成对应 features[] 条目并经 feature_ref 绑定；无几何工序（如 machine_control，MVP 外）暂不覆盖"
+                "workingstep_id": { "type": "string", "minLength": 1 },
+                "feature_ref": { "type": "string", "description": "→ features[].feature_id（非空时闭合由 PlanValidator 执行；1 ws ↔ 1 feature 由导出构造保证）" },
+                "operation_ref": { "type": "string", "minLength": 1, "description": "→ operations[].operation_id（1 op ↔ ≤1 ws，PlanValidator 执行）" },
+                "setup_ref": { "type": "string", "description": "→ setups[].setup_id；空串 = 无 setup 场景（导出侧 setups 为空时，validator 允许）" }
+            }
         },
 
         "workplan": {
             "type": "object",
             "additionalProperties": false,
             "required": ["root"],
-            "$comment": "程序组树；root 通常为根 PROGRAM 节点",
             "properties": {
                 "root": { "$ref": "#/definitions/workplan_node" }
             }
@@ -498,34 +297,33 @@
             "required": ["kind", "name", "ref", "children"],
             "properties": {
                 "kind": { "type": "string", "enum": ["program", "workingstep"], "description": "program=Program 组节点；workingstep=叶子工序节点" },
-                "name": { "type": "string", "description": "program：Program 组名（Setup 划分子程序）；workingstep：工序显示名（可为空串）" },
+                "name": { "type": "string", "description": "program：Program 组名（root 恒 PROGRAM）；workingstep：工序显示名（可为空串）" },
                 "ref": {
                     "type": "string",
-                    "description": "program：对应的 setup_id（按装夹分组的子程序）或父程序名；workingstep：workingstep_id"
+                    "description": "program：对应的 setup_id（按装夹分组的子程序）或父程序名（root 恒空串）；workingstep：workingstep_id（恒非空）"
                 },
                 "children": {
                     "type": "array",
                     "items": { "$ref": "#/definitions/workplan_node" },
-                    "description": "workingstep 节点恒为 []"
+                    "description": "子节点（workingstep 叶恒 []——导出构造保证）"
                 }
             },
-            "$comment": "程序顺序视图层级（刀路输出顺序）。导出：根=GetRoot(View.ProgramOrder) 树按组名序列化；导入：Program 组树重建；对比：按本树顺序对齐。NX 侧组创建须显式传父组（NCGroupCollection.CreateProgram(parent, …)）"
+            "if": { "properties": { "kind": { "const": "workingstep" } }, "required": ["kind"] },
+            "then": { "properties": { "children": { "maxItems": 0 } } },
+            "$comment": "程序顺序视图层级（刀路输出顺序，v1.5-① 树形：嵌套组真实展开、组内成员序 = NX GetMembers 序）；导出根 = 虚拟 PROGRAM 镜像"
         },
 
         "diagnostic": {
             "type": "object",
             "additionalProperties": false,
-            "required": ["level", "message"],
+            "required": ["level", "code", "message", "operation_id"],
             "properties": {
                 "level": { "type": "string", "enum": ["info", "warning", "error"] },
-                "code": { "type": "string", "description": "诊断码（如 GEOM_AMBIGUOUS_MATCH / PARAM_UNSUPPORTED）" },
-                "scope": { "type": "string", "description": "作用域：JSON 指针或对象引用（如 /operations/OP-001）" },
-                "message": { "type": "string" },
-                "data": {
-                    "type": "object",
-                    "description": "结构化附加信息（如对称面命中的候选 face_id 列表）"
-                }
-            }
+                "code": { "type": "string", "minLength": 1, "description": "诊断码（如 TPL_AMBIGUOUS / PARAM_UNSUPPORTED；validator：全级必填非空）" },
+                "message": { "type": "string", "description": "诊断消息（error 级须非空，validator 执行）" },
+                "operation_id": { "type": "string", "description": "归属工序（空串 = 非工序级诊断，如 setup 级 MCS_MISSING；与 op 的对应经 op 名/Tag 链）" }
+            },
+            "$comment": "历史说明：v2 前 schema 曾声明 scope/data 成员——产物从未产出，已删（实证面无落点）"
         }
     }
 }
