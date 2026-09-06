@@ -1,0 +1,31 @@
+== CamProbeV2FaceSet（OP-002 面集属性写面/因果判别）==
+time: 2026-09-06 00:56:12
+件: C:\Users\21505\Code\nx-vibe-v2\samples\test.prt
+打开 OK: test  camSession=True
+
+== 本体集[0] items=6 ==
+  本体 MaterialSide = None
+  本体 Intol = 0.02
+  本体 Outtol = 0.02
+  本体 PartOffset = 0
+  本体 CustomStock = False
+  本体 InitialStock = 0
+  本体 FinalStock = 0
+  本体 CheckStock = 0
+  本体 Reversed = False
+本体集数=1 集0 面数=6
+
+克隆创建 OK: CAVITY_MILL_1
+
+== 克隆集[0] 默认（复制前）==
+  克隆 MaterialSide = None
+  克隆 Intol = 0.03
+  克隆 Outtol = 0.03
+  克隆 PartOffset = 0
+  克隆 CustomStock = False
+  克隆 InitialStock = 0
+  克隆 FinalStock = 0
+  克隆 CheckStock = 0
+  克隆 Reversed = False
+!! 顶层异常: Attempt to use an object that is not alive
+== 结束 ==

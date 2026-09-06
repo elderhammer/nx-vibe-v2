@@ -61,6 +61,7 @@ U-6 教训再次坐实并扩界：**形态同类 ≠ 可写**（int 直赋 finis
 | 14 | （schema 现无键；hole_depth_type/hole_axis_type/retract_distance 为候选扩展，不押注） | `b.HoleDepthType` / `b.HoleAxisType` / `b.RetractDistance` | PTP | 直枚举 / 直枚举 / Inheritable | ✓ Point / Vector / 0 | 未测写 |
 | 15 | technology.spindle_rpm / feed_cut | `b.FeedsBuilder.SpindleRpmBuilder.Value` / `.FeedCutBuilder.Value` | 腔 + PTP | Inheritable 叶子 | ✓ 腔 2400/2000、3000/1200；PTP 3000/80、500/35（rpm status False=显式；打点 hole_depth True=继承） | **v1.5-⑤ 补测（2026-09-05，camprobe-feedcut 三跑 200847/200905/200924 一致）：feed_cut=2000 → 重开 2000 持久 ✓**（F1；F1b FeedPerTooth 0.3 邻接亦持久；F2 rpm=3000 锚点持久 = 会话健康）→ feed_cut 入写面白名单 + 采集/写适配器贯通（[U] 102/102）+ **[I] 级终判（203400/203514）：写入重开持久、comparer 腔 feed 键双侧全 PASS**；rpm 写持久已由 executor [I]（200339 全链）实证 |
 | 16 | strategy.cycle / tool_drive_point | PTP：无 HoleDrillingBuilder 面（cast 编译非法） | PTP | — | **✗ 不可读**（U-1 负证：builder 公开面/BuilderProperties JSON/用户属性三路零命中） | n/a |
+| 17 | strategy.reference_tool | `b.ReferenceTool`（MillOperationBuilder，宿主可达链 CavityMillingBuilder:PlanarOperationBuilder:MillOperationBuilder——hxx 逐级声明 + 反射 CanWrite=True；C++ SetReferenceTool(Tool*) Created NX7.5.0/License None，CAM_MillOperationBuilder.hxx；官方样例库递归零写面范式） | 腔 | **Tool 对象引用**（非四形态标量；plan 跨件表达 = 直径 N，写侧按径 0.001 匹配库刀） | ✓ 矩阵实测（camprobe-v2surf-gt-195205 builder 表面直读）：gt 四腔 op **仅 OP-002(CAVITY_MILL_COPY) 非空 = 17.0（Ø17 开粗刀）**，其余三 op null；rebuilt 档四 op 全 null | **持久 ✓ + 引擎因果 ✓ + 修复窗口 ✓**（2026-09-06 camprobe-v2reftool-135612/135652：P0 矩阵；P1 gt 件克隆写 17.0 → 读回断言 OK → regen **36 区 = 本体同数**（无键克隆 119 区全程）；P2 对照写自刀 9.96 → 0 区（等径参考 = 无残料，直径语义非任意 flag）；P3 rebuilt 件本体写匹配库刀 T-001 → regen **36 区** = 修复窗口实证；[I] 实录（140542/140636/140734）确认分层 84.8% FAIL 消除，time/length 残余 = 非切削转移族，见注 6） |
 
 > 注 1（判定口径分层）：#1-4、9-12 的持久结论覆盖"commit→重开"判据；#2/#3 为 v1 首跑单跑、
 > 其余持久键为 U-6/Executor 批次多跑或 [I] 级实证——**#2/#3 若进重建白名单前建议随 v1.5-③ [I] 复跑一次
@@ -78,6 +79,13 @@ U-6 教训再次坐实并扩界：**形态同类 ≠ 可写**（int 直赋 finis
 > 注 5（2026-09-06 PTP 收尾）：#13 重建落点（DRILLING）HoleDepth 写面持久 ✓（ptpkeys P1A 双会话），
 > 孔族采集补读 hole_depth 键实现 PTP→DRILLING 近似键面对称（comparer 单侧缺失方向化配套，
 > nx-plan-comparer-spec.md §4 A3）。
+> 注 6（2026-09-06 参考刀具定案）：#17 是"OP-002 只切一小截 vs 重建全程 43×"现象的**落单键定案**
+> ——gt 本体（带参考刀具 Ø17 清根意图）regen = 36 区/929/0.515s；executor 定义（无此键）在双件均
+> 全程（119/118 区）→ 推翻"体上下文 γ"（regionclone）与"面集级几何属性差"残余归因（faceset 探针
+> 证 gt 集属性 ≈ 模板默认、regionfull 自注"主因未落单键"）；写回判别三重实证（上表）。遗留小差 =
+> surfdiff 白名单外非切削转移族（TransferWithinLevelsType Direct vs Clearance 等，同区域数下连接
+> 长度差：P1/P3 36 区 4718/3257 vs gt 929——独立已知缺口，不阻塞本键）。γ 家族保持 OP-003 唯一
+> （gt OP-003 无参考刀具，其 rebuilt 空刀路与 #17 无关）。
 
 ## 3. 性质（红线；本批全为文档/实证层，无 [U] 代码改动）
 
@@ -87,7 +95,7 @@ U-6 教训再次坐实并扩界：**形态同类 ≠ 可写**（int 直赋 finis
 | R-2 | 写面判据统一：持久 = 重开（独立 builder）== 写入值；还原 = 重开回模板默认 | U-6 口径 | 探针日志判定行与 §2 表一致 | [实证] |
 | R-3 | 负键多跑齐备：每个还原键 ≥2 独立会话复现（本批三跑逐条一致） | U-6 三跑纪律 | 163751/163823/163850 三 txt 判定行相同 | [实证] |
 | R-4 | 形态归并禁区：不可写性不按形态推断、不合并行（#4 vs #5、#1/#2 vs #6） | U-6 教训（本批扩界） | §2 表按键分列 + 注 3 | [doc] |
-| R-5 | 下游红线：重建白名单只含持久键（#1-4 增量 + 既有 #10-12 + **#15 feed_cut（v1.5-⑤，2026-09-05 三跑持久）**）；#5-9 拒收 + diag 不静默 | 实证口级纪律（executor spec PRE-4 维持） | v1.5-⑤ 实现 diff 审阅 | [doc] |
+| R-5 | 下游红线：重建白名单只含持久键（#1-4 增量 + 既有 #10-12 + **#15 feed_cut（v1.5-⑤，2026-09-05 三跑持久）** + **#17 reference_tool（2026-09-06 三重实证）**）；#5-9 拒收 + diag 不静默 | 实证口级纪律（executor spec PRE-4 维持） | v2.5 参考刀具批实现 diff 审阅 | [doc] |
 | R-6 | 回填完整：索引 §2.1/§2.5、schema $comment、exporter/comparer spec v1.5 注记同步 | CLAUDE.md 回填规则 | 改动 diff 审阅 | [doc] |
 
 ## 4. 算法/改动面（步骤 → 性质映射）

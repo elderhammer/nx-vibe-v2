@@ -1,0 +1,18 @@
+== CamProbeV2RefTool（OP-002 ReferenceTool 因果判别）==
+time: 2026-09-06 13:56:52
+件: C:\Users\21505\Code\nx-vibe-v2\samples\v2.rebuilt-20260906-003620.prt
+打开 OK: v2.rebuilt-20260906-003620  camSession=True
+档别: rebuilt（P0 复核 + P3 修复窗口）
+
+== P0 参考刀具矩阵 ==
+  CAVITY_MILL: 当前刀=T-001  参考刀具=null  time=54.6309 len=114682.4545
+  CAVITY_MILL_COPY: 当前刀=T-003  参考刀具=null  time=28.3736 len=39849.6843
+  CAVITY_MILL_COPY_COPY: 当前刀=T-003  参考刀具=null  time=0 len=0
+  CAVITY_MILL_COPY_COPY_COPY: 当前刀=T-003  参考刀具=null  time=6.6255 len=3576.5261
+
+== P3 修复窗口：OP-002 写参考刀具 直径=17 ==
+  匹配库刀: T-001（直径 17）
+  读回断言 OK: ReferenceTool=T-001
+  [OP-002(参考刀具=T-001)] time=1.1219 length=3257.4309 regions=36  <<< 非零
+== 结束（全程未 Save）==
+== 结束 ==

@@ -468,6 +468,18 @@ public class ExecutorAdapter
                             else Log("    " + op.Name + " depth_per_cut<=0（继承语义）→ 不写保持默认");
                             break;
                         case "HoleDepth": b.HoleDepth.Value = pi.N.Value; break;
+                        case "ReferenceTool":
+                            // v2.5 参考刀具批（注册表 #17，2026-09-06 camprobe-v2reftool-135652 P3 修复窗口实证：
+                            // 写 Ø17 匹配库刀 T-001 → regen 36 区 = gt 同数）。值 = 直径；库内 0.001 匹配；
+                            // 无匹配 → 拒写保持无参考刀具（与 gt 无键档同构）+ 日志不静默
+                            if (pi.N.HasValue && pi.N.Value > 0)
+                            {
+                                NXOpen.CAM.Tool refTool = FindToolByDiameter(cam, pi.N.Value);
+                                if (refTool != null) b.ReferenceTool = refTool;
+                                else { Log("    " + op.Name + " reference_tool 无匹配库刀（直径 "
+                                    + pi.N.Value.ToString("0.####") + "）→ 拒写保持无参考刀具"); break; }
+                            }
+                            break;
                         case "FeedsBuilder.SpindleRpmBuilder": b.FeedsBuilder.SpindleRpmBuilder.Value = pi.N.Value; break;
                         case "FeedsBuilder.FeedCutBuilder": b.FeedsBuilder.FeedCutBuilder.Value = pi.N.Value; break;  // v1.5-⑤ feed_cut（注册表 #15 三跑持久）
                         // v1.5-③ S1：4 持久键（注册表 #1-4）；Enum 词已由 ExecutorCore NxParamWords 校验 → Parse 安全
@@ -650,6 +662,42 @@ public class ExecutorAdapter
             a[2] * b[0] - a[0] * b[2],
             a[0] * b[1] - a[1] * b[0],
         };
+    }
+
+    // v2.5 参考刀具批（注册表 #17）：按直径 0.001 匹配库刀（值 = plan 参考刀具直径；gt 名 "17.0" vs
+    // 重建 T-001 名差 → 直径语义匹配，camprobe-v2reftool-135652 P3 实证）；读径 = Mill → Drill 兜底。
+    private static NXOpen.CAM.Tool FindToolByDiameter(CAMSetup cam, double dia)
+    {
+        return FindToolByDiameterRec(cam, cam.GetRoot(CAMSetup.View.MachineTool), dia);
+    }
+
+    private static NXOpen.CAM.Tool FindToolByDiameterRec(CAMSetup cam, NCGroup g, double dia)
+    {
+        foreach (CAMObject m in g.GetMembers())
+        {
+            NCGroup sub = m as NCGroup;
+            if (sub == null) continue;
+            NXOpen.CAM.Tool t = m as NXOpen.CAM.Tool;
+            if (t != null)
+            {
+                try
+                {
+                    MillingToolBuilder mb = cam.CAMGroupCollection.CreateMillToolBuilder(t) as MillingToolBuilder;
+                    if (mb == null) mb = cam.CAMGroupCollection.CreateDrillStdToolBuilder(t) as MillingToolBuilder;
+                    if (mb == null) continue;
+                    try
+                    {
+                        if (Math.Abs(mb.TlDiameterBuilder.Value - dia) < 0.001) return t;
+                    }
+                    finally { mb.Destroy(); }
+                }
+                catch { }
+                continue;
+            }
+            NXOpen.CAM.Tool hit = FindToolByDiameterRec(cam, sub, dia);
+            if (hit != null) return hit;
+        }
+        return null;
     }
 
     private static NCGroup FindChildByName(NCGroup g, string name)

@@ -302,6 +302,11 @@
                     },
                     "$comment": "NX 落点：MillCutParameters.Stepover（StepoverBuilder，无 Percent 属性）"
                 },
+                "reference_tool": {
+                    "type": "number",
+                    "exclusiveMinimum": 0,
+                    "description": "参考刀具直径 mm（残余加工/清根语义：只切参考刀具留下的残料）。NX 落点：MillOperationBuilder.ReferenceTool = CAM.Tool 对象（NX7.5）；plan 跨件表达 = 直径（gt 名 17.0 vs 重建 T-001 名差 → 写侧按直径 0.001 匹配库刀）。重建侧写面持久 + 引擎消费（camprobe-v2reftool-135612/135652：写回 Ø17 → regen 36 区 = gt 本体同数；等径自刀参考 → 0 区）。缺键/0 = 无参考刀具。见 nx-param-registry-spec.md #17"
+                },
                 "depth_per_cut": {
                     "type": "number",
                     "exclusiveMinimum": 0,

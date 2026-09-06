@@ -169,6 +169,25 @@ I-2）同 API 面，全部已实证，零新探针；几何/刀路维度显式�
 > 整层 FAIL 哨兵）。区域维诊断化：报告从"80 vs 79"升级为"差层面积占比 + A-only 位置"。
 > 2026-09-05 早两跑（comparer-run-191118/191558，
 > B=test.rebuilt.prt v1 空件）为 B 防呆修复（da3fd80）前错选件，issues=43 无效、不构成校准。
+> **参考刀具定案批（2026-09-06 晚，OP-002 归因链最终定案 + 键通道实施）**：
+> ① 判别（camprobe-v2faceset-005612/005710 + v2dims-010501/010519 + v2reftool-135612/135652）：
+> **OP-002 只切一小截 = ReferenceTool 落单键定案**——API 四路实证（hxx 继承链/SetReferenceTool
+> NX7.5 + 反射 CanWrite + 样例零范式）；gt 四 op 矩阵仅 OP-002 带参考刀具（Ø17 开粗刀，v2surf-gt
+> 195205 表面直读）；faceset 证 gt 集属性 ≈ 模板默认（regionfull"面集级"残余归因收回）；dims 终证
+> 几何未变（26 面型参逐面全同，box ε≤0.0025 STEP 容差级）；**reftool 三重写回判别**：P1 gt 件克隆
+> 写 17.0 → 读回持久 + regen 36 区 = 本体同数（无键 119）；P2 自刀 9.96 → 0 区（直径残料语义）；
+> P3 rebuilt 本体写匹配库刀 → 36 区（修复窗口）。② 实施（键通道 v2.5 参考刀具批）：registry #17
+> 入表（Tool 引用 → plan 直径 N 表达）+ NxCollect 腔分支采集（null 不落键）+ ParamWhiteList +
+> ExecutorAdapter 写链（按径 0.001 匹配库刀，无匹配拒写 + 日志）+ schema 词典行 + [U] 116/116。
+> ③ **[I] 实录（2026-09-06 14:05-14:07，adapter/executor/comparer-run 140542/140636/140734，
+> 资产 v2.rebuilt-20260906-140637.prt）**：I-1 重导 plan 落键 = 仅 OP-002 `reference_tool: N 17`
+> （其余 5 op 无键，schema+落盘复验 PASS）；I-2 重建写行 = `CAVITY_MILL_COPY 写 ReferenceTool=17`
+> （按径匹配 T-001），ok=19/fail=0，OP-002 toolpath **1.1219s/3257.4 = 与 reftool 探针 P3 逐位一致**
+> （写回持久 + 引擎消费闭环）；I-3 issues **9→8**、param **51/51 全 PASS**（新键双侧对称采集）——
+> **OP-002 分层结构差（84.8%）FAIL 消除**（区域配对 PASS：36 区/18 层 = gt 同构）；OP-002 残余 2 条
+> = time 54.1%/length 71.5%（同区域数下连接长度差 3257 vs 929）→ **新校准条目 = 非切削转移族
+> （surfdiff 53 行白名单外：TransferWithinLevelsType Direct vs Clearance 等）**，独立缺口不阻塞本批；
+> OP-001（time 6.3%/分层 4.3% = stepover #9 不可写）与 OP-003（γ，gt 无参考刀具）保持条目不变。
 
 ## 4. 算法（步骤 → 性质映射）
 

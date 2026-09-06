@@ -224,6 +224,13 @@ public static class NxCollect
                     // gt 恒 0）；腔真实每刀深度 = CutLevel.GlobalDepthPerCut.DistanceBuilder（模板默认 1）。
                     // 读不到（CutLevel null 等）→ 抛 → 不落假 0，仅记 diag
                     TryParam(b, o, "depth_per_cut", () => CavityDepthPerCut(b));
+                    // v2.5 参考刀具批（注册表 #17，2026-09-06 camprobe-v2reftool 定案）：值 = 参考刀具直径。
+                    // null（无参考刀具，gt 3/4 腔 op 常态）= 不落键（双侧同缺 → comparer 无差）；非空 →
+                    // 直径读失败才记 diag（TryParam 口径），null 不记（非异常态）
+                    Tool refTool = null;
+                    try { refTool = b.ReferenceTool; } catch { }
+                    if (refTool != null)
+                        TryParam(b, o, "reference_tool", () => ToolDiameterOf(cam, refTool));
                 }
                 finally { b.Destroy(); }
             }
@@ -385,6 +392,23 @@ public static class NxCollect
         NXOpen.CAM.CutLevel cl = b.CutLevel;
         if (cl == null) throw new Exception("CutLevel null（腔无切削层）");
         return cl.GlobalDepthPerCut.DistanceBuilder.Value;
+    }
+
+    /// <summary>参考刀具直径（注册表 #17；NxCollect 采集用）。读法同 ReadToolParams try 链
+    /// （Mill → Drill 兜底）；读不到 → NaN（上游 TryParam 记 diag 不落假 0）。</summary>
+    private static double ToolDiameterOf(CAMSetup cam, NCGroup toolGroup)
+    {
+        MillingToolBuilder mb = null;
+        try { mb = cam.CAMGroupCollection.CreateMillToolBuilder(toolGroup) as MillingToolBuilder; }
+        catch { mb = null; }
+        if (mb == null)
+        {
+            try { mb = cam.CAMGroupCollection.CreateDrillStdToolBuilder(toolGroup) as MillingToolBuilder; }
+            catch { mb = null; }
+        }
+        if (mb == null) throw new Exception("参考刀具 builder 打不开: " + toolGroup.Name);
+        try { return mb.TlDiameterBuilder.Value; }
+        finally { mb.Destroy(); }
     }
 
     // v1.5-③：枚举键读 NX 枚举 ToString 原文（词 = schema 词集，语言无关）

@@ -176,6 +176,13 @@ namespace NXPlugins.PlanExporterTests
                 Assert.True(t.Kind == (k == "finish_passes" ? ParamKind.Number : ParamKind.Enum),
                     k + " kind 应与注册表形态一致");
             }
+            // #17 参考刀具（v2.5 参考刀具批，2026-09-06 camprobe-v2reftool 三重实证：读回持久 + 因果
+            // 36 区 + P3 修复窗口）——kind=Number（值 = 参考刀具直径，写侧按径匹配库刀）
+            ParamTarget rt;
+            Assert.True(ParamWhiteList.StrategyWritable.TryGetValue("reference_tool", out rt),
+                "reference_tool 应可写（注册表 #17 持久实证）");
+            Assert.True(rt.Kind == ParamKind.Number,
+                "reference_tool kind 应为 Number（值=直径）");
         }
 
         // ---------- POST ----------
