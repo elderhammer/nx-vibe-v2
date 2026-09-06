@@ -14,7 +14,7 @@
 > comparer-run-20260905-192456：issues=21 与 gate 预测一致、sigfaceset=4/4、toolpath=0/8
 > region=0/8，残余全为已知校准条目（I-3 验收关闭，见 nx-v2-geom-spec.md §7）。
 > [U] 时点全量记录：2026-09-05 为 100/100（93 回归 + v2 七测试，V2GATE 门控 2530c6d 补入后 101）；
-> 2026-09-06 现行全量 118/118（累计含 PTP 方向化 4 + RegionPairing 12 条 + 审计批 2），见 src/NXPlugins/README.md。
+> 2026-09-06 现行全量 118/118（累计含 PTP 方向化 4 + RegionPairing 12 条 + 审计批 2），见 README.md。
 > 需求源：docs/nx-plugin-design.md §7 步骤 3 / §2.2（维度表与输出口径）；前置范围：nx-plan-executor-spec.md
 > §0/§7 D-1（重建 v1 空件无几何无刀路 → 对比维度显式声明）；事实源：nx2406-install-index.md §2.1。
 > 上游共享：ExportSnapshot（PlanExporter/Model.cs，导出与对比共用采集口径）+ WhiteList / ToolFamilyMap 归一思想。

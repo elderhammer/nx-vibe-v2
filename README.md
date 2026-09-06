@@ -31,10 +31,10 @@
 > 工程决策（2026-09-03，见 nx-plugin-design.md 头部"已确认决策"）：
 > 仅支持 NX2406；.NET Framework 4.8.1（2026-09-05 由 4.8 提升——本机无 v4.8 targeting pack、
 > 官方 4.8 Dev Pack 安装器在沙箱挂起、4.8.1 pack 已就位且运行时 4.8.1；语义兼容 4.8 代码）；
-> 代码全部在本目录（sln 在仓库根 `Autocam.Plugins.sln`）。
+> 代码全部在 src/NXPlugins/（sln 在仓库根 `Autocam.Plugins.sln`）。
 
 ## 当前状态（2026-09-06 收口）：实证收官——v1 三步闭环 + 参数面扩展（v1.5-①③④⑤）+ **v2 几何
-重建一体收官**（[nx-v2-geom-spec.md](../docs/nx-v2-geom-spec.md)：STEP 导入→签名面指派→带几何
+重建一体收官**（[nx-v2-geom-spec.md](docs/nx-v2-geom-spec.md)：STEP 导入→签名面指派→带几何
 刀路→Comparer 三维 + 腔铣维 gate；[I] 190859/…/192456 issues=21=预测、sigfaceset=4/4 验收关闭）
 + **v2.5 三批（区域配对 RegionPairing / reference_tool #17 / transfer_within_levels #18 + 深度键
 修正）**：校准复跑 003738/004123/140734/143758，**issues 21→9**（param=55/55、tool=6/6、mcs=1/1、
@@ -43,7 +43,7 @@ fixture=1/1、template=6/6、sigfaceset=4/4，全部可解释）+ **残余归因
 E5v2 区组通道零）→ OP-003 γ 定档引擎内部行为；方案 B 判别⑨ 关闭（be03deb：七补漏键写持久但
 引擎逐位零消费 → B3=公开 Ncm 键面复刻上限、实施批取消）→ **残余 9 条全部为"已解释 + 无可写
 通道"永久校准性质**（OP-001 stepover ×3 / OP-002 转移高度内部值 ×2 / OP-003 γ ×4，清单见
-[nx-plan-comparer-spec.md](../docs/nx-plan-comparer-spec.md) §3 校准记录）。[U] 全量 **118/118**
+[nx-plan-comparer-spec.md](docs/nx-plan-comparer-spec.md) §3 校准记录）。[U] 全量 **118/118**
 （2026-09-06 审计批 +2：POST-2 真实文件原子替换 + INV-4 正向去重）。
 
 - `NXPlugins.csproj`：类库工程，已引用 NXOpen / NXOpen.UF / NXOpen.Utilities

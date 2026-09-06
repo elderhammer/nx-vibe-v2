@@ -33,7 +33,7 @@
 > 模板部件 `cam_general_mill.prt` 在 2406 不存在（用 `mill_contour.prt` 等，见 nx2406-install-index.md §1 与 nxopen-research 附 B）。
 >
 > 已确认决策（2026-09-03）：① 插件代码落地本仓库 `src/NXPlugins/`（.NET Framework 4.8.1 类库 +
-> Journal 入口——2026-09-05 由 4.8 提升，理由见 src/NXPlugins/README.md 决策行；sln 见仓库根
+> Journal 入口——2026-09-05 由 4.8 提升，理由见 README.md 决策行；sln 见仓库根
 > Autocam.Plugins.sln）；② **仅支持 NX2406**，不做旧版本兼容（无版本分支）；
 > ③ 测试资产：NX2406 安装目录无手编 ground truth 与 STEP 样例（只有 CAM 模板部件与几何样件，
 > 见 samples/README.md），首件由 NX2406 会话手编后入库；④ PlanComparer 先按 §2.2 默认口径实现，
