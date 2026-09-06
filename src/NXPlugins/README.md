@@ -5,6 +5,29 @@
 > 合同：`schema/autocam-plan.schema.json`（v3.0；2026-09-06 反推修正——schema 为协议规范面，
 > 形状真值经 jsonschema 引擎对真实产物核验通过，语义镜像 = PlanValidator + 参数键集注册表，
 > 两面同批收敛纪律见 schema 头注约定 10 与 CLAUDE.md 规则 5）。
+## 实现策略（六点，2026-09-06 收口成文）
+
+1. **锁定 NX 2406**：仅支持 NX2406、不做旧版本兼容（版本策略决策②，见
+   docs/nx-plugin-design.md 头部）；NX API 面随版本漂移的事实由 2 的索引注记承担。
+2. **接口事实索引**：为 NX2406 安装资料建立接口事实索引 docs/nx2406-install-index.md——
+   以 NXOpen.xml 成员清单/remarks（"Created in NXxxxx"/License）、`UGOPEN\NXOpen\*.hxx`
+   头文件注释（含废弃/替换注记）、UGOPEN 官方样例库（写面范式）三语料为源，并维护
+   "不存在项"清单与属性取值四形态速查；三路查证协议与负结论证伪纪律见
+   `.claude/skills/nx-api-verify`（§1.5）。
+3. **需求文档随索引修正**：docs/ 设计/规格文档中的 API 细节以索引（及 nxopen-research
+   附 A）为准，发现索引过期立即修正（CLAUDE.md 规则 4）；禁止凭记忆写 API。
+4. **分阶段实现**：按 docs/nx-plugin-design.md §7 步骤 0-4 落地（API 形态基表 → PlanExporter
+   → PlanExecutor 重建 → PlanComparer → 并入 sln）；每阶段收口 = spec-before-code 纪要落档
+   （性质红线）→ [U] 单测骨架红占位 → 实现全绿 → [I] NX 会话实录验收（samples/ 证据档）。
+5. **先审查索引、必要时探针定行为**：每个设计/实现改动先对照接口事实索引审查；索引未覆盖、
+   与旧文献冲突、或需精确签名/枚举/行为 → 写 CamProbe* journal 探针实测 NX2406 真实行为
+   （属性取值形态、可写性、持久性、引擎消费、会话纪律），以实证修正设计后再实现——U-1..U-7
+   结案与 v2/v2.5 判别链（γ 五候选、方案 B 补漏键）均为该路线的产物与先例。
+6. **schema 是契约、与实现相辅相成**：schema/autocam-plan.schema.json = 协议规范面（设计
+   基准），执行面 = Doc.cs/PlanJsonSerializer（形状）+ PlanValidator（语义镜像）+ 参数键集
+   注册表（docs/nx-param-registry-spec.md，键语义权威）；设计新增从规范面发起、实证纠正从
+   执行面发起，任一面变更必须两面同批收敛（schema 头注约定 10 / CLAUDE.md 规则 5）。
+
 > 工程决策（2026-09-03，见 nx-plugin-design.md 头部"已确认决策"）：
 > 仅支持 NX2406；.NET Framework 4.8.1（2026-09-05 由 4.8 提升——本机无 v4.8 targeting pack、
 > 官方 4.8 Dev Pack 安装器在沙箱挂起、4.8.1 pack 已就位且运行时 4.8.1；语义兼容 4.8 代码）；
