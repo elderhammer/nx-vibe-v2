@@ -281,7 +281,8 @@ adapter-run-20260904-194935.txt；规格 docs/nx-params-v15-spec.md = S1 参数�
   36 个返回 Stepover* 型的宿主属性全 get-only；2406 唯一新成员 `StepoverConnection`
   （NX2406.0.0，option-menu 形态）零宿主零工厂零样例；全库 372 官方源文件唯一 stepover 写面
   = CornerSetRadiusAndLimitCycleAll.vb:105 `StepoverLimit=150`（恰模板默认，与"界内写回填"自洽）；
-  旁注：CAM_StepoverBuilder.hxx 枚举实测 **21 值** vs 本索引旧记 22（计数待核）。
+  **StepoverTypes 计数定案（2026-09-06，hxx + .NET 反射双路均 21 值）**：本索引 §2.3 旧记"22 值"
+  系误计（其枚举清单本身即 21 项），已修正。
 - **区域 API 内部标注加力**：`CutRegionsData`（NX10.0.2）与 `CutRegionsBuilder`（NX9.0.0，含唯一
   入口 `SurfaceContourBuilder.GetCutRegionsBuilder`）双侧 `\cond NX_NO_DOC` + "internal API, may
   change at any time"（XML 与 hxx 一致）——读回可用（G3/Comparer 实证）但无契约保障。
@@ -304,7 +305,7 @@ adapter-run-20260904-194935.txt；规格 docs/nx-params-v15-spec.md = S1 参数�
 | 切削顺序 | `CutParametersCutOrderTypes`（**顶层类型**） | `LevelFirst\|DepthFirst\|DepthFirstAlways`（**无 AreaFirst**） |
 | 顺逆铣 | `CutDirection`（类）→ 嵌套 `Types` | `Climb\|Conventional\|Forward\|Reverse\|Mixed`（**无 Up**，逆铣=Conventional） |
 | 切削模式 | `CutPatternBuilder.Types` | `FollowPart\|FollowPeriphery\|Helical\|Spiral\|…\|Zig\|ZigZag\|Profile\|…` 36 值（**无 HILBERT/PARALLEL_LINES**） |
-| 步距 | `StepoverBuilder.StepoverTypes`（2026-09-04 反射：完整 22 值） | `None\|Constant\|Scallop\|PercentToolFlat\|Multiple\|Number\|Maximum\|Angular\|VariableAverage\|VariableMaximum\|UseCutDepth\|PercentRemaining\|PercentWire\|StockPerPass\|PercentThreadLength\|Exact\|PercentFluteLength\|BlankContourConstant\|Degression\|PercentDegression\|UserDefined`（StepoverBuilder 无 Percent 属性；**整链 commit 写入失效**——§2.1） |
+| 步距 | `StepoverBuilder.StepoverTypes`（反射 + hxx 复核：完整 **21 值**，2026-09-06） | `None\|Constant\|Scallop\|PercentToolFlat\|Multiple\|Number\|Maximum\|Angular\|VariableAverage\|VariableMaximum\|UseCutDepth\|PercentRemaining\|PercentWire\|StockPerPass\|PercentThreadLength\|Exact\|PercentFluteLength\|BlankContourConstant\|Degression\|PercentDegression\|UserDefined`（StepoverBuilder 无 Percent 属性；**整链 commit 写入失效**——§2.1） |
 | 安全几何 | `NcmClearanceBuilder.ClearanceTypes` | `UseCommon\|None\|Automatic\|Plane\|Point\|Cylinder\|Sphere\|BoundingBox\|BoundingCylinder\|Body\|MachineBased` |
 | 铣刀子类型 | `MillToolBuilder.CutterSubtypes` | `Mill5\|Mill7\|Mill10\|MillBall\|ChamferTool\|SphericalMill\|DovetailMill` |
 | 多刀深 | `MultiDepthCut.Types` | `Increment\|Passes` |

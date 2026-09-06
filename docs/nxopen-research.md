@@ -276,7 +276,7 @@ Builder 继承链：`OperationBuilder → MillOperationBuilder → PlanarOperati
 | 参数 | 说明 | NX2406 取值形态（实证） |
 | :--- | :--- | :--- |
 | `PartStock` / `FloorStock` / `WallStock` | 侧壁/底面/壁余量 (mm)。`PartStock` 在基类 `CutParameters` 上 | `InheritableDoubleBuilder` → `.Value` |
-| `Stepover` | 步距。类型 `StepoverBuilder`，**无 `Percent` 属性** | `StepoverType`（22 值全枚举见索引 §2.3）+ 对应子 Builder（`PercentToolFlatBuilder.Value`）；**2026-09-04 实测：整链 commit 写入静默还原模板默认（读可、写无效）**，重建侧步距映射不可行（U-6 负结案 2026-09-04，camprobe-stepover 三跑 8 通道全负，见索引 §2.1/§2.5 与 nx-stepover-probe-spec.md） |
+| `Stepover` | 步距。类型 `StepoverBuilder`，**无 `Percent` 属性** | `StepoverType`（21 值全枚举见索引 §2.3）+ 对应子 Builder（`PercentToolFlatBuilder.Value`）；**2026-09-04 实测：整链 commit 写入静默还原模板默认（读可、写无效）**，重建侧步距映射不可行（U-6 负结案 2026-09-04，camprobe-stepover 三跑 8 通道全负，见索引 §2.1/§2.5 与 nx-stepover-probe-spec.md） |
 | `CutOrder` | 切削顺序。**直接枚举赋值** | `CutOrder = CAM.CutParametersCutOrderTypes.LevelFirst`（取值 `LevelFirst`/`DepthFirst`/`DepthFirstAlways`，**无 `AreaFirst`**） |
 | `CutDirection` | 顺逆铣。**类 + 嵌套枚举** | `CutDirection.Type = CAM.CutDirection.Types.Climb`（无 `Up`；逆铣=`Conventional`） |
 | `FinishPasses` | 精加工刀数。类型 `FinishPassesBuilder` | `.NumberOfFinishPasses`（int 直赋）+ `.FinishStepoverBuilder` |
@@ -585,7 +585,7 @@ CAPP Plan (JSON, autocam-plan.schema.json)
 | `cut_order` | 枚举 | `MillCutParameters.CutOrder` = **`CutParametersCutOrderTypes`**（`LevelFirst`/`DepthFirst`/`DepthFirstAlways`，无 AreaFirst；直接枚举赋值） | 建议 |
 | `cut_direction` | 枚举 | `MillCutParameters.CutDirection.Type` = `CutDirection.Types`（`Climb`/`Conventional`/`Forward`/`Reverse`/`Mixed`；无 Up） | 建议 |
 | `depth_per_cut` | number(mm) | `PlanarOperationBuilder.DepthPerCut.Value` / `CavityMillingBuilder.DepthPerCut.Value`（**不在 MillCutParameters 上**） | 粗铣必填 |
-| `stepover` | number | `MillCutParameters.Stepover`（`StepoverBuilder`：`StepoverType`（22 值见索引 §2.3）+ 对应子 Builder，无 Percent）；⚠️ **整链 commit 写无效**（2026-09-04 实测，读可写无效；U-6 负结案：8 通道全负无有效写入通道）→ 重建侧拒收 + diag（见 nx-stepover-probe-spec.md） | 粗铣必填 |
+| `stepover` | number | `MillCutParameters.Stepover`（`StepoverBuilder`：`StepoverType`（21 值见索引 §2.3）+ 对应子 Builder，无 Percent）；⚠️ **整链 commit 写无效**（2026-09-04 实测，读可写无效；U-6 负结案：8 通道全负无有效写入通道）→ 重建侧拒收 + diag（见 nx-stepover-probe-spec.md） | 粗铣必填 |
 | `finish_passes` | int | `MillCutParameters.FinishPasses.NumberOfFinishPasses`（int 直赋） | 建议 |
 | `multi_depth_cut` | bool | `MillCutParameters.MultiDepthCut.Toggle`（bool）+ `StepMethod`/`Increment`/`NumberOfPasses` | 粗铣建议 |
 | `part_stock` / `floor_stock` / `wall_stock` | number(mm) | `MillCutParameters.PartStock/FloorStock/WallStock`（`InheritableDoubleBuilder`→.Value；PartStock 在基类 `CutParameters`） | 建议 |
