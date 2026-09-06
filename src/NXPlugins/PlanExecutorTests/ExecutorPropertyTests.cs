@@ -183,6 +183,18 @@ namespace NXPlugins.PlanExporterTests
                 "reference_tool 应可写（注册表 #17 持久实证）");
             Assert.True(rt.Kind == ParamKind.Number,
                 "reference_tool kind 应为 Number（值=直径）");
+            // #18 转移族（v2.5 转移族批，2026-09-06 camprobe-v2ncm 实证：C1 Direct 写回持久 + 长度
+            // 收敛 71%；[I] 142827 重建件 3257→1299）。#19 height 负结案撤采（camprobe-v2ncmh 四写序
+            // Value commit 还原）→ 断言其不在白名单（同 stepover/#5-9 拒收纪律）
+            ParamTarget tr;
+            Assert.True(ParamWhiteList.StrategyWritable.TryGetValue("transfer_within_levels", out tr),
+                "transfer_within_levels 应可写（注册表 #18）");
+            Assert.True(tr.Kind == ParamKind.Enum, "transfer_within_levels kind 应为 Enum");
+            Assert.False(ParamWhiteList.StrategyWritable.ContainsKey("transfer_within_levels_height"),
+                "transfer_within_levels_height 不得在白名单（注册表 #19 负结案：Value 写 commit 还原）");
+            Assert.True(NXPlugins.PlanExporter.NxParamWords.IsWord("transfer_within_levels", "Direct")
+                && NXPlugins.PlanExporter.NxParamWords.IsWord("transfer_within_levels", "Clearance"),
+                "transfer_within_levels 词集应含 Direct/Clearance（schema 镜像）");
         }
 
         // ---------- POST ----------

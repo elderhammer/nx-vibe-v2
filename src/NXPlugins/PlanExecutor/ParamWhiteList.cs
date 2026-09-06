@@ -38,6 +38,13 @@ namespace NXPlugins.PlanExecutor
             // 刀具直径 mm（跨件表达：gt 名 "17.0" vs 重建 T-001 名差 → 按直径 0.001 匹配库刀，P3 实证）；
             // 写侧 NX 落点 = b.ReferenceTool（MillOperationBuilder，NX7.5，Tool 对象直赋）。OP-002 只切
             // 一小截现象（gt 36 区 vs 重建 118 区 43×）系此键缺失：写回 Ø17 → regen 36 区 = gt 同数。
+            { "transfer_within_levels", new ParamTarget("NonCuttingBuilder.TransferWithinLevelsType", ParamKind.Enum) },
+            // v2.5 转移族批（2026-09-06 camprobe-v2ncm 实证，注册表 #18）：层内转移方式。OP-002 36 区
+            // 同构下残余长度差（重建 3257 vs gt 929）主因 = 模板默认 Clearance（抬刀模式）vs gt Direct
+            // （直接平移，gt 四腔 op 全 Direct/UseEngret，v2surf-gt 195205 矩阵）→ 写回 Direct → 长度
+            // 收敛 71%（[I] 142827/143155：重建件 3257→1299）。#19 height 键负结案撤采：Value 写 commit
+            // 还原（camprobe-v2ncmh 四写序变体 Intent/ValueIntent 持久、Value 恒回模板 3 = UI 可设 API
+            // 不可写，stepover #9 同族新实例）。
             { "hole_depth",    new ParamTarget("HoleDepth", ParamKind.Number) },   // OperationBuilder 级（PTP/钻孔均可达）
             // v1.5-③ S1：注册表 4 持久键（E1/E7 锚定；E3 cut_order/cut_direction v1 单跑——I-2 [I] 复跑点亮）
             { "cut_pattern",   new ParamTarget("CutPattern.CutPattern", ParamKind.Enum) },

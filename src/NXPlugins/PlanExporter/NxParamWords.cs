@@ -25,6 +25,12 @@ namespace NXPlugins.PlanExporter
                 "ZigZagWithLifts", "ZlevelHelical", "ZlevelZig", "ZlevelZigZag", "ZlevelZigZagWithLifts") },
             { "cut_order", Words("DepthFirst", "DepthFirstAlways", "LevelFirst") },
             { "cut_direction", Words("Climb", "Conventional", "Forward", "Mixed", "Reverse") },
+            // v2.5 转移族批（2026-09-06 camprobe-v2ncm 实证）：NcmPlanarBuilder.TransferWithinLevelsTypes
+            // 全 10 值（NXOpen.xml F: 全词 + .NET 反射枚举原文一致）；写面持久 + 引擎消费（C1: Direct →
+            // 36 区同构下长度 4718→1380）
+            { "transfer_within_levels", Words("LowestSafeZ", "PrevPlane", "Direct", "Clearance",
+                "BlankPlane", "ShortestToClearance", "CutPlaneToClearance", "Smooth",
+                "DirectPreviousPlaneBackup", "CutPlane") },
         };
 
         /// <summary>枚举键的合法词判定（未知键 → false：调用方按自身语义处置）。</summary>

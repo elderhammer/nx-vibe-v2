@@ -188,6 +188,23 @@ I-2）同 API 面，全部已实证，零新探针；几何/刀路维度显式�
 > = time 54.1%/length 71.5%（同区域数下连接长度差 3257 vs 929）→ **新校准条目 = 非切削转移族
 > （surfdiff 53 行白名单外：TransferWithinLevelsType Direct vs Clearance 等）**，独立缺口不阻塞本批；
 > OP-001（time 6.3%/分层 4.3% = stepover #9 不可写）与 OP-003（γ，gt 无参考刀具）保持条目不变。
+> **转移族批（2026-09-06，方案 A：OP-002 残余长度差主因落单 + 实施）**：
+> ① 判别（camprobe-v2ncm-142120 C0/C1/C3 + v2ncmh-143354）：Ncm 宿主四路实证（hxx SetTransfer
+> WithinLevelsType NX5.0.0/cam_base + 反射 CanWrite + **官方样例 PlanarOpsSetNCMCycleAll.vb 命中**
+> = NonCuttingBuilder 子树 → op builder Commit 写范）→ C0 基线 36 区 4718.5/1.268、C1 写
+> TransferWithinLevelsType=Direct + 层内高度 0.5 → **1379.9/0.934（收敛 71%）**、C3 全键（+6 EngRet
+> builder 差键 + 光顺族）→ 1141.9/0.694（再收 17%，残余 19% = 次键，方案 B 排队）→ **主因 =
+> 模板默认 Clearance（抬刀模式）vs gt Direct（直接平移）**；② **#19 height 负结案**：v2ncmh 四写序
+> 变体（Value 先/Intent 先/ValueIntent/ExpressionString）全组合 commit → 重开 Intent/ValueIntent
+> 持久但 **Value 恒回模板 3**（UI 可设 API 不可写，stepover #9 同族新实例）→ 撤采（[I] 143758
+> param=55/55 无假差）；③ 实施（registry #18 入表 + NxCollect 腔采集 + ParamWhiteList +
+> ExecutorAdapter 写链 + NxParamWords 词集 + schema 词典 + [U] 116/116）。④ **[I] 实录
+> （143643/143712/143758，资产 v2.rebuilt-20260906-143713.prt）**：I-2 写行
+> `TransferWithinLevelsType=Direct`（height 撤写），ok=19/fail=0，**OP-002 3257→1298.8（length 差
+> 71.5%→28.5%）、OP-001 114682→111799**；I-3 issues 8→**9**、param **55/55**——height 假差 4 条消、
+> 新浮出 **OP-001 length 5.9% = stepover #9 不可写残余显形**（此前被 Clearance 连接差抵消在 5% 内，
+> Direct 修对后现形——校准条目，非本批回归）；OP-002 残余 time 44.4%/length 28.5% = 进刀族未写
+> （方案 B 排队）；OP-003 γ 4 条保持。
 
 ## 4. 算法（步骤 → 性质映射）
 

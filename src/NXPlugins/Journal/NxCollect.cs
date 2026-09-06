@@ -231,6 +231,12 @@ public static class NxCollect
                     try { refTool = b.ReferenceTool; } catch { }
                     if (refTool != null)
                         TryParam(b, o, "reference_tool", () => ToolDiameterOf(cam, refTool));
+                    // v2.5 转移族批（注册表 #18，2026-09-06 camprobe-v2ncm 实证）：层内转移方式直落。
+                    // #19 height 撤采（负结案：Value 写 commit 还原，UI 可设 API 不可写——stepover #9
+                    // 同族；撤采防永久假差，同 stepover 先例；Intent/ValueIntent 可持久但值不可写 =
+                    // 无消费意义）
+                    TryParamS(b, o, "transfer_within_levels",
+                        () => b.NonCuttingBuilder.TransferWithinLevelsType.ToString());
                 }
                 finally { b.Destroy(); }
             }

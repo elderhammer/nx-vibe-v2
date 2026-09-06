@@ -1,0 +1,29 @@
+== CamProbeV2Ncm（OP-002 残余长度差 非切削族写面判别）==
+time: 2026-09-06 14:21:20
+件: C:\Users\21505\Code\nx-vibe-v2\samples\test.prt
+打开 OK: test  camSession=True
+OP-002 面数=6 当前刀=9.96 参考刀具=17.0
+
+== C0 基线（ref only）==
+  克隆创建 OK: CAVITY_MILL_1
+  读回断言: ReferenceTool=17.0  TransferWithinLevelsType=Clearance
+  [C0 ref-only] time=1.268 length=4718.5123 regions=36  <<< 非零
+
+== C1 转移族（ref + TransferWithinLevelsType=Direct + 层内转移高度 0.5）==
+  克隆创建 OK: CAVITY_MILL_2
+  读回断言: ReferenceTool=17.0  TransferWithinLevelsType=Direct
+  [C1 转移族] time=0.9342 length=1379.9491 regions=36  <<< 非零
+
+== C3 全键（ref + 转移族 + 6 EngRet builder 差键 + 光顺族）==
+    EngRet 写: height=0.5 ramp=3 plunge=True minClear=True
+    EngRet 写: height=0.5 ramp=- plunge=True minClear=False
+    EngRet 写: height=0.3 ramp=- plunge=True minClear=True
+    EngRet 写: height=0.3 ramp=- plunge=True minClear=True
+    EngRet 写: height=20 ramp=- plunge=True minClear=True
+    EngRet 写: height=20 ramp=- plunge=True minClear=True
+  克隆创建 OK: CAVITY_MILL_3
+  读回断言: ReferenceTool=17.0  TransferWithinLevelsType=Direct
+  [C3 全键] time=0.6942 length=1141.8544 regions=36  <<< 非零
+对照: reftool 探针 P1 gt 克隆带 ref = 36 区 4718.5/1.268；gt 本体 = 36 区 928.8/0.515
+== 结束（全程未 Save）==
+== 结束 ==

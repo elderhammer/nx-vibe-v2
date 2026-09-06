@@ -302,6 +302,16 @@
                     },
                     "$comment": "NX 落点：MillCutParameters.Stepover（StepoverBuilder，无 Percent 属性）"
                 },
+                "transfer_within_levels": {
+                    "type": "string",
+                    "enum": ["LowestSafeZ", "PrevPlane", "Direct", "Clearance", "BlankPlane", "ShortestToClearance", "CutPlaneToClearance", "Smooth", "DirectPreviousPlaneBackup", "CutPlane"],
+                    "description": "层内转移方式（切完一段到同层下一段之间的移动方式）。NX 落点：CavityMillingBuilder.NonCuttingBuilder.TransferWithinLevelsType（NcmPlanarBuilder，NX5.0/cam_base）；gt 实测四腔 op 全 Direct（直接平移），模板默认 Clearance（抬到安全平面）。重建写面持久 + 引擎消费（camprobe-v2ncm：C1 写 Direct → 36 区同构长度 4718→1380 收敛 71%）。见 nx-param-registry-spec.md #18"
+                },
+                "transfer_within_levels_height": {
+                    "type": "number",
+                    "minimum": 0,
+                    "description": "层内转移高度 mm（gt 实测 Intent/ValueIntent=PartUnits）。NX 落点：NcmPlanarBuilder.TransferWithinLevelsHeightBuilder（.Value + .Intent）。2026-09-06 负结案：Value 写 commit 还原（camprobe-v2ncmh 四写序变体：Intent/ValueIntent 持久、Value 恒回模板 3 = UI 可设 API 不可写，stepover #9 同族新实例）→ 采集撤采、重建拒写。见 nx-param-registry-spec.md #19"
+                },
                 "reference_tool": {
                     "type": "number",
                     "exclusiveMinimum": 0,

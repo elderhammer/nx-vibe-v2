@@ -482,6 +482,11 @@ public class ExecutorAdapter
                             break;
                         case "FeedsBuilder.SpindleRpmBuilder": b.FeedsBuilder.SpindleRpmBuilder.Value = pi.N.Value; break;
                         case "FeedsBuilder.FeedCutBuilder": b.FeedsBuilder.FeedCutBuilder.Value = pi.N.Value; break;  // v1.5-⑤ feed_cut（注册表 #15 三跑持久）
+                        case "NonCuttingBuilder.TransferWithinLevelsType":
+                            // v2.5 转移族批（注册表 #18，2026-09-06 camprobe-v2ncm C1 实证：Direct 写回 →
+                            // 36 区同构长度 4718→1380 收敛 71%；gt 四腔 op 全 Direct，模板默认 Clearance）
+                            b.NonCuttingBuilder.TransferWithinLevelsType = (NcmPlanarBuilder.TransferWithinLevelsTypes)Enum.Parse(
+                                typeof(NcmPlanarBuilder.TransferWithinLevelsTypes), pi.S); break;
                         // v1.5-③ S1：4 持久键（注册表 #1-4）；Enum 词已由 ExecutorCore NxParamWords 校验 → Parse 安全
                         case "CutPattern.CutPattern":
                             b.CutPattern.CutPattern = (CutPatternBuilder.Types)Enum.Parse(
