@@ -3,12 +3,12 @@
 //
 // 纯逻辑核心（src/NXPlugins/PlanExporter/*.cs，无 NX 依赖）随本文件一起 csc 编译。
 // 执行：干净 NX 会话（test.prt 未打开）→ File → Execute → NX Open → 本 exe。
-// 产物：samples\test.plan.json（schema 复验通过）+ samples\exporter-adapter.txt（过程报告）。
-// 只读纪律：不 Commit/不修改/不保存源文件；参数字段按 MVP 子集（U-4 探针性质）。
-//
-// 已知简化（如实记录，不做静默）：① workplan 仅顶层程序组序列 + 工序节点挂其父组（缺父挂根，
-//   嵌套程序组层级首版不展开——spec A8 口径）；② 参数回读仅 double 字段子集；③ MCS 轴取自
-//   csys.Orientation.Element 矩阵行（X/Z）；④ 刀具参数经 MillingToolBuilder 通用成员（多态 `as`）。
+// 产物：samples\test.plan.json（schema 复验通过）+ samples\adapter-run-<ts>.txt（过程报告）。
+// 只读纪律：不 Commit/不修改/不保存源文件。采集/回读实现（程序树/参数/刀具/MCS）在共享层
+// Journal/NxCollect.cs——v1.5-① 起程序树真实嵌套渲染（comparer spec §2 注记）、v1.5-③ 起参数值 = {N}/{S}
+// 联合（注册表键集）；采集口径 = 导出与 comparer 单一事实源（nx-plan-comparer-spec §5 D-3）。
+// 已知简化（NxCollect 现态，如实记录不做静默）：MCS 轴 = csys.Orientation.Element 矩阵行
+// （row0=X/row2=Z）；刀具参数经 MillingToolBuilder 通用成员（多态 as；钻刀 CreateDrillStdToolBuilder 兜底）。
 
 using System;
 using System.Collections.Generic;

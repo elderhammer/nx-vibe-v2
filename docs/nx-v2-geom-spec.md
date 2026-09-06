@@ -24,6 +24,8 @@
 > G3 区域读回（CutRegionsData）/ F1 签名对齐（gt 13/13 唯一命中）。
 > 合同：schema/autocam-plan.schema.json v3.0（本批 = operations[] 可选 cut_area_signatures，
 > additive，contract_version 不变）。事实源：docs/nx2406-install-index.md §2.1（含 v2 增补）。
+> 2026-09-06 修正（小漂移收口）：§1/§2 签名字段名 rep_* 系早期稿措辞——实态 = schema/Model/Doc.cs/产物
+> 一致为 rx/ry/rz（同 0.01mm 取整语义），normal_axis 为自由串六值，正文两处已改。
 
 ## 0. 一段话结论
 
@@ -41,7 +43,7 @@ PTP/孔族不在本批（D-3）；签名通道是 U-5 质心/面积禁令的替�
 |---|---|
 | 输入 | plan.json（含可选 cut_area_signatures）+ STEP 资产（samples/test.step，自产） |
 | 调用序列（[I]） | ExecutorAdapter-v2（csc exe，NX Execute）：开新件 → **导入 test.step**（DexManager 配方，索引 §2.1）→ CreateCamSession → CreateCamSetup → 四父组/刀具/MCS 照 v1 → op 级 CutAreaGeometry 签名面指派 → GenerateToolPath → 读 time/length → 原地 Save → 回读对照报告。ComparerAdapter-v2：两件轮换采集 → CompareCore 新三维比对。ExporterAdapter：重导 plan 带签名 |
-| 签名字段 | `cut_area_signatures[]`：`{face_type:int, normal_axis:"X+\|X-\|…", rep_x/rep_y/rep_z:double(0.01mm 取整), radius:double(0.001 取整)}`——导出侧从 gt op CutAreaGeometry 面集 AskFaceData 采集；重建侧同 body 面上匹配；匹配容差 = 取整粒度（±0.005/±0.0005） |
+| 签名字段 | `cut_area_signatures[]`：`{face_type:int, normal_axis:"X+/X-/Y+/Y-/Z+/Z-", rx/ry/rz:double(0.01mm 取整), radius:double(0.001 取整)}`——导出侧从 gt op CutAreaGeometry 面集 AskFaceData 采集；重建侧同 body 面上匹配；匹配容差 = 取整粒度（±0.005/±0.0005） |
 | 失败语义 | 签名无匹配（重建件面上找不到 plan 面）→ 该 op error diag（GEOM_SIG_MISMATCH）不入刀路；单面不匹配 → warning diag 继续（部分指派）；其余沿 v1（结构级中止/单项 diag） |
 | 只读纪律 | gt 件全程只读（导出/对比侧沿 MONO-1）；重建件为自建 |
 | 版本兼容 | schema additive（可选字段）；旧 plan（无签名）→ 重建侧跳过面指派 = v1 空刀路行为 + diag（V2-PRE-3 显式声明）；contract_version 维持 3.0 |
@@ -49,7 +51,7 @@ PTP/孔族不在本批（D-3）；签名通道是 U-5 质心/面积禁令的替�
 ## 2. 数据结构要点
 
 - schema `operations[]` 增可选 `cut_area_signatures[]`（元素 = {face_type int, normal_axis enum?——
-  自由串四值 X+/X-/Y+/Y-/Z+/Z-，导出恒产、重建恒匹配、不押词表外；rep_x/y/z number, radius number}；
+  自由串六值 X+/X-/Y+/Y-/Z+/Z-，导出恒产、重建恒匹配、不押词表外；rx/ry/rz number, radius number}；
   $comment 注 F1 实证出处与 U-5 替代语义）。
 - Model.cs：`OperationItem` 增 `CutAreaSignatures`（List<FaceSignature>，纯逻辑值对象
   FaceSignature{int FaceType; string NormalAxis; double Rx, Ry, Rz; double Radius}——导出/重建/比对

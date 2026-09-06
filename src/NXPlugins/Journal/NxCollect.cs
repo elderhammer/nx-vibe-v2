@@ -265,7 +265,7 @@ public static class NxCollect
         else if (o.TypeFamily == "Point to Point")
         {
             // PTP 旧模板（打点/钻头G83）→ PointToPointBuilder（2406 实证：CreateHoleDrillingBuilder
-            // 会类型转换失败）；参数面仅 HoleDepth/Retract 等（孔细分参数面属 #3 范围，不扩读）
+            // 会类型转换失败）；参数面仅 HoleDepth/Retract 等（孔细分参数面无公开读通道 = 注册表 #16 / U-1 负证，不扩读）
             try
             {
                 PointToPointBuilder b = cam.CAMOperationCollection.CreatePointToPointBuilder(op);
@@ -275,7 +275,7 @@ public static class NxCollect
                     // v1.5-③ S1：rpm 读（探针实证打点 3000 / G83 500）→ plan 供给重建近似 DRILLING 写 rpm
                     TryParam(b, o, "tech:spindle_rpm", () => b.FeedsBuilder.SpindleRpmBuilder.Value);
                     TryParam(b, o, "tech:feed_cut", () => b.FeedsBuilder.FeedCutBuilder.Value);   // v1.5-⑤（PTP feed 读实证 80/35，注册表 #15）
-                    log("  PTP op " + o.Name + " 参数面细分待后续批（cycle/细分 U-1 负证；rpm/feed 已扩读）");
+                    log("  PTP op " + o.Name + " 细分参数无公开读通道（cycle/细分 U-1 负证，注册表 #16）——近似重建由 DRILLING 模板承载；rpm/feed 已扩读");
                 }
                 finally { b.Destroy(); }
             }

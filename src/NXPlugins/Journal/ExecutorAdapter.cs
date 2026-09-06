@@ -8,7 +8,9 @@
 //       → NX 会话 File → Execute → NX Open（与 ExporterAdapter 同款；⚠️ run_journal 单文件 journal
 //       合并不适用——核心依赖 DataContractJsonSerializer，journal 编译器缺 System.Runtime.Serialization，
 //       见 spec §1 注记）。
-// 已知范围（spec D-1=A）：v1 无几何指派、不生成刀路；对照维度=结构/刀具数值/MCS/fixture/可写参数。
+// 范围（v2/v2.5 现状；历史 v1 基线见 spec D-1=A）：带几何重建——STEP 导入 → 签名面指派 →
+// 刀路生成 → 原地 Save（nx-v2-geom-spec §0）；回读对照维度 = 结构/刀具直径/MCS/fixture
+// （不回读参数值——参数持久证据由 comparer param 维承担，2026-09-06 标签修正）。
 
 using System;
 using System.Collections.Generic;
